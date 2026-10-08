@@ -40,16 +40,21 @@ Numbers at handoff: 122 unit/integration tests and 9 end-to-end tests passing; ~
 
 ## What's left
 
-1. **Deploy to Vercel** (needs you, about 5 minutes). The Vercel connection used by the
-   coding session isn't allowed to create projects, so do this in the dashboard:
-   1. vercel.com → Add New → Project → import `KumarAnandSingh/new`.
-   2. Framework: Next.js (auto). No build settings to change.
-   3. Environment variables: `ANTHROPIC_API_KEY` (your key), optionally `NAVO_MODEL`.
-   4. Deploy. To deploy this branch before merging, merge PR #1 first or set the
-      production branch to `claude/sweet-fermi-dhassn` in Project → Settings → Git.
-   5. Recommended: Storage → Create → Neon Postgres → connect to the project. It sets
-      `DATABASE_URL`; redeploy. Without it the demo still works, but each serverless
-      instance keeps its own in-memory-like database (a cold start gives a fresh demo).
+1. **Make the hosted link public** (needs you, about 5 minutes). The repo is already connected
+   to your Vercel project **v0-studyify** (team "kumaranandsingh's projects"), which builds every
+   push to this branch. The preview for the latest commit built successfully:
+   https://v0-studyify-git-claude-sweet-f-d1833c-kumaranandsinghs-projects.vercel.app
+   (previews may ask for a Vercel login; production URLs are public). To finish:
+   1. Vercel → v0-studyify → Settings → General: rename the project (e.g. `navo-halden`) so the
+      public URL doesn't say "studyify".
+   2. Settings → Environment Variables: add `ANTHROPIC_API_KEY` (Production and Preview).
+   3. Either merge PR #1 into `main`, or Settings → Git → set the production branch to
+      `claude/sweet-fermi-dhassn`; then redeploy. The production URL is the hosted link.
+   4. Recommended: Storage → Create → Neon Postgres → connect to the project (sets
+      `DATABASE_URL`), then redeploy. Without it the demo still works, but each serverless
+      instance keeps its own temporary database (a cold start gives a fresh demo).
+   The coding session's Vercel connection can't manage this project (403), so these steps are
+   done in the dashboard.
 2. **Technical design document**: `docs/TECHNICAL_DESIGN.md` (architecture and flow
    diagrams, setup and deployment, code walkthrough, assumptions).
 3. **README** final pass with the hosted link, and a **demo video script**
