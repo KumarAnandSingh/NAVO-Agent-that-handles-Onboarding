@@ -20,6 +20,8 @@ export default defineConfig([
     "playwright-report/**",
     "test-results/**",
     "drizzle/**",
+    // Exported design prototypes kept for reference; not part of the app.
+    "docs/**",
     "next-env.d.ts",
   ]),
 ]);
