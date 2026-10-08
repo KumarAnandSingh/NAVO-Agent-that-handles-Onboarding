@@ -92,7 +92,7 @@ async function writeSubtitles(timeline: Timeline) {
     "# Navo product video: voice-over script",
     "",
     "Generated from `video/story.ts` by `npm run video:render`. Each line is the on-screen subtitle and",
-    "is timed for a natural reading pace (about 2.5 words a second). Read each line as its words",
+    "is timed for a natural reading pace (about 2.6 words a second). Read each line as its words",
     "highlight; the sound effects are on a separate track (`video/out/navo-demo-sfx.wav`).",
     "",
     `Length: ${formatTimecode(timeline.duration, ".").slice(3, 10)}`,
