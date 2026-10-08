@@ -8,6 +8,7 @@ import {
   type TaskTemplate,
 } from "@/content/seed/onboarding-template";
 import { JOINERS, STAFF, type JoinerSeed } from "@/content/seed/people";
+import { TIMELINE, WORKSPACE_START } from "@/content/timeline";
 import { addCalendarDays, atIst, nextWorkingTime } from "@/domain/time";
 import type { OwnerType, ScenarioId, TaskStatus } from "@/domain/types";
 import type { Queryable } from "@/lib/db/client";
@@ -28,8 +29,7 @@ import {
   workspaces,
 } from "@/lib/db/schema";
 
-/** The demo opens on Wednesday 8 October 2026, 18:00 IST, the evening Anand first opens Navo. */
-export const WORKSPACE_START = atIst("2026-10-08", "18:00");
+export { WORKSPACE_START };
 
 interface TaskState {
   status: TaskStatus;
@@ -52,38 +52,38 @@ function profileStates(joiner: JoinerSeed): StateMap {
   switch (joiner.profile) {
     case "featured":
       return {
-        offer_accept: done("2026-10-07", "10:05"),
+        offer_accept: done(TIMELINE.offerAccepted, "10:05"),
         documents: { status: "needs_user", note: "2 pending · Navo read the rest" },
-        background_check: { status: "in_progress", note: "With vendor", dueAt: atIst("2026-10-17", "18:00") },
+        background_check: { status: "in_progress", note: "With vendor", dueAt: atIst("2026-10-16", "18:00") },
         onboarding_kit: { status: "in_progress", note: "Facilities preparing", dueAt: day1 },
         benefits_enrolment: { status: "pending", note: "Opens on Day 1", dueAt: atIst(addCalendarDays(joiner.joiningDate, 7), "18:00") },
       };
     case "on_track":
     case "bgv_late":
       return {
-        offer_accept: done("2026-09-29"),
-        documents: done("2026-10-01"),
-        forms: done("2026-10-01", "11:00"),
+        offer_accept: done("2026-09-28"),
+        documents: done("2026-09-30"),
+        forms: done("2026-09-30", "11:00"),
         background_check:
           joiner.profile === "bgv_late"
-            ? { status: "in_progress", note: "Past SLA · vendor chased twice", dueAt: atIst("2026-10-14", "18:00") }
-            : done("2026-10-09"),
-        employee_id: done("2026-10-06", "15:00"),
+            ? { status: "in_progress", note: "Past SLA · vendor chased twice", dueAt: atIst("2026-10-13", "18:00") }
+            : done("2026-10-08"),
+        employee_id: done("2026-10-05", "15:00"),
         email: { status: "in_progress", note: "IT · live on Day 1" },
         laptop: { status: "in_progress", note: "IT · imaging" },
         id_card: { status: "in_progress", note: "HR · printing" },
-        manager_1on1: done("2026-10-02"),
-        induction: done("2026-10-02"),
+        manager_1on1: done("2026-10-01"),
+        induction: done("2026-10-01"),
         security_training: { status: "needs_user", note: "Due before Day 1" },
       };
     case "docs_pending":
       return {
-        offer_accept: done("2026-10-03"),
+        offer_accept: done("2026-10-02"),
         documents: { status: "needs_user", note: "Relieving letter unclear" },
       };
     case "early":
       return {
-        offer_accept: done("2026-10-06"),
+        offer_accept: done("2026-10-05"),
         documents: { status: "needs_user", note: "Not started" },
       };
   }
@@ -239,8 +239,8 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
       maskedValue: doc.maskedValue ?? null,
       extracted: doc.extracted ?? [],
       readBy: doc.status === "needed" ? null : ("seed" as const),
-      uploadedAt: doc.status === "needed" ? null : atIst("2026-10-07", "11:30"),
-      verifiedAt: doc.status === "verified" ? atIst("2026-10-07", "11:32") : null,
+      uploadedAt: doc.status === "needed" ? null : atIst(TIMELINE.offerAccepted, "11:30"),
+      verifiedAt: doc.status === "verified" ? atIst(TIMELINE.offerAccepted, "11:32") : null,
       sortOrder: index,
     })),
   );
@@ -265,7 +265,7 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
     employeeId: featured.id,
     type: "background_verification",
     status: "in_progress",
-    expectedAt: atIst("2026-10-17", "08:40"),
+    expectedAt: atIst("2026-10-16", "08:40"),
   });
 
   await db.insert(facilitiesItems).values({
@@ -284,8 +284,8 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
     employeeId: featured.id,
     kind: "team_planning",
     title: "Product team planning",
-    startsAt: atIst("2026-10-24", "11:00"),
-    endsAt: atIst("2026-10-24", "12:00"),
+    startsAt: atIst("2026-10-23", "11:00"),
+    endsAt: atIst("2026-10-23", "12:00"),
     location: "Room 4A",
     withPersonId: featured.managerId,
     ownerType: "manager",
@@ -300,10 +300,10 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
       action: "decide_start_date",
       requestedFrom: "priya.nair",
       title: "Background check past SLA",
-      detail: "starts 27 Oct",
+      detail: "starts 26 Oct",
       reason: "chased vendor twice, recommends limited-access start",
       status: "pending",
-      createdAt: atIst("2026-10-08", "16:10"),
+      createdAt: atIst("2026-10-07", "16:10"),
     },
     {
       workspaceId,
@@ -315,7 +315,7 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
       detail: "last working date unreadable",
       reason: "asked Karan to re-upload, needs your waiver if not by Fri",
       status: "pending",
-      createdAt: atIst("2026-10-08", "17:40"),
+      createdAt: atIst("2026-10-07", "17:40"),
     },
   ]);
 
@@ -324,7 +324,7 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
       workspaceId,
       employeeId: featured.id,
       caseKey: "docs",
-      at: atIst("2026-10-07", "11:32"),
+      at: atIst(TIMELINE.offerAccepted, "11:32"),
       actor: "navo",
       phase: "Acted",
       summary: "Read PAN, Aadhaar and cancelled cheque from the application. Pre-filled payroll.",
@@ -334,7 +334,7 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
       workspaceId,
       employeeId: featured.id,
       caseKey: "docs",
-      at: atIst("2026-10-07", "11:33"),
+      at: atIst(TIMELINE.offerAccepted, "11:33"),
       actor: "navo",
       phase: "Noticed",
       summary: "Relieving letter: last working day unreadable. Address proof not uploaded.",
@@ -345,11 +345,11 @@ export async function seedWorkspace(db: Queryable, { workspaceId, scenario }: Se
   // The world keeps moving without Navo: vendor and facilities updates are already scheduled.
   await db.insert(events).values([
     scheduled(workspaceId, "navo.daily_check", nextWorkingTime(now, "09:15"), "navo", "Navo daily check", { employeeId: featured.id }),
-    scheduled(workspaceId, "vendor.check_cleared", atIst("2026-10-17", "08:40"), "vendor", "Vendor clears background check", {
+    scheduled(workspaceId, "vendor.check_cleared", atIst("2026-10-16", "08:40"), "vendor", "Vendor clears background check", {
       employeeId: featured.id,
       checkId: `${featured.id}/bgv`,
     }),
-    scheduled(workspaceId, "facilities.item_ready", atIst("2026-10-17", "09:30"), "facilities", "Facilities prepares onboarding kit", {
+    scheduled(workspaceId, "facilities.item_ready", atIst("2026-10-16", "09:30"), "facilities", "Facilities prepares onboarding kit", {
       employeeId: featured.id,
       itemId: `${featured.id}/kit`,
     }),

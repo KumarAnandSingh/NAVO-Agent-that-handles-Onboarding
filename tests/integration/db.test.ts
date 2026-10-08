@@ -18,7 +18,7 @@ describe("workspace seeding", () => {
     const scheduled = await db.select().from(events).where(eq(events.workspaceId, ws.id));
     const sections = await db.select().from(policySections);
 
-    expect(ws.simNow.toISOString()).toBe("2026-10-08T12:30:00.000Z");
+    expect(ws.simNow.toISOString()).toBe("2026-10-07T12:30:00.000Z");
     expect(taskRows.filter((t) => t.employeeId === "anand.mehta")).toHaveLength(27);
     expect(depRows.length).toBeGreaterThan(14 * 20);
     expect(scheduled.map((e) => e.type)).toContain("navo.daily_check");
