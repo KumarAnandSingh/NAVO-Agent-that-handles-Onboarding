@@ -1,4 +1,4 @@
-import { and, asc, eq, gt, lte } from "drizzle-orm";
+import { and, asc, eq, gt, lte, ne, sql } from "drizzle-orm";
 import type { Queryable } from "@/lib/db/client";
 import { events } from "@/lib/db/schema";
 
@@ -78,4 +78,27 @@ export async function markEvent(
 
 export async function rescheduleEvent(db: Queryable, id: number, dueAt: Date): Promise<void> {
   await db.update(events).set({ dueAt }).where(eq(events.id, id));
+}
+
+/**
+ * Cancel scheduled events of a type whose payload matches, because what they were waiting
+ * for has already happened (a reply window after the reply, a re-check after the fix).
+ * Returns how many were cancelled.
+ */
+export async function cancelScheduled(
+  db: Queryable,
+  workspaceId: string,
+  type: string,
+  payload: Record<string, string>,
+  at: Date,
+  exceptId?: number,
+): Promise<number> {
+  const conditions = Object.entries(payload).map(([key, value]) => sql`${events.payload} ->> ${key} = ${value}`);
+  if (exceptId !== undefined) conditions.push(ne(events.id, exceptId));
+  const rows = await db
+    .update(events)
+    .set({ status: "cancelled", processedAt: at })
+    .where(and(eq(events.workspaceId, workspaceId), eq(events.type, type), eq(events.status, "scheduled"), ...conditions))
+    .returning({ id: events.id });
+  return rows.length;
 }

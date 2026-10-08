@@ -17,6 +17,7 @@ import {
   weekdayName,
 } from "@/domain/time";
 import { listEvents } from "@/mock-systems/calendar";
+import { expectedReadyAt } from "@/mock-systems/it";
 import { enqueueEvent } from "@/services/events/queue";
 import { getTask, listPeople, updateTask } from "@/services/onboarding-state/repository";
 import { recordActivity, tick, type AgentContext } from "./context";
@@ -354,17 +355,21 @@ async function proposeLoaner(ctx: AgentContext, snapshot: OnboardingSnapshot, ta
   ctx.acted = true;
   await recordActivity(ctx, { caseKey: "empid", phase: "Decided", summary: `${task.name} will miss Day 1 unless the Employee ID arrives today.`, taskId });
   await callTool(ctx, checkPermissionTool, { action: "request_loaner" });
+  // Same ready time the IT system will commit to if Anand approves now.
+  const readyAt = expectedReadyAt("loaner", ctx.clock, snapshot.day1Start);
+  const site = COMPANY.pickupSite.split(" · ").pop() ?? COMPANY.pickupSite;
+  const detail = `IT can have one ready at ${site} by ${weekdayName(readyAt)} ${formatTime(readyAt)}, in time for your Day 1 pickup. Your own laptop follows.`;
   await callTool(ctx, requestApproval, {
     action: "request_loaner",
     title: "Use a loaner laptop for Day 1?",
-    detail: `IT can have one ready at Building B for ${weekdayName(snapshot.day1Start)} 9:00. Your own laptop follows.`,
+    detail,
     reason: "Asset change · needs your approval (§4.2)",
     payload: { taskId },
   });
   await recordActivity(ctx, { caseKey: "empid", phase: "Asked", summary: "Loaner laptop is an asset change. Asked Anand to approve.", taskId, action: "request_loaner" });
   const narration = await ctx.narrator.employeeUpdate({
     kind: "needs_approval",
-    facts: { question: "Use a loaner laptop for Day 1?", detail: "IT can have one at Building B on Monday 9:00. Your own laptop follows." },
+    facts: { question: "Use a loaner laptop for Day 1?", detail },
   });
   await callTool(ctx, notifyEmployee, { title: "Navo needs your input", body: narration.text, needsYou: true, composedBy: narration.composedBy });
 }
@@ -389,9 +394,14 @@ async function nudgeEmployee(ctx: AgentContext, snapshot: OnboardingSnapshot, ta
   const task = snapshot.tasks.find((t) => t.id === taskId);
   if (!task) return;
   ctx.acted = true;
+  const waiting = snapshot.graph
+    .directDependents(taskId)
+    .filter((t) => t.status !== "completed")
+    .map((t) => lowerFirst(displayName(t.name)));
+  const holding = waiting.length ? `It's holding up your ${listText(waiting)}${snapshot.day1Passed ? "" : " for Day 1"}.` : "";
   await callTool(ctx, notifyEmployee, {
-    title: `${task.name} is due`,
-    body: `${task.name} is holding up your access for Day 1. It takes ${task.statusNote ?? "a few minutes"}.`,
+    title: `${task.name} is ${snapshot.day1Passed ? "overdue" : "due"}`,
+    body: `${holding} ${effortOf(task.key)}`.trim(),
     needsYou: true,
     composedBy: "template",
   });
@@ -445,3 +455,13 @@ function capitalize(text: string): string {
   return text ? text[0]!.toUpperCase() + text.slice(1) : text;
 }
 
+/** How long an employee task takes, from its template ("It takes 15 minutes."). */
+function effortOf(key: string): string {
+  const fulfilment = TEMPLATES.get(key as never)?.fulfilment;
+  return fulfilment?.kind === "training" ? `It takes ${fulfilment.minutes} minutes.` : "";
+}
+
+/** "Email and VPN access" → "email and VPN access", leaving acronyms alone. */
+function lowerFirst(text: string): string {
+  return /^[A-Z][a-z]/.test(text) ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+}

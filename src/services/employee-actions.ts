@@ -8,7 +8,7 @@ import { taskId as buildTaskId } from "@/content/seed/onboarding-template";
 import { TIMELINE } from "@/content/timeline";
 import { addMinutes } from "@/domain/time";
 import type { Db, Queryable } from "@/lib/db/client";
-import { approvals, benefitEnrollments, documents, formFields, pulseResponses } from "@/lib/db/schema";
+import { approvals, benefitEnrollments, calendarEvents, documents, formFields, pulseResponses, tasks } from "@/lib/db/schema";
 import { completeCourse } from "@/mock-systems/learning";
 import { markItemsCollected } from "@/mock-systems/vendor-facilities";
 import { enqueueEvent } from "@/services/events/queue";
@@ -180,12 +180,22 @@ export async function decideApproval(
   });
 }
 
-export async function confirmPickup(db: Db, workspaceId: string, employeeId: string, collected: string[], deps: AgentDeps): Promise<void> {
-  if (collected.length === 0) throw new ActionError("Tap what you collected");
+export const PICKUP_ITEMS = ["id", "laptop", "kit"] as const;
+export type PickupItem = (typeof PICKUP_ITEMS)[number];
+
+export async function confirmPickup(db: Db, workspaceId: string, employeeId: string, collected: PickupItem[], deps: AgentDeps): Promise<void> {
+  const items = PICKUP_ITEMS.filter((item) => collected.includes(item));
+  if (items.length === 0) throw new ActionError("Tap what you collected");
   await act(db, workspaceId, deps, "Confirmed Day 1 pickup", async (tx, now) => {
-    await markItemsCollected(tx, workspaceId, employeeId);
-    const changed = await completeEmployeeTask(tx, workspaceId, employeeId, "day1_collect", now, `Collected ${collected.length} items`);
-    return changed ? { action: "pickup_confirmed", employeeId, extra: { collected } } : null;
+    if (items.includes("kit")) await markItemsCollected(tx, workspaceId, employeeId);
+    const changed = await completeEmployeeTask(tx, workspaceId, employeeId, "day1_collect", now, `Collected ${items.length} of ${PICKUP_ITEMS.length}`);
+    if (!changed) return null;
+    // Keep which items were collected, so Navo and the app can follow up on the rest.
+    await tx
+      .update(tasks)
+      .set({ evidence: items.map((item) => `collected:${item}`) })
+      .where(and(eq(tasks.workspaceId, workspaceId), eq(tasks.id, buildTaskId(employeeId, "day1_collect"))));
+    return { action: "pickup_confirmed", employeeId, extra: { collected: items } };
   });
 }
 
@@ -206,6 +216,18 @@ export async function enrolBenefits(db: Db, workspaceId: string, employeeId: str
       .onConflictDoNothing();
     const changed = await completeEmployeeTask(tx, workspaceId, employeeId, "benefits_enrolment", now, "Enrolled");
     return changed ? { action: "benefits_enrolled", employeeId } : null;
+  });
+}
+
+/** The joiner accepts Navo's suggestion of a roadmap walkthrough with their buddy. */
+export async function bookWalkthrough(db: Db, workspaceId: string, employeeId: string, deps: AgentDeps): Promise<void> {
+  await act(db, workspaceId, deps, "Asked Navo to book a walkthrough", async (tx) => {
+    const existing = await tx
+      .select({ id: calendarEvents.id })
+      .from(calendarEvents)
+      .where(and(eq(calendarEvents.workspaceId, workspaceId), eq(calendarEvents.employeeId, employeeId), eq(calendarEvents.kind, "walkthrough")));
+    if (existing.length) return null;
+    return { action: "walkthrough_requested", employeeId };
   });
 }
 

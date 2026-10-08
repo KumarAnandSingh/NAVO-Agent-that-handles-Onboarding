@@ -1,9 +1,10 @@
-import { NavoFace } from "@/ui/components/NavoFace";
+import { NavoProvider } from "@/ui/state/NavoStore";
+import { Stage } from "@/ui/stage/Stage";
 
-export default function HomePage() {
+export default function StagePage() {
   return (
-    <main style={{ display: "grid", placeItems: "center", minHeight: "100vh" }}>
-      <NavoFace state="brand" size={128} />
-    </main>
+    <NavoProvider>
+      <Stage />
+    </NavoProvider>
   );
 }

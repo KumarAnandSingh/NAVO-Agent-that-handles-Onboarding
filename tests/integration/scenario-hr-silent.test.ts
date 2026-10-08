@@ -27,6 +27,8 @@ describe("golden path: HR stays silent", () => {
     expect(formatDayClock(result.to)).toBe("Thu 15 Oct · 12:00");
     const [approval] = await approvalRows(db, ws);
     expect(approval).toMatchObject({ action: "request_loaner", status: "pending", requestedFrom: "anand.mehta" });
+    // The offer quotes the time IT will actually commit to.
+    expect(approval?.detail).toBe("IT can have one ready at Building B by Fri 16:00, in time for your Day 1 pickup. Your own laptop follows.");
     expect(await ticketRows(db, ws)).toHaveLength(0);
   });
 

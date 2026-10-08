@@ -21,7 +21,7 @@ export async function taskByKey(db: Db, ws: string, key: string) {
 export async function completeDocumentsChapter(db: Db, ws: string) {
   await uploadSampleDocument(db, ws, ANAND, "electricity-bill", deps);
   await confirmDocumentField(db, ws, ANAND, "relieving_letter", "2026-10-16", deps);
-  await setEmergencyContact(db, ws, ANAND, "Kavya Mehta · +91 98200 11223");
+  await setEmergencyContact(db, ws, ANAND, "Kavya Mehta · +91 00000 11223");
   await submitForms(db, ws, ANAND, deps);
 }
 

@@ -7,14 +7,15 @@
 import { and, eq } from "drizzle-orm";
 import { TIMELINE } from "@/content/timeline";
 import { isAtRisk, riskRank } from "@/domain/risk-engine";
+import { findFreeSlot } from "@/domain/scheduling";
 import { atIst, formatDayClock, formatShortDate, nextWorkingTime, weekdayName } from "@/domain/time";
 import type { RiskLevel } from "@/domain/types";
 import type { Queryable } from "@/lib/db/client";
-import { approvals, documents as documentsTable, employees, tasks } from "@/lib/db/schema";
+import { approvals, calendarEvents, documents as documentsTable, employees, itTickets, people, tasks } from "@/lib/db/schema";
 import { getItTicket, markTicketReady } from "@/mock-systems/it";
 import { completeHrRequest, findOpenHrRequest } from "@/mock-systems/hr";
 import { clearCheck, markItemReady } from "@/mock-systems/vendor-facilities";
-import { enqueueEvent, type EventRow } from "@/services/events/queue";
+import { cancelScheduled, enqueueEvent, type EventRow } from "@/services/events/queue";
 import { getEmployee } from "@/services/onboarding-state/repository";
 import type { Workspace } from "@/services/workspace";
 import { caseFor, executeAction } from "./actions";
@@ -32,6 +33,7 @@ import {
   notifyOwner,
   onApproval,
   onEvent,
+  scheduleMeeting,
   taskKeyOf,
   updateTaskTool,
 } from "./tools";
@@ -133,7 +135,8 @@ async function dailyCheck(db: Queryable, workspace: Workspace, event: EventRow, 
     const after = await reconcile(ctx);
     // If no action already showed the risk calculation, show it now.
     if (ctx.seq === seqBefore || !ctx.acted) await callTool(ctx, calculateDay1Risk, { employeeId });
-    return ctx.acted ? `Acted on Day-1 risk (${after.risk.day1Level})` : `Checked ${after.tasks.length} items · no action needed`;
+    if (!ctx.acted) return `Checked ${after.tasks.length} items · no action needed`;
+    return after.day1Passed ? "Followed up on overdue items" : `Acted on Day-1 risk (${after.risk.day1Level})`;
   });
   const next = nextWorkingTime(event.dueAt, "09:15");
   if (next.getTime() <= atIst(TIMELINE.first30End, "23:59").getTime()) {
@@ -154,6 +157,10 @@ async function employeeIdIssued(db: Queryable, workspace: Workspace, event: Even
   const number = payloadString(event, "employeeNumber");
   const employee = await getEmployee(db, workspace.id, employeeId);
   if (employee.employeeNumber) return "ignored"; // duplicate delivery: the ID already exists
+  // Other deliveries of the same news (HR's own reply vs the console) and the re-check
+  // at the last safe start no longer matter.
+  await cancelScheduled(db, workspace.id, "hr.employee_id_issued", { employeeId }, event.dueAt, event.id);
+  await cancelScheduled(db, workspace.id, "navo.deadline_check", { employeeId }, event.dueAt);
   const request = await findOpenHrRequest(db, workspace.id, employeeId, "employee_id");
   if (request) await completeHrRequest(db, workspace.id, request.id, event.dueAt, number);
   await db
@@ -387,13 +394,64 @@ async function employeeAction(db: Queryable, workspace: Workspace, event: EventR
       }
     }
     if (action === "pickup_confirmed") {
-      await callTool(ctx, notifyOwner, { toPersonId: "priya.nair", title: "Day 1 pickup complete", body: "ID card collected." });
-      await callTool(ctx, notifyOwner, { toPersonId: "it.desk", title: "Day 1 pickup complete", body: "Laptop collected." });
-      await recordActivity(ctx, { caseKey: "setup", phase: "Acted", summary: "Closed your pickup requests with HR and IT.", headline: "Day 1 pickup closed", headlineDetail: "HR and IT notified" });
+      const collected = Array.isArray(event.payload.collected) ? (event.payload.collected as string[]) : [];
+      const loaner = (await db.select().from(itTickets).where(and(eq(itTickets.workspaceId, workspace.id), eq(itTickets.employeeId, employeeId)))).some((t) => t.type === "loaner");
+      const items = [
+        { key: "id", name: "ID card", owner: "priya.nair" },
+        { key: "laptop", name: loaner ? "loaner laptop" : "laptop", owner: "it.desk" },
+        { key: "kit", name: "onboarding kit", owner: "facilities.desk" },
+      ];
+      const missing = items.filter((item) => !collected.includes(item.key));
+      for (const item of items) {
+        const got = collected.includes(item.key);
+        await callTool(ctx, notifyOwner, {
+          toPersonId: item.owner,
+          title: got ? "Day 1 pickup complete" : "Not collected on Day 1",
+          body: got ? `${capitalise(item.name)} collected.` : `Please hold the ${item.name}. Navo will arrange a new pickup time.`,
+        });
+      }
+      await recordActivity(ctx, {
+        caseKey: "setup",
+        phase: "Acted",
+        summary: missing.length
+          ? `Closed what you collected. Asked the team to hold your ${missing.map((m) => m.name).join(" and ")}.`
+          : "Closed your pickup requests with HR and IT.",
+        headline: "Day 1 pickup closed",
+        headlineDetail: missing.length ? `${missing.length} item${missing.length === 1 ? "" : "s"} on hold for you` : "HR and IT notified",
+      });
     }
     if (action === "benefits_enrolled") {
       await callTool(ctx, notifyOwner, { toPersonId: "priya.nair", title: "Health cover enrolled", body: "Employee, spouse and 1 child." });
       await recordActivity(ctx, { caseKey: "benefits", phase: "Acted", summary: "Enrolled you in health cover. HR and the insurer are notified.", headline: "Health cover enrolled", headlineDetail: "You, spouse and child" });
+    }
+    if (action === "walkthrough_requested") {
+      const employee = await getEmployee(db, workspace.id, employeeId);
+      const booked = await db.select().from(calendarEvents).where(and(eq(calendarEvents.workspaceId, workspace.id), eq(calendarEvents.employeeId, employeeId)));
+      const slot = findFreeSlot(ctx.clock, booked);
+      const buddy = employee.buddyId;
+      if (slot && buddy) {
+        const buddyName = (await getPersonName(db, workspace.id, buddy)) ?? "your buddy";
+        await callTool(ctx, scheduleMeeting, {
+          title: `Roadmap walkthrough with ${buddyName}`,
+          kind: "walkthrough",
+          startsAt: slot.startsAt,
+          endsAt: slot.endsAt,
+          location: "Room 4A",
+          withPersonId: buddy,
+          ownerType: "buddy",
+          linkedTaskId: null,
+        });
+        await callTool(ctx, notifyOwner, { toPersonId: buddy, title: "Roadmap walkthrough", body: `Booked ${formatDayClock(slot.startsAt)} with ${employeeId}.` });
+        await recordActivity(ctx, {
+          caseKey: "week1",
+          phase: "Acted",
+          summary: `Booked a roadmap walkthrough with ${buddyName.split(" ")[0]}, ${formatDayClock(slot.startsAt)}.`,
+          headline: "Walkthrough booked",
+          headlineDetail: `${buddyName.split(" ")[0]} · ${formatDayClock(slot.startsAt)}`,
+        });
+      } else {
+        await recordActivity(ctx, { caseKey: "week1", phase: "Noticed", summary: "No free half hour in the next week. I'll suggest a time once your calendar opens up." });
+      }
     }
     if (action === "training_completed") {
       await callTool(ctx, notifyOwner, { toPersonId: "it.desk", title: "Security training complete", body: `Switch on access for ${employeeId}.` });
@@ -483,4 +541,13 @@ export async function handleEvent(db: Queryable, workspace: Workspace, event: Ev
     default:
       throw new Error(`No handler for event type ${event.type}`);
   }
+}
+
+function capitalise(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+async function getPersonName(db: Queryable, workspaceId: string, personId: string): Promise<string | null> {
+  const [row] = await db.select({ name: people.name }).from(people).where(and(eq(people.workspaceId, workspaceId), eq(people.id, personId)));
+  return row?.name ?? null;
 }

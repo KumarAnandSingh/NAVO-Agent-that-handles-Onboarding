@@ -9,7 +9,7 @@ import { bookEvent } from "@/mock-systems/calendar";
 import { createHrRequest, receiveEscalation, receiveReminder } from "@/mock-systems/hr";
 import { createItTicket, type ItTicketType } from "@/mock-systems/it";
 import { enrol } from "@/mock-systems/learning";
-import { enqueueEvent } from "@/services/events/queue";
+import { cancelScheduled, enqueueEvent } from "@/services/events/queue";
 import { searchPolicies } from "@/services/policy-retrieval";
 import { getEmployee, getTask, markDependenciesSatisfied, nextCounter, updateTask } from "@/services/onboarding-state/repository";
 import { recordStateChange } from "../context";
@@ -78,6 +78,10 @@ export const calculateDay1Risk = defineTool({
   summarizeArgs: () => formatArgs({ joining: "Day 1" }),
   async run(ctx, { employeeId }) {
     const snapshot = await loadSnapshot(ctx.db, ctx.workspace.id, employeeId, ctx.clock);
+    if (snapshot.day1Passed) {
+      const overdue = snapshot.tasks.filter((t) => t.status !== "completed" && t.dueAt && t.dueAt.getTime() < ctx.clock.getTime()).length;
+      return { summary: `Day 1 has passed · ${overdue} overdue`, data: snapshot.risk };
+    }
     const { day1Level, driver } = snapshot.risk;
     let detail = "";
     if (driver?.willMiss) detail = " · will miss Day 1";
@@ -395,7 +399,10 @@ export const updateTaskTool = defineTool({
           .set({ status: "resolved", resolvedAt: ctx.clock })
           .where(and(eq(followUps.workspaceId, ctx.workspace.id), eq(followUps.id, followUp.id)));
         await recordStateChange(ctx, `${followUp.kind} ${followUp.id}`, followUp.status, "resolved");
+        await cancelScheduled(ctx.db, ctx.workspace.id, "sla.check", { followUpId: followUp.id }, ctx.clock);
       }
+      // A re-check scheduled for this task is moot once it is done.
+      await cancelScheduled(ctx.db, ctx.workspace.id, "navo.deadline_check", { taskId }, ctx.clock);
     }
     return { summary: "ok", data: updated };
   },

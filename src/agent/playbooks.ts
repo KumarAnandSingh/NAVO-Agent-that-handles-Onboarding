@@ -54,7 +54,15 @@ export function planActions(snapshot: OnboardingSnapshot): PlannedAction[] {
     }
   }
 
-  // 3. Bring up employee items at the right moment, not all at once.
+  // 3. After Day 1, nudge the joiner about their own overdue items (before Day 1, step 2 covers it).
+  if (snapshot.day1Passed) {
+    for (const task of snapshot.tasks) {
+      if (task.ownerType !== "employee" || task.status === "completed" || task.status === "blocked") continue;
+      if (task.dueAt && task.dueAt.getTime() < snapshot.now.getTime()) actions.push(...planForLateItem(snapshot, task, "high"));
+    }
+  }
+
+  // 4. Bring up employee items at the right moment, not all at once.
   const benefits = snapshot.byKey.get("benefits_enrolment" satisfies TaskKey);
   if (benefits && benefits.status === "pending" && benefits.dueAt) {
     const opensAt = atIst(addCalendarDays(dateKeyOf(benefits.dueAt), -RELEVANT_WINDOW_DAYS), "09:00");

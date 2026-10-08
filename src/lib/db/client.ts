@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
@@ -34,11 +35,26 @@ async function createDb(): Promise<Db> {
     await migrateNodePg(db, { migrationsFolder: MIGRATIONS_FOLDER });
     return db as unknown as Db;
   }
-  const dataDir = path.join(process.cwd(), ".data", "pglite");
-  const client = new PGlite(dataDir);
+  const client = new PGlite(localDataDir());
   const db = drizzlePglite(client, { schema });
   await migratePglite(db, { migrationsFolder: MIGRATIONS_FOLDER });
   return db as unknown as Db;
+}
+
+/**
+ * Where embedded Postgres keeps its files locally. On a read-only filesystem (a serverless
+ * host without DATABASE_URL) it falls back to memory: the demo still works, but workspaces
+ * last only as long as the server instance.
+ */
+function localDataDir(): string | undefined {
+  const dataDir = path.join(process.cwd(), ".data", "pglite");
+  try {
+    mkdirSync(dataDir, { recursive: true });
+    return dataDir;
+  } catch (error) {
+    console.warn(`Can't write ${dataDir} (${error instanceof Error ? error.message : String(error)}); using an in-memory database.`);
+    return undefined;
+  }
 }
 
 declare global {

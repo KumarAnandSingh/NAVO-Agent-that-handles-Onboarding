@@ -1,6 +1,8 @@
+import { eq } from "drizzle-orm";
 import { beforeAll, describe, expect, it } from "vitest";
 import { advance } from "@/agent/runtime";
 import { createMemoryDb, type Db } from "@/lib/db/client";
+import { events } from "@/lib/db/schema";
 import { requireWorkspace, createWorkspace } from "@/services/workspace";
 import { formatDayClock } from "@/domain/time";
 import { activityLog, deps, failedEvents, followUpRows, taskByKey, ticketRows, toolLog, toThursdayMorning } from "./helpers";
@@ -52,6 +54,13 @@ describe("golden path: HR responds", () => {
     expect(tickets.map((t) => t.type).sort()).toEqual(["email", "laptop"]);
     expect((await followUpRows(db, ws))[0]?.status).toBe("resolved");
     expect((await taskByKey(db, ws, "laptop")).riskLevel).toBe("low");
+  });
+
+  it("cancels the reply-window check and the last-safe-start re-check once HR has replied", async () => {
+    const rows = await db.select().from(events).where(eq(events.workspaceId, ws));
+    const statusOf = (type: string) => rows.filter((e) => e.type === type).map((e) => e.status);
+    expect(statusOf("sla.check")).toEqual(["cancelled"]);
+    expect(statusOf("navo.deadline_check")).toEqual(["cancelled"]);
   });
 
   it("is ready for Monday by Friday with one pickup booked", async () => {

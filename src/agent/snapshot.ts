@@ -22,6 +22,8 @@ export interface OnboardingSnapshot {
   byKey: Map<TaskKey, TaskRow>;
   graph: DependencyGraph;
   risk: RiskReport;
+  /** Day 1 has started: Day-1 risk no longer applies. */
+  day1Passed: boolean;
   followUps: FollowUpRow[];
   approvals: ApprovalRow[];
   tickets: TicketRow[];
@@ -81,13 +83,17 @@ export async function loadSnapshot(db: Queryable, workspaceId: string, employeeI
   const check = checkRows.find((c) => c.status === "in_progress");
   if (bgvTask && check && check.expectedAt.getTime() > now.getTime()) etas.set(bgvTask.id, check.expectedAt);
 
-  const risk = assessRisk({ graph, now, day1Start, etas });
+  // Day-1 risk is about getting ready for Day 1. Once Day 1 has started it is closed:
+  // anything still open is simply overdue, and the playbooks chase it as such.
+  const day1Passed = now.getTime() >= day1Start.getTime();
+  const risk: RiskReport = day1Passed ? { day1Level: "none", byTask: new Map(), driver: null, driverLastSafeStart: null } : assessRisk({ graph, now, day1Start, etas });
   const notes = new Set(noteRows.map((r) => r.action).filter((a): a is string => Boolean(a)));
 
   return {
     now,
     employee,
     day1Start,
+    day1Passed,
     tasks: rows,
     byKey,
     graph,

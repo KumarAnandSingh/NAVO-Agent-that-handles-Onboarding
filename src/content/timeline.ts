@@ -12,6 +12,10 @@ export const TIMELINE = {
   offerAccepted: "2026-10-06",
   /** Wednesday evening Anand first opens Navo. */
   firstLaunch: "2026-10-07",
+  /** Thursday: Navo's daily check finds the Employee ID blocking Day 1. */
+  riskDay: "2026-10-15",
+  /** Friday: the last working day before Day 1. */
+  readyDay: "2026-10-16",
   day1: "2026-10-19",
   trainingDue: "2026-10-18",
   week1End: "2026-10-23",

@@ -9,7 +9,6 @@ export type UpdateKind =
   | "blocker_cleared"
   | "escalated"
   | "needs_approval"
-  | "covered_by_loaner"
   | "ready_for_day1"
   | "relevant_now";
 
@@ -38,8 +37,6 @@ export function templateUpdate({ kind, facts }: UpdateFacts): string {
       return `${facts.owner} hasn't replied in 24 hours. I escalated to ${facts.escalatedTo}.${facts.backup ? ` ${facts.backup}` : ""}`;
     case "needs_approval":
       return `${facts.question} ${facts.detail}`;
-    case "covered_by_loaner":
-      return `Day 1 is covered. A loaner laptop will be at ${facts.site} on Monday 9:00. I'm still chasing your ${facts.blocker}.`;
     case "ready_for_day1":
       return `You're ready for Monday. Your ID card, laptop and kit are waiting at ${facts.site}, ${facts.when}.`;
     case "relevant_now":
