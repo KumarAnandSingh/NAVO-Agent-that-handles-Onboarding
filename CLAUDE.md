@@ -1,5 +1,7 @@
 # Navo: working notes for coding agents
 
+Resuming? Read `docs/HANDOFF.md` first: status, what is left, and the decisions to keep.
+
 Navo is an AI onboarding agent prototype for **Halden**, a fictional company. All data is synthetic.
 Never reference real companies, employers or brands in product copy, data or docs.
 

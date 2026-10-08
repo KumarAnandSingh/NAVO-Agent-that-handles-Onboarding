@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#E9EDF3;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0B1530;-webkit-font-smoothing:antialiased}
+a{color:#2F5BEA;text-decoration:none}a:hover{color:#1E44C4}
+button,input{font-family:inherit}
+@keyframes npDots{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes npIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div data-screen-label="Navo prototype" style="min-height:100vh;padding:32px 28px;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:28px;justify-content:center;align-items:flex-start">
+
+<sc-if value="{{ showIntro }}" hint-placeholder-val="{{ true }}">
+<div style="position:fixed;inset:0;z-index:50;background:#F4F6FA;overflow-y:auto;display:flex;justify-content:center;padding:56px 32px;box-sizing:border-box;animation:npIn .4s ease">
+<div style="width:1080px;max-width:100%;display:flex;flex-direction:column;gap:40px">
+<div style="display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center">
+<dc-import name="NavoFace" state="brand" size="96" hint-size="96px,96px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#2F5BEA">Demo · about 3 minutes</span><span style="font-size:44px;line-height:1.05;font-weight:700;letter-spacing:-.035em;text-wrap:pretty">Navo: AI That Handles Onboarding.</span><span style="font-size:19px;line-height:1.45;color:#4A5363;max-width:760px;text-wrap:pretty">Navo understands what's next, coordinates the work and steps in when needed.</span></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<span style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#5B6474">Who you'll meet</span>
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px">
+<div style="background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 0 1.5px #2F5BEA"><span style="width:44px;height:44px;border-radius:50%;background:#E4EAFB;color:#2F5BEA;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center">AM</span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Anand Mehta</span><span style="font-size:13px;color:#4A5363;line-height:1.4">New joiner · Sr Product Manager · starts Mon 20 Oct</span></span></div>
+<div style="background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px"><span style="width:44px;height:44px;border-radius:50%;background:#F1ECFE;color:#6D28D9;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center">PN</span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Priya Nair</span><span style="font-size:13px;color:#4A5363;line-height:1.4">HR onboarding owner · 14 joiners this month</span></span></div>
+<div style="background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px"><span style="width:44px;height:44px;border-radius:50%;background:#FEF3E2;color:#B45309;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center">RI</span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Rahul Iyer</span><span style="font-size:13px;color:#4A5363;line-height:1.4">Hiring manager</span></span></div>
+<div style="background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px"><span style="width:44px;height:44px;border-radius:50%;background:#EEF1F5;color:#4A5363;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center">MS</span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Meera Shah</span><span style="font-size:13px;color:#4A5363;line-height:1.4">Buddy, same team</span></span></div>
+<div style="background:#0B1530;color:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px"><dc-import name="NavoFace" state="watching" size="44" hint-size="44px,44px"></dc-import><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Navo</span><span style="font-size:13px;color:#B9C4DE;line-height:1.4">The onboarding agent working for both</span></span></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px">
+<div style="display:flex;flex-direction:column;gap:14px">
+<span style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#5B6474">The story in 6 chapters</span>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ introChapters }}" as="c" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #E2E7EF"><span style="width:24px;height:24px;border-radius:50%;background:{{ c.bg }};color:{{ c.ink }};font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center">{{ c.n }}</span><span style="font-size:16px;font-weight:{{ c.w }}">{{ c.what }}</span><span style="font-size:12px;color:#5B6474">{{ c.when }}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<span style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#5B6474">Watch for</span>
+<div style="background:#0B1530;color:#fff;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 0 1px rgba(56,189,248,.4),0 20px 40px -20px rgba(56,189,248,.5)">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="concerned" size="32" hint-size="32px,32px"></dc-import><span style="font-size:17px;font-weight:600">The late Employee ID</span></div>
+<span style="font-size:14px;line-height:1.5;color:#D6DDEE">HR is late with Anand's Employee ID. His laptop, email and VPN all depend on it. Navo spots the risk, follows up, and escalates or asks Anand for a decision. All within its rules.</span>
+<div style="display:flex;flex-wrap:wrap;gap:6px;font-size:12px"><span style="background:rgba(255,255,255,.08);border-radius:999px;padding:5px 10px">Employee ID</span><span style="color:#7DD3FC">→</span><span style="background:rgba(255,255,255,.08);border-radius:999px;padding:5px 10px">Laptop</span><span style="color:#7DD3FC">→</span><span style="background:rgba(255,255,255,.08);border-radius:999px;padding:5px 10px">VPN</span><span style="color:#7DD3FC">→</span><span style="background:rgba(56,189,248,.2);border-radius:999px;padding:5px 10px">Day 1</span></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:13px;color:#2A3240;padding-top:4px">
+<span style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#E5484D"></span><b>YOU</b> needs Anand</span>
+<span style="display:flex;align-items:center;gap:8px"><dc-import name="NavoFace" state="watching" size="16" hint-size="16px,16px"></dc-import><b>NAVO</b> is on it</span>
+<span style="display:flex;align-items:center;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#13795B;color:#fff;font-size:8px;display:flex;align-items:center;justify-content:center">✓</span><b>DONE</b></span>
+<span style="display:flex;align-items:center;gap:8px"><span style="width:11px;height:11px;border-radius:50%;border:2.5px solid #D97706;box-sizing:border-box"></span><b>WAITING</b> on a team</span>
+</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:8px;border-top:1px solid #E2E7EF">
+<span style="font-size:13px;color:#5B6474">Halden is a fictional company. All data is synthetic.</span>
+<span style="display:flex;gap:10px;align-items:center"><span style="font-size:12px;color:#5B6474">Space to play · → next step</span><button onClick="{{ startDemo }}" style="background:#fff;color:#0B1530;border:1px solid #D6DCE5;border-radius:14px;padding:15px 22px;font-size:15px;cursor:pointer">Explore on my own</button><button onClick="{{ autoPlay }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:16px 28px;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 10px 24px -10px rgba(47,91,234,.7)">▶ Play the demo</button></span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasCap }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;width:760px;max-width:calc(100% - 32px);background:#0B1530;color:#fff;border-radius:18px;box-shadow:0 20px 50px -20px rgba(11,21,48,.6);overflow:hidden">
+<div style="height:3px;background:rgba(255,255,255,.1)"><div style="height:3px;width:{{ capProgress }};background:#38BDF8;transition:width .5s"></div></div>
+<div style="display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:14px 18px">
+<span style="font-size:12px;color:#7DD3FC;font-variant-numeric:tabular-nums;font-weight:600">{{ beatN }} / {{ beatTotal }}</span>
+<span style="font-size:17px;line-height:1.4;font-weight:500;text-wrap:pretty">{{ cap }}</span>
+<span style="display:flex;gap:6px"><button onClick="{{ prevBeat }}" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:10px;width:36px;height:36px;font-size:14px;cursor:pointer">←</button><button onClick="{{ toggleAuto }}" style="background:#fff;color:#0B1530;border:none;border-radius:10px;height:36px;padding:0 12px;font-size:12px;font-weight:600;cursor:pointer">{{ autoIcon }} {{ autoLabel }}</button><button onClick="{{ nextBeat }}" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:10px;width:36px;height:36px;font-size:14px;cursor:pointer">→</button></span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showOutro }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:50;background:#0B1530;color:#fff;overflow-y:auto;display:flex;justify-content:center;padding:64px 32px;box-sizing:border-box;animation:npIn .4s ease">
+<div style="width:1000px;max-width:100%;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:center;gap:24px"><dc-import name="NavoFace" state="celebrating" size="88" hint-size="88px,88px"></dc-import><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7DD3FC">Anand's first 30 days</span><span style="font-size:42px;line-height:1.05;font-weight:700;letter-spacing:-.035em">Navo did the coordinating. People made the decisions.</span></div></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<div style="background:rgba(255,255,255,.06);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:6px"><span style="font-size:44px;font-weight:700;letter-spacing:-.03em;color:#7DD3FC">31 of 38</span><span style="font-size:14px;color:#B9C4DE;line-height:1.4">onboarding tasks done by Navo</span></div>
+<div style="background:rgba(255,255,255,.06);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:6px"><span style="font-size:44px;font-weight:700;letter-spacing:-.03em">4 days</span><span style="font-size:14px;color:#B9C4DE;line-height:1.4">before Day 1 the laptop risk was caught</span></div>
+<div style="background:rgba(255,255,255,.06);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:6px"><span style="font-size:44px;font-weight:700;letter-spacing:-.03em">2</span><span style="font-size:14px;color:#B9C4DE;line-height:1.4">HR touches needed, both decisions</span></div>
+<div style="background:rgba(255,255,255,.06);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:6px"><span style="font-size:44px;font-weight:700;letter-spacing:-.03em">0</span><span style="font-size:14px;color:#B9C4DE;line-height:1.4">follow-up emails Anand had to send</span></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;font-size:15px;line-height:1.5;color:#D6DDEE">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:600;color:#fff">For the joiner</span><span>Joining felt like one conversation. Only 7 things needed him.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:600;color:#fff">For HR</span><span>A queue of exceptions, not a spreadsheet of 14 checklists.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:600;color:#fff">For trust</span><span>Every action logged with a reason. Sensitive steps always asked first.</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:1px solid rgba(255,255,255,.12);padding-top:20px"><span style="font-size:13px;color:#8A9BC2">Illustrative figures from the simulated journey.</span><span style="display:flex;gap:10px"><button onClick="{{ closeOutro }}" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:13px 20px;font-size:14px;cursor:pointer">Back to prototype</button><button onClick="{{ restart }}" style="background:#fff;color:#0B1530;border:none;border-radius:12px;padding:13px 20px;font-size:14px;font-weight:600;cursor:pointer">Restart demo</button></span></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showPresenter }}" hint-placeholder-val="{{ true }}">
+<div style="width:290px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#fff;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="brand" size="30" hint-size="30px,30px"></dc-import><span style="display:flex;flex-direction:column;flex:1"><span style="font-size:15px;font-weight:600">Navo</span><span style="font-size:11px;color:#5B6474">AI That Handles Onboarding</span><span style="font-size:12px;color:#5B6474;font-variant-numeric:tabular-nums">{{ dayClock }}</span></span><button onClick="{{ openIntro }}" style="background:#F1F3F7;border:none;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:#0B1530">Brief</button></div>
+<div style="display:flex;gap:6px"><button onClick="{{ toggleAuto }}" style="flex:1;background:#0B1530;color:#fff;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer">{{ autoIcon }} {{ autoLabel }} guided demo</button></div>
+<span style="font-size:11px;line-height:1.5;color:#5B6474">Keys: → next · ← back · Space play/pause · H HR view · B brief · Esc close</span>
+<div style="display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:12px;background:#EEF5FF;box-shadow:inset 0 0 0 1px rgba(56,189,248,.45)"><span style="font-size:10px;font-weight:700;letter-spacing:.08em;color:#2F5BEA">WHAT TO NOTICE</span><span style="font-size:13px;line-height:1.45;color:#0B1530">{{ notice }}</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;background:#F1F3F7;border-radius:10px;padding:3px">
+<button onClick="{{ viewEmp }}" style="border:none;border-radius:8px;padding:8px 6px;font-size:13px;cursor:pointer;background:{{ empBg }};font-weight:{{ empW }};color:#0B1530">Employee</button>
+<button onClick="{{ viewHR }}" style="border:none;border-radius:8px;padding:8px 6px;font-size:13px;cursor:pointer;background:{{ hrBg }};font-weight:{{ hrW }};color:#0B1530">HR owner</button>
+</div>
+<div style="display:flex;flex-direction:column">
+<span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474;padding-bottom:6px">Chapters</span>
+<sc-for list="{{ chapters }}" as="c" hint-placeholder-count="6">
+<button onClick="{{ c.go }}" style="display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:center;text-align:left;background:{{ c.bg }};border:none;border-radius:10px;padding:8px;cursor:pointer;color:#0B1530">
+<span style="width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;background:{{ c.dotBg }};color:{{ c.dotInk }}">{{ c.n }}</span>
+<span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:{{ c.w }}">{{ c.name }}</span><span style="font-size:11px;color:#5B6474">{{ c.when }}</span></span>
+</button>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid #EEF1F5;padding-top:14px">
+<span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">Agent scenario · Employee ID</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;background:#F1F3F7;border-radius:10px;padding:3px">
+<button onClick="{{ scenA }}" style="border:none;border-radius:8px;padding:7px 4px;font-size:12px;cursor:pointer;background:{{ scenABg }};font-weight:{{ scenAW }};color:#0B1530">HR responds</button>
+<button onClick="{{ scenB }}" style="border:none;border-radius:8px;padding:7px 4px;font-size:12px;cursor:pointer;background:{{ scenBBg }};font-weight:{{ scenBW }};color:#0B1530">HR silent</button>
+</div>
+<sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+<button onClick="{{ s.go }}" style="display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:center;text-align:left;background:none;border:none;padding:3px 0;cursor:pointer;color:#0B1530"><span style="width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;background:{{ s.bg }};color:{{ s.ink }};border:1px solid {{ s.border }};box-sizing:border-box">{{ s.n }}</span><span style="font-size:12px;font-weight:{{ s.w }}">{{ s.label }}</span></button>
+</sc-for>
+<div style="display:flex;gap:6px"><button onClick="{{ advance }}" style="flex:1;background:{{ advBg }};color:#fff;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer">Advance time ▸</button><button onClick="{{ reset }}" style="background:#fff;color:#0B1530;border:1px solid #D6DCE5;border-radius:10px;padding:10px 12px;font-size:13px;cursor:pointer">Reset</button></div>
+<sc-if value="{{ awaitingApproval }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.4;color:#9A3B12">Waiting on Anand. Approve the loaner in the app.</span></sc-if>
+<sc-if value="{{ hrCanAct }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.4;color:#5B6474">Tip: switch to HR owner and press Generate ID.</span></sc-if>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isEmp }}" hint-placeholder-val="{{ true }}">
+<div style="width:390px;height:844px;border-radius:46px;background:{{ phoneBg }};border:1px solid #D6DCE5;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 70px -34px rgba(11,21,48,.4);flex:none;color:{{ phoneInk }}">
+<div style="height:44px;flex:none;display:flex;align-items:center;padding:0 30px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;position:relative;z-index:2">{{ clock }}</div>
+
+<sc-if value="{{ is.launch }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ go.signin }}" style="flex:1;border:none;background:radial-gradient(340px 340px at 50% 44%,rgba(56,189,248,.22),transparent 70%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;cursor:pointer;position:relative">
+<dc-import name="NavoFace" state="brand" size="128" hint-size="128px,128px"></dc-import>
+<span style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font-size:42px;font-weight:700;letter-spacing:-.04em">Navo</span><span style="font-size:15px;color:#9FB0D3">AI That Handles Onboarding</span></span>
+<span style="position:absolute;bottom:44px;font-size:12px;color:#6B7BA3">by Halden</span>
+</button>
+</sc-if>
+
+<sc-if value="{{ is.signin }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:22px 26px 28px;display:flex;flex-direction:column;gap:22px;animation:npIn .35s ease">
+<dc-import name="NavoFace" state="watching" size="52" hint-size="52px,52px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Welcome to Halden.</span><span style="font-size:15px;line-height:1.5;color:#4A5363">Sign in with the mobile number from your application. I'll set up your Halden account before Day 1.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">Mobile number</span><div style="border:1px solid #2F5BEA;box-shadow:0 0 0 3px #E4EAFB;border-radius:14px;padding:14px;font-size:16px;display:flex;gap:10px"><span style="color:#5B6474">+91</span><span>98200 41276</span></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">Code sent by SMS</span><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px"><span style="border:1px solid #E2E7EF;border-radius:12px;padding:13px 0;text-align:center;font-size:18px;font-weight:600">4</span><span style="border:1px solid #E2E7EF;border-radius:12px;padding:13px 0;text-align:center;font-size:18px;font-weight:600">8</span><span style="border:1px solid #E2E7EF;border-radius:12px;padding:13px 0;text-align:center;font-size:18px;font-weight:600">1</span><span style="border:1px solid #E2E7EF;border-radius:12px;padding:13px 0;text-align:center;font-size:18px;font-weight:600">2</span><span style="border:1px solid #E2E7EF;border-radius:12px;padding:13px 0;text-align:center;font-size:18px;font-weight:600">0</span><span style="border:1px solid #E2E7EF;border-radius:12px;padding:13px 0;text-align:center;font-size:18px;font-weight:600">7</span></div></div>
+<button onClick="{{ go.meet }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer">Continue</button>
+<span style="font-size:12px;color:#5B6474;text-align:center">Already at Halden? Sign in with Halden SSO</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.meet }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:12px 26px 28px;display:flex;flex-direction:column;gap:18px;background:radial-gradient(380px 240px at 50% 0%,rgba(56,189,248,.14),transparent 70%);animation:npIn .35s ease">
+<dc-import name="NavoFace" state="calm" size="76" hint-size="76px,76px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Meet Navo, your AI onboarding agent.</span><span style="font-size:15px;line-height:1.5;color:#4A5363;text-wrap:pretty">I keep track of your onboarding, coordinate tasks across HR, IT and your manager, catch blockers early, and only ask you to step in when needed.</span></div>
+<div style="display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:24px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid #EEF1F5"><dc-import name="NavoFace" state="acting" size="22" hint-size="22px,22px"></dc-import><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">I'll do on my own</span><span style="font-size:13px;line-height:1.45;color:#4A5363">Follow up with teams, raise requests, book meetings, track deadlines</span></span></div>
+<div style="display:grid;grid-template-columns:24px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid #EEF1F5"><span style="width:12px;height:12px;border-radius:50%;background:#E5484D;margin:5px"></span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">I'll always ask you first</span><span style="font-size:13px;line-height:1.45;color:#4A5363">Personal data, bank details, equipment changes</span></span></div>
+<div style="display:grid;grid-template-columns:24px 1fr;gap:12px;padding:13px 0"><span style="width:20px;height:20px;border-radius:50%;background:#13795B;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;margin:1px">✓</span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">You can always see</span><span style="font-size:13px;line-height:1.45;color:#4A5363">What I did, when and why. Undo where possible.</span></span></div>
+</div>
+<button onClick="{{ go.docs }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer">Sounds good. Let's start.</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.docs }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:6px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:npIn .35s ease">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="{{ docsFace }}" size="42" hint-size="42px,42px"></dc-import><span style="font-size:12px;font-weight:700;letter-spacing:.08em;color:{{ docsKickInk }}">{{ docsKick }}</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">{{ docsHead }}</span><span style="font-size:14px;line-height:1.5;color:#4A5363">{{ docsSub }}</span></div>
+<button onClick="{{ docsCta.run }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">{{ docsCta.label }}</button>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ docs }}" as="d" hint-placeholder-count="6">
+<button onClick="{{ d.tap }}" style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px 0;border:none;border-bottom:1px solid #EEF1F5;background:none;text-align:left;cursor:{{ d.cursor }};color:#0B1530"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">{{ d.name }}</span><span style="font-size:11px;color:#5B6474">{{ d.note }}</span></span><span style="font-size:11px;font-weight:600;color:{{ d.ink }};background:{{ d.bg }};border-radius:999px;padding:3px 9px;transition:background .4s">{{ d.state }}</span></button>
+</sc-for>
+</div>
+<button onClick="{{ go.privacy }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:13px;color:#2F5BEA;font-weight:600;cursor:pointer">How I protect your documents →</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.privacy }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:18px;animation:npIn .35s ease">
+<button onClick="{{ go.docs }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ Documents</button>
+<dc-import name="NavoFace" state="calm" size="56" hint-size="56px,56px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">How I handle your documents</span><span style="font-size:14px;line-height:1.5;color:#4A5363">I only use them for your onboarding.</span></div>
+<div style="display:flex;flex-direction:column">
+<div style="display:flex;flex-direction:column;gap:3px;padding:13px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:15px;font-weight:600">Encrypted</span><span style="font-size:13px;color:#4A5363">In transit and at rest, in Halden's HR systems</span></div>
+<div style="display:flex;flex-direction:column;gap:3px;padding:13px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:15px;font-weight:600">Access controlled</span><span style="font-size:13px;color:#4A5363">Only Priya Nair (HR) and the verification vendor</span></div>
+<div style="display:flex;flex-direction:column;gap:3px;padding:13px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:15px;font-weight:600">Retention by policy</span><span style="font-size:13px;color:#4A5363">Kept as policy requires, then deleted</span></div>
+<div style="display:flex;flex-direction:column;gap:3px;padding:13px 0"><span style="font-size:15px;font-weight:600">Every access is logged</span><span style="font-size:13px;color:#4A5363">You can see who viewed what, and when</span></div>
+</div>
+<span style="margin-top:auto;font-size:11px;color:#8A93A3">Prototype uses synthetic data only.</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.clarify }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:npIn .35s ease">
+<button onClick="{{ go.docs }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ Documents</button>
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="needs" size="42" hint-size="42px,42px"></dc-import><span style="font-size:12px;font-weight:700;letter-spacing:.08em;color:#B45309">NEEDS CLARIFICATION</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">I couldn't read your last working date.</span><span style="font-size:14px;line-height:1.5;color:#4A5363">Relieving letter, page 2. HR needs it to confirm there's no overlap with your start.</span></div>
+<div style="border-radius:16px;background:#F6F8FC;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="height:100px;border-radius:10px;background:repeating-linear-gradient(0deg,#fff 0 10px,#EEF1F5 10px 12px);position:relative"><span style="position:absolute;left:18%;top:52%;width:46%;height:18px;border-radius:4px;box-shadow:0 0 0 2px #D97706;background:rgba(217,119,6,.08)"></span></div><span style="font-size:13px;color:#4A5363">I read: "Last working day: <b>1? Oct 2026</b>"</span></div>
+<span style="font-size:15px;font-weight:600">Is it 17 Oct 2026?</span>
+<div style="display:flex;gap:8px"><button onClick="{{ confirmDate }}" style="flex:1;background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer">Yes, 17 Oct</button><button onClick="{{ confirmDate }}" style="flex:1;background:#fff;color:#0B1530;border:1px solid #E2E7EF;border-radius:12px;padding:13px;font-size:14px;cursor:pointer">Re-upload</button></div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:14px;background:#E3F2EC"><span style="font-size:11px;font-weight:700;letter-spacing:.06em;color:#13795B">THEN NAVO</span><span style="font-size:13px;line-height:1.45;color:#0E3B2E">Updates your record, tells Priya in HR, and marks the requirement met.</span></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.forms }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:6px 24px 24px;display:flex;flex-direction:column;gap:14px;animation:npIn .35s ease">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="calm" size="42" hint-size="42px,42px"></dc-import><span style="font-size:13px;color:#5B6474">3 forms · 2 min</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">I've filled these in from your documents.</span><span style="font-size:14px;line-height:1.5;color:#4A5363">{{ formsSub }}</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ formRows }}" as="f" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #EEF1F5"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#5B6474">{{ f.label }}</span><span style="font-size:14px;font-weight:500;color:{{ f.ink }}">{{ f.value }}</span></span><span style="font-size:10px;font-weight:600;color:{{ f.srcInk }};background:{{ f.srcBg }};border-radius:6px;padding:3px 7px;white-space:nowrap">{{ f.src }}</span></div>
+</sc-for>
+</div>
+<button onClick="{{ formsCta.run }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">{{ formsCta.label }}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.home }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:2px 16px 16px;display:flex;flex-direction:column;gap:10px;animation:npIn .35s ease">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px">
+<div style="display:flex;align-items:center;gap:8px;min-width:0"><dc-import name="NavoFace" state="{{ face }}" size="34" hint-size="34px,34px"></dc-import><span style="font-size:15px;font-weight:600">Navo</span><span style="font-size:12px;color:{{ statusInk }};background:{{ statusBg }};border-radius:999px;padding:4px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .3s">{{ statusText }}</span></div>
+<span style="width:30px;height:30px;border-radius:50%;background:#E4EAFB;color:#2F5BEA;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none">AM</span>
+</div>
+<div style="padding:12px 4px 4px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;color:#5B6474">Good morning, Anand.</span><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em;text-wrap:pretty">{{ headline }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+<sc-for list="{{ budget }}" as="b" hint-placeholder-count="4">
+<div style="background:{{ b.bg }};border-radius:12px;padding:10px 10px 9px;display:flex;flex-direction:column;gap:3px;transition:background .5s;box-shadow:{{ b.ring }}"><span style="display:flex;align-items:center;gap:6px;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ b.ink }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ b.dot }}"></span>{{ b.n }}</span><span style="font-size:11px;color:#4A5363;line-height:1.2">{{ b.label }}</span></div>
+</sc-for>
+</div>
+<sc-for list="{{ needs }}" as="d" hint-placeholder-count="1">
+<div style="background:#fff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;border:1px solid {{ d.border }};animation:npIn .35s ease">
+<span style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#C8372D"><span style="width:9px;height:9px;border-radius:50%;background:#E5484D"></span>YOU · {{ d.kicker }}</span>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:17px;font-weight:600;line-height:1.25">{{ d.title }}</span><span style="font-size:13px;color:#5B6474;line-height:1.4">{{ d.meta }}</span></div>
+<sc-if value="{{ d.simple }}" hint-placeholder-val="{{ true }}"><button onClick="{{ doTraining }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;flex:none">Start</button></sc-if></div>
+<sc-if value="{{ d.approval }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px"><button onClick="{{ approve }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">Approve</button><button style="background:#fff;color:#0B1530;border:1px solid #E2E7EF;border-radius:12px;padding:10px 16px;font-size:14px;cursor:pointer">Not now</button></div></sc-if>
+</div>
+</sc-for>
+<div style="background:#fff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:6px"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#2F5BEA">{{ didHead }}</span><button onClick="{{ openActivity }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">Activity</button></div>
+<sc-for list="{{ did }}" as="r" hint-placeholder-count="3">
+<button onClick="{{ openActivity }}" style="display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;text-align:left;border:none;border-radius:12px;padding:9px 8px;margin:0 -8px;background:{{ r.bg }};cursor:pointer;color:#0B1530;transition:background .6s">
+<sc-if value="{{ r.isDone }}" hint-placeholder-val="{{ true }}"><span style="width:20px;height:20px;border-radius:50%;background:#13795B;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center">✓</span></sc-if><sc-if value="{{ r.isNavo }}" hint-placeholder-val="{{ false }}"><dc-import name="NavoFace" state="{{ r.face }}" size="22" hint-size="22px,22px"></dc-import></sc-if>
+<span style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-size:14px;font-weight:600">{{ r.title }}</span><span style="font-size:12px;color:#5B6474">{{ r.result }}</span></span>
+<span style="font-size:11px;color:{{ r.whenInk }};white-space:nowrap">{{ r.when }}</span>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ hasWatch }}" hint-placeholder-val="{{ false }}">
+<div style="background:{{ watch.bg }};border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:background .5s">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:{{ watch.ink }}"><dc-import name="NavoFace" state="{{ watch.face }}" size="26" hint-size="26px,26px"></dc-import>{{ watch.kicker }}</span><span style="display:flex;gap:12px"><button onClick="{{ toggleWhy }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">{{ whyLabel }}</button><button onClick="{{ go.idtrack }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">Details</button></span></div>
+<span style="font-size:16px;font-weight:600">{{ watch.title }}</span>
+<span style="font-size:13px;line-height:1.45;color:#4A5363;text-wrap:pretty">{{ watch.body }}</span>
+<span style="font-size:12px;font-weight:600;color:{{ watch.footInk }}">{{ watch.foot }}</span>
+<sc-if value="{{ whyOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:7px;border-top:1px solid rgba(14,20,32,.08);padding-top:10px"><sc-for list="{{ whySteps }}" as="w" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:64px 1fr;gap:8px;font-size:12px;line-height:1.4"><span style="color:{{ w.ink }};font-weight:600">{{ w.phase }}</span><span>{{ w.text }}</span></div></sc-for></div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ readyForDay1 }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ go.idcard }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;border:none;background:#E3F2EC;cursor:pointer;text-align:left;color:#0B1530;animation:npIn .4s ease"><dc-import name="NavoFace" state="celebrating" size="30" hint-size="30px,30px"></dc-import><span style="display:flex;flex-direction:column;gap:2px;flex:1"><span style="font-size:15px;font-weight:600">Your Day 1 pickup is ready</span><span style="font-size:12px;color:#2E5E50">ID card, laptop and kit at Building B</span></span><span style="color:#13795B">→</span></button>
+</sc-if>
+<div style="background:#fff;border-radius:18px;padding:4px 16px;display:flex;flex-direction:column">
+<button onClick="{{ go.docs }}" style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border:none;border-bottom:1px solid #EEF1F5;background:none;cursor:pointer;font-size:14px;color:#0B1530"><span>Documents and forms</span><span style="font-size:12px;color:{{ docsLinkInk }}">{{ docsLink }}</span></button>
+<button onClick="{{ go.culture }}" style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border:none;border-bottom:1px solid #EEF1F5;background:none;cursor:pointer;font-size:14px;color:#0B1530"><span>Meet Halden</span><span style="font-size:12px;color:#5B6474">3 min</span></button>
+<button onClick="{{ go.journey }}" style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border:none;background:none;cursor:pointer;font-size:14px;color:#0B1530"><span>My journey</span><span style="color:#2F5BEA">→</span></button>
+</div>
+</div>
+<div style="flex:none;padding:10px 16px 26px;background:#fff;border-top:1px solid #E2E6ED;display:flex;flex-direction:column;gap:8px">
+<button onClick="{{ askHR }}" style="align-self:flex-start;border:1px solid #E2E6ED;background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:#0B1530">What if HR doesn't respond?</button>
+<button onClick="{{ openAsk }}" style="border:1px solid #E2E6ED;background:#fff;border-radius:22px;padding:11px 16px;font-size:14px;color:#5B6474;text-align:left;cursor:pointer">Ask Navo</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.culture }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;animation:npIn .35s ease">
+<div style="height:250px;flex:none;position:relative;margin-top:-44px"><image-slot id="np-culture-{{ slideN }}" shape="rect" placeholder="{{ slide.photo }}" style="position:absolute;inset:0"></image-slot></div>
+<div style="flex:1;padding:18px 24px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><sc-for list="{{ slideBars }}" as="b" hint-placeholder-count="5"><div style="height:3px;border-radius:2px;background:{{ b.c }}"></div></sc-for></div>
+<span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7DD3FC">{{ slideN }} of 5 · {{ slide.k }}</span>
+<span style="font-size:25px;line-height:1.2;font-weight:600;letter-spacing:-.02em">{{ slide.t }}</span>
+<span style="font-size:15px;line-height:1.5;color:#B9C4DE">{{ slide.b }}</span>
+<div style="margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06)"><dc-import name="NavoFace" state="calm" size="26" hint-size="26px,26px"></dc-import><span style="font-size:12px;line-height:1.4;color:#D6DDEE">What to know before mandatory training.</span></div>
+<div style="display:flex;justify-content:space-between"><button onClick="{{ go.home }}" style="background:none;border:none;color:#9FB0D3;font-size:14px;cursor:pointer;padding:0">Close</button><button onClick="{{ nextSlide }}" style="background:#fff;color:#0B1530;border:none;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">{{ slideCta }}</button></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.idtrack }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:npIn .35s ease">
+<button onClick="{{ go.home }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ Home</button>
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="{{ idt.face }}" size="42" hint-size="42px,42px"></dc-import><span style="font-size:12px;font-weight:700;letter-spacing:.08em;color:{{ idt.ink }}">{{ idt.kick }}</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">{{ idt.head }}</span><span style="font-size:14px;line-height:1.5;color:#4A5363">{{ idt.sub }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px"><sc-for list="{{ idt.bars }}" as="b" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:{{ b.c }};transition:background .5s"></div><span style="font-size:11px;font-weight:{{ b.w }};color:#4A5363">{{ b.n }}</span></div></sc-for></div>
+<div style="display:flex;flex-direction:column;padding:14px 16px;border-radius:18px;background:#F6F8FC">
+<span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474;padding-bottom:8px">What depends on it</span>
+<sc-for list="{{ idt.deps }}" as="d" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:#2A3240">{{ d.n }}</span><span style="display:flex;gap:8px"><span style="font-size:11px;font-weight:700;color:{{ d.oInk }}">{{ d.o }}</span><span style="font-size:12px;color:{{ d.sInk }}">{{ d.s }}</span></span></div></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px"><span style="color:#5B6474">Impact</span><span style="font-weight:600;color:{{ idt.ink }}">{{ idt.impact }}</span><span style="color:#5B6474">Next</span><span>{{ idt.next }}</span></div>
+<span style="margin-top:auto;font-size:16px;font-weight:600;color:{{ idt.footInk }}">{{ idt.foot }}</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.journey }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:6px 24px 24px;display:flex;flex-direction:column;gap:14px;animation:npIn .35s ease">
+<button onClick="{{ go.home }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ Home</button>
+<span style="font-size:28px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Your journey so far</span>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ journey }}" as="j" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:22px 1fr;gap:12px"><span style="display:flex;flex-direction:column;align-items:center"><span style="width:12px;height:12px;border-radius:50%;background:{{ j.dot }};border:{{ j.ring }};box-sizing:border-box;box-shadow:{{ j.glow }};margin-top:4px;flex:none"></span><span style="flex:1;width:2px;background:{{ j.line }}"></span></span><span style="display:flex;flex-direction:column;gap:2px;padding-bottom:16px"><span style="display:flex;justify-content:space-between;gap:8px"><span style="font-size:15px;font-weight:{{ j.w }}">{{ j.name }}</span><span style="font-size:11px;color:#5B6474">{{ j.when }}</span></span><span style="font-size:12px;color:{{ j.subInk }};line-height:1.4">{{ j.sub }}</span></span></div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.idcard }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:18px;animation:npIn .35s ease">
+<button onClick="{{ go.home }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ Home</button>
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="celebrating" size="42" hint-size="42px,42px"></dc-import><span style="font-size:13px;color:#5B6474">Navo · Fri 17 Oct, 11:20</span></div>
+<span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Your ID card is ready for collection.</span>
+<div style="border-radius:20px;background:linear-gradient(135deg,#0B1530,#1B2D63);color:#fff;padding:18px;display:grid;grid-template-columns:66px 1fr;gap:14px;align-items:center;box-shadow:0 18px 36px -18px rgba(11,21,48,.6)"><image-slot id="np-idcard-photo" shape="rounded" radius="12" placeholder="Photo" style="width:66px;height:80px"></image-slot><div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:#7DD3FC;font-weight:600;letter-spacing:.08em">HALDEN</span><span style="font-size:17px;font-weight:600">Anand Mehta</span><span style="font-size:12px;color:#B9C4DE">Senior Product Manager</span><span style="font-size:12px;color:#B9C4DE;font-family:'SF Mono',Menlo,monospace">EMP-204817</span></div></div>
+<div style="display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #EEF1F5;font-size:14px"><span>Generated</span><span style="color:#13795B">✓ 16 Oct</span></div>
+<div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #EEF1F5;font-size:14px"><span>Ready for collection</span><span style="color:#13795B">✓ 17 Oct</span></div>
+<div style="display:flex;justify-content:space-between;padding:11px 0;font-size:14px"><span>Collect</span><span style="font-weight:600">Day 1, 11:15 · Building B</span></div>
+</div>
+<button onClick="{{ go.pickup }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">See everything for pickup</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.pickup }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:18px;animation:npIn .35s ease">
+<button onClick="{{ go.idcard }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ ID card</button>
+<dc-import name="NavoFace" state="calm" size="56" hint-size="56px,56px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Everything's waiting for you in one place.</span><span style="font-size:14px;line-height:1.5;color:#4A5363">I coordinated HR, IT and Facilities so it's one trip.</span></div>
+<div style="border-radius:18px;background:#F6F8FC;padding:14px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Twin Tower, Building B</span><span style="font-size:13px;color:#5B6474">Mon 20 Oct · 11:15 – 11:45</span></div>
+<div style="display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:15px;font-weight:600">Employee ID card</span><span style="font-size:11px;font-weight:700;color:#6D28D9">HR</span><span style="font-size:12px;color:#13795B">Ready</span></div>
+<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:15px;font-weight:600">Laptop</span><span style="font-size:11px;font-weight:700;color:#0F766E">IT</span><span style="font-size:12px;color:{{ laptopInk }}">{{ laptopReady }}</span></div>
+<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0"><span style="font-size:15px;font-weight:600">Onboarding kit</span><span style="font-size:11px;font-weight:700;color:#4A5363">FACILITIES</span><span style="font-size:12px;color:#13795B">Ready</span></div>
+</div>
+<button onClick="{{ go.day1 }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">Skip to Monday ▸</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.day1 }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:npIn .35s ease">
+<dc-import name="NavoFace" state="calm" size="50" hint-size="50px,50px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;color:#5B6474">Good morning, Anand.</span><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Today is Day 1. I've got the plan.</span><span style="font-size:14px;line-height:1.5;color:#4A5363">Tower B, BKC is about 40 min from Andheri. Leave by 8:30.</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ day1 }}" as="d" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:46px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:12px;color:#5B6474;font-variant-numeric:tabular-nums">{{ d.t }}</span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">{{ d.what }}</span><span style="font-size:11px;color:#5B6474">{{ d.where }}</span></span><span style="font-size:10px;font-weight:700;letter-spacing:.04em;color:{{ d.ink }}">{{ d.who }}</span></div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#F6F8FC"><dc-import name="NavoFace" state="watching" size="24" hint-size="24px,24px"></dc-import><span style="font-size:13px;line-height:1.4">I'll remind you as each one comes up. Bring PAN and one photo ID.</span></div>
+<button onClick="{{ go.confirm }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">I'm at Building B</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.confirm }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:18px;animation:npIn .35s ease">
+<button onClick="{{ go.day1 }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ Day 1</button>
+<dc-import name="NavoFace" state="needs" size="50" hint-size="50px,50px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Did you get everything?</span><span style="font-size:14px;line-height:1.5;color:#4A5363">Tap what you collected. I'll close the requests with HR and IT.</span></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ pick }}" as="p" hint-placeholder-count="3">
+<button onClick="{{ p.toggle }}" style="display:flex;justify-content:space-between;align-items:center;padding:15px 16px;border-radius:14px;border:1.5px solid {{ p.border }};background:{{ p.bg }};cursor:pointer;color:#0B1530;transition:all .2s"><span style="font-size:15px;font-weight:600">{{ p.n }}</span><span style="width:22px;height:22px;border-radius:50%;background:{{ p.chk }};border:{{ p.ring }};box-sizing:border-box;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center">{{ p.mark }}</span></button>
+</sc-for>
+</div>
+<span style="font-size:13px;color:#5B6474">Anything not ticked, I'll sort with Facilities.</span>
+<button onClick="{{ confirmPick }}" style="margin-top:auto;background:{{ pickBg }};color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">{{ pickLabel }}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.day1done }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:18px;background:radial-gradient(380px 240px at 50% 0%,rgba(52,211,153,.14),transparent 70%);animation:npIn .35s ease">
+<div style="display:flex;justify-content:center;padding-top:6px"><dc-import name="NavoFace" state="celebrating" size="92" hint-size="92px,92px"></dc-import></div>
+<div style="display:flex;flex-direction:column;gap:8px;text-align:center"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Day 1 done. Welcome to Halden.</span><span style="font-size:14px;color:#4A5363">Everything from today is closed out.</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ doneList }}" as="d" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #EEF1F5;font-size:14px"><span>{{ d.n }}</span><span style="font-size:12px;color:{{ d.ink }}">{{ d.s }}</span></div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:16px;background:#F6F8FC"><span style="font-size:12px;font-weight:600;color:#2F5BEA">Tomorrow</span><span style="font-size:14px;line-height:1.45">Product induction at 10:00. I've requested your Jira and Figma access.</span></div>
+<button onClick="{{ go.week1 }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">Skip to Week 1 ▸</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.week1 }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:6px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:npIn .35s ease">
+<dc-import name="NavoFace" state="calm" size="50" hint-size="50px,50px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Your first week is nearly done.</span><span style="font-size:14px;color:#4A5363">5 of 6 done. I'm setting up the last one.</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ week }}" as="k" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #EEF1F5"><sc-if value="{{ k.done }}" hint-placeholder-val="{{ true }}"><span style="width:18px;height:18px;border-radius:50%;background:#13795B;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center">✓</span></sc-if><sc-if value="{{ k.navo }}" hint-placeholder-val="{{ false }}"><dc-import name="NavoFace" state="acting" size="20" hint-size="20px,20px"></dc-import></sc-if><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:{{ k.w }}">{{ k.n }}</span><span style="font-size:11px;color:#2F5BEA">{{ k.sub }}</span></span><span style="font-size:11px;color:#5B6474">{{ k.d }}</span></div></sc-for>
+</div>
+<button onClick="{{ go.benefits }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:1px solid #F2D7AE;background:#FFF7EB;cursor:pointer;text-align:left;color:#0B1530"><dc-import name="NavoFace" state="thinking" size="26" hint-size="26px,26px"></dc-import><span style="display:flex;flex-direction:column;gap:2px;flex:1"><span style="font-size:14px;font-weight:600">{{ benefitsNudge }}</span><span style="font-size:12px;color:#7A5418">{{ benefitsNudgeSub }}</span></span><span style="color:#B45309">→</span></button>
+<div style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:16px;background:#F6F8FC">
+<div style="display:flex;align-items:center;gap:8px"><dc-import name="NavoFace" state="thinking" size="22" hint-size="22px,22px"></dc-import><span style="font-size:12px;font-weight:600;color:#2F5BEA">Navo suggests</span></div>
+<span style="font-size:14px;line-height:1.45">{{ bookText }}</span>
+<sc-if value="{{ notBooked }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:8px"><button onClick="{{ book }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer">Book it</button><button style="background:#fff;color:#0B1530;border:1px solid #E2E7EF;border-radius:10px;padding:9px 14px;font-size:13px;cursor:pointer">Not now</button></div></sc-if>
+</div>
+<button onClick="{{ go.day30 }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:13px;color:#2F5BEA;font-weight:600;cursor:pointer">Skip to Day 30 ▸</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.benefits }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:npIn .35s ease">
+<button onClick="{{ go.week1 }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2F5BEA;cursor:pointer">‹ Week 1</button>
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="thinking" size="42" hint-size="42px,42px"></dc-import><span style="font-size:13px;color:#5B6474">Navo · relevant now</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">Health cover enrolment closes in 5 days.</span><span style="font-size:14px;line-height:1.5;color:#4A5363">You told me you're married with one child. Here's what applies to you.</span></div>
+<div style="display:flex;flex-direction:column;border-radius:16px;background:#F6F8FC;padding:4px 16px">
+<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #E6EAF1;font-size:13px"><span>You, spouse, 1 child</span><span style="font-weight:600">Covered</span></div>
+<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #E6EAF1;font-size:13px"><span>Sum insured</span><span style="font-weight:600">₹5,00,000</span></div>
+<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #E6EAF1;font-size:13px"><span>Add parents</span><span style="font-weight:600">Optional · ₹1,200/mo</span></div>
+<div style="display:flex;justify-content:space-between;padding:12px 0;font-size:13px"><span>Deadline</span><span style="font-weight:600;color:#B45309">Mon 27 Oct</span></div>
+</div>
+<span style="font-size:11px;color:#2F5BEA">From: Benefits policy §3.2 · Your family details</span>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px"><button onClick="{{ enrol }}" style="background:{{ enrolBg }};color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">{{ enrolLabel }}</button><button onClick="{{ askParents }}" style="background:#fff;color:#0B1530;border:1px solid #E2E7EF;border-radius:14px;padding:12px;font-size:14px;cursor:pointer">Ask about parents' cover</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.day30 }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:npIn .35s ease">
+<dc-import name="NavoFace" state="celebrating" size="52" hint-size="52px,52px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em">One month in, Anand.</span><span style="font-size:14px;line-height:1.5;color:#4A5363">Onboarding is complete. Your 30-day check-in with Rahul is tomorrow at 11:00.</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+<div style="background:#F6F8FC;border-radius:12px;padding:11px;display:flex;flex-direction:column;gap:2px"><span style="font-size:21px;font-weight:600">38</span><span style="font-size:11px;color:#5B6474">Tasks done</span></div>
+<div style="background:#F6F8FC;border-radius:12px;padding:11px;display:flex;flex-direction:column;gap:2px;box-shadow:inset 0 0 0 1px rgba(56,189,248,.45)"><span style="font-size:21px;font-weight:600;color:#2F5BEA">31</span><span style="font-size:11px;color:#5B6474">By Navo</span></div>
+<div style="background:#F6F8FC;border-radius:12px;padding:11px;display:flex;flex-direction:column;gap:2px"><span style="font-size:21px;font-weight:600">7</span><span style="font-size:11px;color:#5B6474">By you</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:14px;font-weight:600">I've prepared your check-in</span><span style="display:flex;gap:8px;font-size:13px"><span style="color:#13795B">✓</span>Your 3 goals from Week 1, with progress</span><span style="display:flex;gap:8px;font-size:13px"><span style="color:#13795B">✓</span>Shared the agenda with Rahul</span></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:16px;border:1px solid #E2E7EF"><span style="font-size:14px;font-weight:600">{{ pulseQ }}</span><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px"><sc-for list="{{ pulse }}" as="p" hint-placeholder-count="5"><button onClick="{{ p.pick }}" style="border:1.5px solid {{ p.border }};background:{{ p.bg }};color:{{ p.ink }};font-weight:{{ p.w }};border-radius:10px;padding:9px 0;font-size:14px;cursor:pointer">{{ p.n }}</button></sc-for></div><span style="font-size:11px;color:#5B6474">Goes to HR anonymously, to improve onboarding</span></div>
+<span style="margin-top:auto;font-size:13px;color:#5B6474">Next: 60-day goals review · 18 Dec</span>
+<button onClick="{{ openOutro }}" style="background:#0B1530;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">See the impact →</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:16px;right:16px;bottom:104px;background:#0B1530;color:#fff;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 14px 30px -12px rgba(11,21,48,.5);animation:npIn .3s ease;z-index:5"><dc-import name="NavoFace" state="calm" size="22" hint-size="22px,22px"></dc-import><span style="font-size:13px;line-height:1.4">{{ toast }}</span></div>
+</sc-if>
+
+<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(11,21,48,.28);opacity:{{ scrimOp }};pointer-events:{{ scrimPE }};transition:opacity .3s;z-index:6"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:86%;background:#fff;color:#0B1530;border-radius:24px 24px 0 0;transform:translateY({{ actY }});transition:transform .38s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;z-index:7">
+<div style="flex:none;padding:16px 20px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #EEF1F5"><span style="display:flex;align-items:center;gap:8px"><dc-import name="NavoFace" state="{{ face }}" size="24" hint-size="24px,24px"></dc-import><span style="font-size:17px;font-weight:600">Navo is working</span></span><button onClick="{{ closeSheet }}" style="background:#F1F3F7;border:none;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer">Done</button></div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:16px 20px 28px;display:flex;flex-direction:column;gap:22px">
+<sc-for list="{{ cases }}" as="c" hint-placeholder-count="2">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:600">{{ c.title }}</span><span style="font-size:12px;color:{{ c.ink }};background:{{ c.bg }};border-radius:999px;padding:3px 9px">{{ c.status }}</span></div>
+<div style="display:flex;flex-direction:column"><sc-for list="{{ c.events }}" as="e" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:56px 12px 1fr;gap:8px"><span style="font-size:12px;color:#5B6474;font-variant-numeric:tabular-nums;padding-top:1px">{{ e.time }}</span><span style="display:flex;flex-direction:column;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:{{ e.ink }};margin-top:5px;flex:none"></span><span style="flex:1;width:1px;background:#E2E6ED"></span></span><span style="display:flex;flex-direction:column;gap:2px;padding-bottom:12px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:{{ e.ink }}">{{ e.phase }}</span><span style="font-size:13px;line-height:1.4">{{ e.text }}</span></span></div></sc-for></div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:86%;background:#fff;color:#0B1530;border-radius:24px 24px 0 0;transform:translateY({{ askY }});transition:transform .38s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;z-index:7">
+<div style="flex:none;padding:16px 20px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #EEF1F5"><span style="font-size:17px;font-weight:600">Ask Navo</span><button onClick="{{ closeSheet }}" style="background:#F1F3F7;border:none;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer">Done</button></div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:16px 20px;display:flex;flex-direction:column;gap:18px">
+<sc-if value="{{ noMsgs }}" hint-placeholder-val="{{ true }}"><dc-import name="NavoFace" state="calm" size="44" hint-size="44px,44px"></dc-import><div style="font-size:14px;color:#5B6474;line-height:1.5">I know your onboarding state, your calendar and Halden's policies. Ask about anything coming up.</div></sc-if>
+<sc-for list="{{ msgs }}" as="m" hint-placeholder-count="0">
+<div style="display:flex;flex-direction:column;gap:8px;align-items:{{ m.align }}">
+<sc-if value="{{ m.hasChecked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#2F5BEA">Checked {{ m.checked }}</span></sc-if>
+<span style="font-size:14px;line-height:1.5;max-width:92%;background:{{ m.bg }};border-radius:14px;padding:{{ m.pad }};color:{{ m.ink }};text-wrap:pretty">{{ m.text }}</span>
+<sc-if value="{{ m.hasActions }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ m.actions }}" as="x" hint-placeholder-count="1"><button onClick="{{ x.run }}" style="background:#EEF2FE;color:#2F5BEA;border:none;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer">{{ x.label }}</button></sc-for></div></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="flex:none;padding:10px 16px 26px;border-top:1px solid #EEF1F5;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ chips }}" as="q" hint-placeholder-count="3"><button onClick="{{ q.run }}" style="border:1px solid #E2E6ED;background:#fff;border-radius:999px;padding:6px 11px;font-size:12px;cursor:pointer;color:#0B1530">{{ q.label }}</button></sc-for></div>
+<div style="display:flex;gap:8px"><input value="{{ q }}" onChange="{{ onQ }}" onKeyDown="{{ onKey }}" placeholder="Type a question" style="flex:1;border:1px solid #E2E6ED;border-radius:22px;padding:11px 16px;font-size:14px;outline:none;color:#0B1530;min-width:0"><button onClick="{{ send }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:22px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer">Ask</button></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isHR }}" hint-placeholder-val="{{ false }}">
+<div style="width:1080px;max-width:100%;min-height:844px;border-radius:20px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:grid;grid-template-columns:200px minmax(0,1fr) 330px;box-shadow:0 30px 70px -40px rgba(11,21,48,.45);animation:npIn .35s ease">
+<div style="background:#0B1530;color:#fff;padding:22px 16px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="brand" size="30" hint-size="30px,30px"></dc-import><span style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">Navo</span><span style="font-size:11px;color:#9FB0D3">AI That Handles Onboarding</span></span></div>
+<div style="display:flex;flex-direction:column;gap:2px;font-size:14px"><span style="padding:9px 12px;border-radius:10px;background:rgba(56,189,248,.14);box-shadow:inset 0 0 0 1px rgba(56,189,248,.4);font-weight:600">Needs HR · {{ hrCount }}</span><span style="padding:9px 12px;color:#B9C4DE">All joiners · 14</span><span style="padding:9px 12px;color:#B9C4DE">Navo activity</span><span style="padding:9px 12px;color:#B9C4DE">Policies and rules</span></div>
+<div style="margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:rgba(255,255,255,.06)"><span style="width:30px;height:30px;border-radius:50%;background:#2B3A6B;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center">PN</span><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Priya Nair</span><span style="font-size:11px;color:#9FB0D3">HR · Mumbai</span></span></div>
+</div>
+<div style="padding:24px 24px;display:flex;flex-direction:column;gap:20px;background:#F6F8FC;min-width:0">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#5B6474">{{ dayClock }}</span><span style="font-size:24px;font-weight:600;letter-spacing:-.02em">Good morning, Priya. {{ hrHead }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+<div style="background:#fff;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px"><span style="font-size:24px;font-weight:600">14</span><span style="font-size:12px;color:#5B6474">Joining in 30 days</span></div>
+<div style="background:#fff;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px"><span style="font-size:24px;font-weight:600;color:#13795B">{{ hrOnTrack }}</span><span style="font-size:12px;color:#5B6474">On track</span></div>
+<div style="background:#fff;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px"><span style="font-size:24px;font-weight:600;color:#C2410C">{{ hrCount }}</span><span style="font-size:12px;color:#5B6474">Need HR</span></div>
+<div style="background:#fff;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px;box-shadow:inset 0 0 0 1px rgba(56,189,248,.45)"><span style="font-size:24px;font-weight:600;color:#2F5BEA">{{ hrResolved }}</span><span style="font-size:12px;color:#5B6474">Resolved by Navo this week</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">Needs your decision</span>
+<sc-for list="{{ hrQueue }}" as="q" hint-placeholder-count="2">
+<div style="background:#fff;border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;box-shadow:{{ q.ring }};animation:npIn .35s ease">
+<span style="width:34px;height:34px;border-radius:50%;background:#E4EAFB;color:#2F5BEA;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center">{{ q.ini }}</span>
+<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:15px;font-weight:600">{{ q.title }}</span><span style="font-size:13px;color:#4A5363;line-height:1.4">{{ q.who }} · {{ q.body }}</span><span style="font-size:12px;color:#2F5BEA">Navo: {{ q.navo }}</span></div>
+<button onClick="{{ q.run }}" style="background:{{ q.ctaBg }};color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer">{{ q.cta }}</button>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">Upcoming joiners</span>
+<div style="background:#fff;border-radius:14px;padding:4px 16px">
+<div style="display:grid;grid-template-columns:1.4fr 1fr 1.5fr .9fr;gap:12px;padding:10px 0;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#8A93A3;border-bottom:1px solid #EEF1F5"><span>Joiner</span><span>Starts</span><span>Open items</span><span>Day 1</span></div>
+<sc-for list="{{ joiners }}" as="j" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:1.4fr 1fr 1.5fr .9fr;gap:12px;padding:10px 0;font-size:13px;border-bottom:1px solid #EEF1F5;align-items:center"><span style="display:flex;flex-direction:column"><span style="font-weight:600">{{ j.name }}</span><span style="font-size:11px;color:#5B6474">{{ j.role }}</span></span><span>{{ j.start }}</span><span style="font-size:12px;color:#4A5363">{{ j.open }}</span><span style="font-size:12px;font-weight:600;color:{{ j.ink }}">{{ j.status }}</span></div></sc-for>
+</div>
+</div>
+</div>
+<div style="padding:24px 20px;display:flex;flex-direction:column;gap:16px;border-left:1px solid #E6EAF1;min-width:0">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="NavoFace" state="{{ face }}" size="34" hint-size="34px,34px"></dc-import><span style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">Anand Mehta · live</span><span style="font-size:12px;color:#5B6474">Starts Mon 20 Oct · {{ anandStatus }}</span></span></div>
+<div style="display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:14px;background:{{ anandBg }}"><span style="font-size:11px;font-weight:700;letter-spacing:.06em;color:{{ anandInk }}">WHAT HR SEES</span><span style="font-size:13px;line-height:1.5">{{ anandNote }}</span></div>
+<span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">Navo activity on this joiner</span>
+<div style="display:flex;flex-direction:column;overflow:hidden">
+<sc-for list="{{ feed }}" as="e" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:52px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid #F1F3F7"><span style="font-size:11px;color:#5B6474;font-variant-numeric:tabular-nums">{{ e.time }}</span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:10px;font-weight:700;letter-spacing:.06em;color:{{ e.ink }}">{{ e.phase }}</span><span style="font-size:12px;line-height:1.4">{{ e.text }}</span></span></div></sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showPresenter }}" hint-placeholder-val="{{ true }}">
+<div style="width:340px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#fff;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">Agent runtime</span><span style="font-size:12px;color:{{ statusInk }};font-weight:600">{{ runState }}</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#0B1530;color:#fff"><dc-import name="NavoFace" state="{{ runFace }}" size="28" hint-size="28px,28px"></dc-import><span style="font-size:13px;line-height:1.35">{{ runLine }}</span></div>
+<sc-if value="{{ noTools }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:#5B6474;line-height:1.45">No tool calls yet. Run the pre-joining chapter to watch Navo reason and act.</span></sc-if>
+<sc-for list="{{ tools }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:3px;padding:9px 10px;border-radius:10px;background:{{ t.bg }};font-family:'SF Mono',Menlo,Consolas,monospace;font-size:11px;line-height:1.45;transition:background .4s">
+<div style="display:flex;justify-content:space-between;gap:8px"><span style="font-weight:600;word-break:break-word">{{ t.fn }}<span style="color:#5B6474;font-weight:400">({{ t.args }})</span></span><span style="flex:none;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:10px;font-weight:600;color:{{ t.gInk }};background:{{ t.gBg }};border-radius:6px;padding:2px 6px;height:fit-content">{{ t.guard }}</span></div>
+<span style="color:{{ t.resInk }}">→ {{ t.res }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ hasDiff }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:5px;border-top:1px solid #EEF1F5;padding-top:12px"><span style="font-size:12px;font-weight:600">State changes</span><sc-for list="{{ diff }}" as="f" hint-placeholder-count="2"><span style="font-family:'SF Mono',Menlo,Consolas,monospace;font-size:11px;color:#2A3240">{{ f }}</span></sc-for></div></sc-if>
+<div style="display:flex;flex-direction:column;gap:5px;border-top:1px solid #EEF1F5;padding-top:12px;font-size:12px;line-height:1.45;color:#4A5363"><span style="font-size:12px;font-weight:600;color:#0B1530">Guardrails</span><span><span style="color:#13795B;font-weight:600">Auto</span> · read state and policy, reminders, IT tickets, scheduling, escalation after 24h</span><span><span style="color:#C8372D;font-weight:600">Asks first</span> · personal data, bank details, equipment changes</span></div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;liveAI&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showPresenter&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { view: 'emp', screen: 'launch', scen: 'A', step: 0, pending: null, toolIdx: 0, sheet: null, why: false, msgs: [], q: '', addr: false, reading: false, relieving: false, emerg: false, training: false, slide: 0, got: { id: false, laptop: false, kit: false }, booked: false, enrolled: false, pulse: 0, toast: '', intro: true, outro: false, auto: false, beat: null, cap: '' };
+  componentDidMount() {
+    if (!this.state.intro) this.arm();
+    this.onKey = e => {
+      const t = e.target && e.target.tagName; if (t === 'INPUT' || t === 'TEXTAREA') return;
+      const k = e.key;
+      if (k === 'ArrowRight') { e.preventDefault(); this.nextBeat(); }
+      else if (k === 'ArrowLeft') { e.preventDefault(); this.prevBeat(); }
+      else if (k === ' ') { e.preventDefault(); this.toggleAuto(); }
+      else if (k === 'h' || k === 'H') this.setState(s => ({ view: s.view === 'hr' ? 'emp' : 'hr', sheet: null }));
+      else if (k === 'b' || k === 'B') this.setState(s => ({ intro: !s.intro }));
+      else if (k === 'Escape') this.setState({ intro: false, outro: false, sheet: null });
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { [this.lt, this.tt, this.rt, this.at].forEach(clearTimeout); clearInterval(this.ti); window.removeEventListener('keydown', this.onKey); }
+  RESET = { view: 'emp', screen: 'launch', scen: 'A', step: 0, pending: null, toolIdx: 0, sheet: null, why: false, msgs: [], addr: false, reading: false, relieving: false, emerg: false, training: false, slide: 0, got: { id: false, laptop: false, kit: false }, booked: false, enrolled: false, pulse: 0, intro: false, outro: false };
+  beats() {
+    const S = p => this.setState({ sheet: null, why: false, view: 'emp', ...p });
+    return [
+      { cap: 'Anand Mehta accepted an offer at Halden. He opens Navo for the first time.', wait: 3000, run: () => { clearInterval(this.ti); this.setState({ ...this.RESET }); } },
+      { cap: 'He signs in with the mobile number from his application. No company account needed yet.', wait: 3800, run: () => S({ screen: 'signin' }) },
+      { cap: 'Navo introduces itself, and sets out what it does alone and what it always asks first.', wait: 5200, run: () => S({ screen: 'meet' }) },
+      { cap: 'Navo has already read 5 documents. One is missing.', wait: 4200, run: () => S({ screen: 'docs' }) },
+      { cap: 'Anand uploads it. Navo reads it and checks it against his Aadhaar.', wait: 4000, run: () => { S({ screen: 'docs', reading: true }); clearTimeout(this.rt); this.rt = setTimeout(() => { this.setState({ reading: false, addr: true }); this.say('Read your address proof. It matches your Aadhaar.'); }, 1500); } },
+      { cap: 'One date is unreadable. Navo asks about that field only, not the whole document.', wait: 4600, run: () => S({ screen: 'clarify' }) },
+      { cap: 'Anand confirms it in one tap. HR is told automatically.', wait: 3400, run: () => { S({ screen: 'docs', relieving: true }); this.say('Updated. Priya in HR is notified.'); } },
+      { cap: 'Forms come pre-filled from his documents. Only the emergency contact needs him.', wait: 3800, run: () => S({ screen: 'forms' }) },
+      { cap: 'He adds it and submits.', wait: 2600, run: () => S({ screen: 'forms', emerg: true }) },
+      { cap: 'Thursday, 4 days before Day 1. Navo is watching 9 items across HR, IT and his manager.', wait: 4600, run: () => { S({ screen: 'home' }); this.say('Forms sent to HR. I\'ll take it from here.'); } },
+      { cap: 'Navo spots that the Employee ID is late. It traces what depends on it, checks the rules, and follows up with HR on its own.', wait: 6200, run: () => { S({ screen: 'home' }); this.runTo(1); } },
+      { cap: 'Every action has a reason Anand can see.', wait: 4600, run: () => this.setState({ why: true }) },
+      { cap: 'Meanwhile, Priya in HR sees only the exceptions. Anand\'s ID is at the top of her queue.', wait: 4600, run: () => this.setState({ view: 'hr', why: false }) },
+      { cap: 'Priya issues the ID. Navo raises the laptop and email requests within a minute.', wait: 6000, run: () => { this.setState({ view: 'hr' }); this.runTo(2); } },
+      { cap: 'Back on Anand\'s phone: blocker cleared, no action needed from him.', wait: 4400, run: () => S({ screen: 'home' }) },
+      { cap: 'Friday: laptop imaged, ID card printed, background check cleared. Navo books one pickup for everything.', wait: 5200, run: () => { S({ screen: 'home' }); this.runTo(3); } },
+      { cap: 'ID card, laptop and kit, all at Building B. HR, IT and Facilities, coordinated by Navo.', wait: 4600, run: () => S({ screen: 'pickup' }) },
+      { cap: 'Monday, Day 1. Navo has the plan and reminds him as each step comes up.', wait: 4600, run: () => S({ screen: 'day1' }) },
+      { cap: 'He confirms what he collected. Navo closes the requests with HR and IT.', wait: 3800, run: () => S({ screen: 'confirm', got: { id: true, laptop: true, kit: true } }) },
+      { cap: 'Day 1 done.', wait: 3400, run: () => { S({ screen: 'day1done' }); this.say('Closed your pickup requests with HR and IT.'); } },
+      { cap: 'Week 1: Navo spots a health cover deadline that applies to his family, at the right moment.', wait: 4400, run: () => S({ screen: 'week1' }) },
+      { cap: 'He enrols in one tap.', wait: 3600, run: () => { S({ screen: 'benefits', enrolled: true }); this.say('Enrolled. HR and the insurer are notified.'); } },
+      { cap: 'Day 30: onboarding complete. Navo prepares his check-in with Rahul.', wait: 4200, run: () => S({ screen: 'day30' }) },
+      { cap: '', wait: 0, run: () => this.setState({ outro: true, auto: false }) }
+    ];
+  }
+  runBeat(i) {
+    clearTimeout(this.at);
+    const B = this.beats(), b = B[i];
+    if (!b) return this.setState({ auto: false });
+    b.run();
+    this.setState({ beat: i, cap: b.cap });
+    if (i === B.length - 1) return;
+    this.at = setTimeout(() => { if (this.state.auto) this.runBeat(i + 1); }, b.wait);
+  }
+  nextBeat() { if (this.state.pending != null) return; this.runBeat((this.state.beat ?? -1) + 1); }
+  prevBeat() {
+    const b = this.state.beat ?? 0; if (b <= 0 || this.state.pending != null) return;
+    clearTimeout(this.at); clearInterval(this.ti);
+    this.setState({ ...this.RESET, auto: false }, () => { const B = this.beats(); for (let i = 0; i < b - 1; i++) B[i].run(); setTimeout(() => { this.setState({ pending: null }); this.runBeat(b - 1); this.setState({ auto: false }); }, 50); });
+  }
+  toggleAuto() {
+    if (this.state.auto) { clearTimeout(this.at); this.setState({ auto: false }); }
+    else this.setState({ auto: true, intro: false, outro: false }, () => this.runBeat(this.state.beat == null || this.state.beat >= this.beats().length - 1 ? 0 : this.state.beat + 1));
+  }
+  arm() { clearTimeout(this.lt); this.lt = setTimeout(() => { if (this.state.screen === 'launch') this.go('signin'); }, 1800); }
+  go(s) { this.setState({ screen: s, sheet: null, why: false, view: 'emp' }); }
+  say(t) { clearTimeout(this.tt); this.setState({ toast: t }); this.tt = setTimeout(() => this.setState({ toast: '' }), 2800); }
+
+  C = { done: '#13795B', agent: '#2F5BEA', wait: '#D19A14', risk: '#C2410C', you: '#C8372D' };
+  ITEMS = [['docs', 'Documents'], ['empid', 'Employee ID'], ['bgv', 'Background check'], ['laptop', 'Laptop'], ['email', 'Email'], ['vpn', 'VPN'], ['manager', 'Manager 1:1'], ['buddy', 'Buddy'], ['induction', 'Induction']];
+  TRAINING = { kicker: 'Only you', title: 'Security training', meta: '15 min · due Sunday', simple: true };
+  LOANER = { kicker: 'Navo needs your input', title: 'Use a loaner laptop for Day 1?', meta: 'IT can have one at Building B on Monday 9:00. Your own laptop follows.', approval: true };
+  S0 = { day: 'Thu 16 Oct', clock: '09:00', label: 'Baseline', headline: 'You join Halden in 4 days. I\'ve handled most of it.',
+    items: { docs: ['done', 'Verified'], empid: ['wait', 'HR · due 14 Oct'], bgv: ['wait', 'With vendor'], laptop: ['wait', 'Needs Employee ID'], email: ['wait', 'Needs Employee ID'], vpn: ['wait', 'Needs laptop'], manager: ['done', 'Mon 12:00'], buddy: ['done', 'Meera Shah'], induction: ['done', 'Mon 9:30'] },
+    needs: ['t'], didHead: 'Navo handled 3 things overnight',
+    did: [['✓', 'Documents verified', 'Sent to HR and payroll', 'Wed 18:20'], ['✓', 'Manager 1:1 booked', 'Mon 12:00 with Rahul Iyer', 'Wed 18:22'], ['✓', 'Buddy assigned', 'Meera Shah, same team', 'Wed 18:23']],
+    watch: null, tools: [], diff: [],
+    events: [['docs', 'Wed 18:20', 'Acted', 'Verified documents. Clarified relieving date with Anand.'], ['setup', 'Wed 18:22', 'Acted', 'Booked 1:1 with Rahul Iyer, Mon 12:00.'], ['setup', 'Wed 18:23', 'Acted', 'Matched buddy Meera Shah, same product team.']] };
+  S1 = { day: 'Thu 16 Oct', clock: '09:17', label: 'Navo detects Day-1 risk', headline: 'One risk to Monday. I\'m on it.',
+    items: { empid: ['risk', 'HR · 2 days late'], laptop: ['risk', 'May miss Day 1'] },
+    needs: ['t'], didHead: 'Navo is handling this',
+    did: [['→', 'Followed up with HR', 'Employee ID is 2 days late', 'Just now', true], ['✓', 'Documents verified', 'Sent to HR and payroll', 'Wed'], ['✓', 'Manager 1:1 booked', 'Mon 12:00 with Rahul', 'Wed']],
+    watch: { tone: 'risk', kicker: 'Watching a dependency', title: 'Laptop may miss Day 1', body: 'Your Employee ID is 2 days late, and the laptop needs 2 working days after it. I followed up with HR.', foot: 'You don\'t need to do anything' },
+    tools: [['get_onboarding_state', 'employee="anand.mehta"', '9 tasks · 1 overdue: employee_id', 'read'], ['get_dependencies', 'task="laptop"', 'employee_id → laptop → email, vpn', 'read'], ['calculate_day1_risk', 'joining="2026-10-20"', 'HIGH · 0 working days slack', 'read'], ['check_permission', 'action="send_reminder"', 'allowed · auto', 'policy'], ['send_reminder', 'to="priya.nair", task="employee_id"', 'sent 09:17', 'auto']],
+    diff: ['employee_id: pending → overdue', 'laptop: blocked → at_risk', 'day1_risk: none → high', 'reminder R-1: created'],
+    events: [['empid', '09:15', 'Noticed', 'Employee ID not issued. Due 14 Oct, owner HR.'], ['empid', '09:16', 'Decided', 'Laptop needs ID + 2 working days. Friday is the last safe start.'], ['empid', '09:17', 'Acted', 'Reminded Priya Nair, HR. Allowed automatically.'], ['empid', '09:17', 'Planned', 'No reply in 24h → escalate to HR Ops lead.']] };
+  S2A = { day: 'Thu 16 Oct', clock: '10:44', label: 'HR issues Employee ID', headline: 'Blocker cleared. You\'re on track for Monday.',
+    items: { empid: ['done', 'EMP-204817'], laptop: ['agent', 'Delivery Fri'], email: ['agent', 'Live Mon 9:00'] },
+    needs: ['t'], didHead: 'Navo handled this',
+    did: [['✓', 'Employee ID received', 'HR issued EMP-204817', '10:43', true], ['✓', 'Laptop request sent', 'IT-55231 · delivery Friday', '10:44', true], ['✓', 'Email requested', 'Live Monday 9:00', '10:44', true]],
+    watch: { tone: 'calm', kicker: 'Watching', title: 'VPN access', body: 'Set up once your laptop is imaged on Friday.', foot: 'You don\'t need to do anything' },
+    tools: [['on_event', 'hr.employee_id.issued', 'EMP-204817', 'event'], ['update_task', 'employee_id, status="done"', 'ok', 'auto'], ['create_it_ticket', 'type="laptop", deliver_by="2026-10-17"', 'IT-55231', 'auto'], ['create_it_ticket', 'type="email"', 'IT-55232', 'auto'], ['calculate_day1_risk', 'joining="2026-10-20"', 'LOW', 'read'], ['notify_employee', 'summary', 'sent', 'auto']],
+    diff: ['employee_id: overdue → done', 'laptop: at_risk → requested', 'email: blocked → requested', 'day1_risk: high → low', 'reminder R-1: resolved'],
+    events: [['empid', '10:43', 'Noticed', 'HR issued Employee ID EMP-204817.'], ['empid', '10:44', 'Acted', 'Sent laptop request IT-55231. Delivery Friday.'], ['empid', '10:44', 'Acted', 'Requested email account, IT-55232.'], ['empid', '10:44', 'Reported', 'Blocker cleared. Told Anand no action needed.']] };
+  S3A = { day: 'Fri 17 Oct', clock: '11:20', label: 'Ready for Monday', headline: 'You\'re ready for Monday.',
+    items: { bgv: ['done', 'Cleared'], laptop: ['done', 'At Building B'], email: ['done', 'Ready'], vpn: ['done', 'Configured'] },
+    needs: ['t'], didHead: 'Since yesterday',
+    did: [['✓', 'ID card printed', 'Collect Monday 11:15', '11:20', true], ['✓', 'Laptop imaged, VPN set', 'Waiting at Building B', '10:05', true], ['✓', 'Background check cleared', 'Vendor confirmed', '08:40']],
+    watch: null,
+    tools: [['on_event', 'vendor.bgv.cleared', 'ok', 'event'], ['on_event', 'it.laptop.imaged', 'IT-55231', 'event'], ['on_event', 'hr.id_card.printed', 'ready', 'event'], ['schedule_pickup', 'site="Twin Tower B", at="Mon 11:15"', 'booked', 'auto'], ['calculate_day1_risk', 'joining="2026-10-20"', 'NONE · ready', 'read']],
+    diff: ['background_check: pending → done', 'laptop: requested → ready', 'id_card: pending → ready', 'day1_status: on_track → ready'],
+    events: [['setup', 'Fri 08:40', 'Noticed', 'Background check cleared by vendor.'], ['setup', 'Fri 10:05', 'Noticed', 'Laptop imaged with VPN.'], ['setup', 'Fri 11:20', 'Acted', 'Booked one pickup for ID card, laptop and kit.']] };
+  S2B = { day: 'Fri 17 Oct', clock: '09:18', label: '24h, no reply from HR', headline: 'I need one decision from you.',
+    items: { empid: ['risk', 'Escalated to HR Ops'], laptop: ['risk', 'Will miss Day 1'] },
+    needs: ['l', 't'], didHead: 'Navo is handling this',
+    did: [['↑', 'Escalated to HR Ops', 'No reply from HR in 24h', 'Just now', true], ['→', 'Followed up with HR', 'Thu 09:17', 'Thu']],
+    watch: { tone: 'risk', kicker: 'At risk', title: 'Laptop will miss Day 1', body: 'HR hasn\'t replied in 24 hours. I escalated to Neha Kapoor, HR Ops lead, and lined up a loaner as backup.', foot: 'The loaner needs your OK' },
+    tools: [['check_sla', 'reminder="R-1"', '24h · no response', 'read'], ['calculate_day1_risk', 'joining="2026-10-20"', 'CRITICAL · last safe day', 'read'], ['check_permission', 'action="escalate_owner"', 'allowed after 24h · auto', 'policy'], ['escalate', 'to="neha.kapoor", cc="priya.nair"', 'sent 09:18', 'auto'], ['check_permission', 'action="request_loaner"', 'asset change · needs employee', 'policy'], ['request_approval', 'from="anand", action="loaner"', 'pending', 'approval']],
+    diff: ['reminder R-1: open → breached', 'day1_risk: high → critical', 'escalation E-1: created', 'approval A-1: pending'],
+    events: [['empid', 'Fri 09:17', 'Noticed', 'No reply from HR in 24 hours.'], ['empid', 'Fri 09:18', 'Acted', 'Escalated to Neha Kapoor, HR Ops lead. Allowed after 24h.'], ['empid', 'Fri 09:18', 'Asked', 'Loaner laptop is an asset change. Asked Anand to approve.']] };
+  S3B = { day: 'Fri 17 Oct', clock: '11:20', label: 'Anand approves loaner', headline: 'Day 1 is covered.',
+    items: { empid: ['done', 'Issued by HR Ops'], laptop: ['agent', 'Loaner · Mon 9:00'], email: ['agent', 'Live Mon 9:00'], vpn: ['agent', 'On loaner'], bgv: ['done', 'Cleared'] },
+    needs: ['t'], didHead: 'Navo handled this',
+    did: [['✓', 'Loaner reserved', 'At Building B, Mon 9:00', '09:31', true], ['✓', 'HR Ops issued your ID', 'EMP-204817', '10:50', true], ['✓', 'ID card printed', 'Collect Monday 11:15', '11:20']],
+    watch: null,
+    tools: [['on_approval', 'A-1, by="anand"', 'approved', 'event'], ['create_it_ticket', 'type="loaner", deliver_by="2026-10-20T09:00"', 'IT-55240', 'auto'], ['on_event', 'hr.employee_id.issued', 'EMP-204817', 'event'], ['schedule_pickup', 'site="Twin Tower B", at="Mon 11:15"', 'booked', 'auto'], ['calculate_day1_risk', 'joining="2026-10-20"', 'LOW · covered', 'read']],
+    diff: ['approval A-1: pending → approved', 'laptop: at_risk → loaner', 'employee_id: overdue → done', 'day1_risk: critical → low'],
+    events: [['empid', 'Fri 09:31', 'Acted', 'Anand approved. Reserved loaner IT-55240.'], ['empid', 'Fri 10:50', 'Noticed', 'HR Ops issued the Employee ID.'], ['setup', 'Fri 11:20', 'Acted', 'Booked one pickup for ID card, laptop and kit.']] };
+  HUMAN = { get_onboarding_state: 'Checking your onboarding', get_dependencies: 'Tracing dependencies', calculate_day1_risk: 'Checking Day 1 risk', check_permission: 'Checking permissions', send_reminder: 'Following up with HR', on_event: 'Reading update', update_task: 'Updating state', create_it_ticket: 'Raising IT request', notify_employee: 'Writing your update', check_sla: 'Checking response time', escalate: 'Escalating', request_approval: 'Asking you', on_approval: 'Reading your approval', schedule_pickup: 'Booking your pickup' };
+  THINK = ['get_onboarding_state', 'get_dependencies', 'calculate_day1_risk', 'check_permission', 'check_sla'];
+  path() { return this.state.scen === 'A' ? [this.S0, this.S1, this.S2A, this.S3A] : [this.S0, this.S1, this.S2B, this.S3B]; }
+  runTo(t) {
+    if (this.state.pending != null) return;
+    const tools = this.path()[t].tools;
+    clearInterval(this.ti);
+    this.setState({ pending: t, toolIdx: 0, sheet: null, why: false });
+    let i = 0;
+    this.ti = setInterval(() => { i++; if (i >= tools.length) { clearInterval(this.ti); this.setState({ step: t, pending: null, toolIdx: 0 }); } else this.setState({ toolIdx: i }); }, 600);
+  }
+  advance() {
+    const s = this.state.step;
+    if (this.state.pending != null || s >= 3) return;
+    if (this.state.scen === 'B' && s === 2) return;
+    if (!['home', 'idtrack'].includes(this.state.screen) && this.state.view === 'emp') this.setState({ screen: 'home' });
+    this.runTo(s + 1);
+  }
+  stepTo(n) {
+    if (this.state.pending != null) return;
+    if (n === this.state.step + 1 && !(this.state.scen === 'B' && n === 3)) return this.runTo(n);
+    clearInterval(this.ti); this.setState({ step: n, why: false });
+  }
+  chap(i) {
+    if (this.state.pending != null) return;
+    const s = ['launch', 'docs', 'home', 'idcard', 'day1', 'week1'][i];
+    const patch = { screen: s, sheet: null, why: false, view: 'emp' };
+    if (i >= 2) Object.assign(patch, { addr: true, relieving: true, emerg: true });
+    if (i >= 3 && this.state.step < 3) patch.step = 3;
+    if (i === 2 && this.state.step >= 3) patch.step = 0;
+    if (i <= 1) Object.assign(patch, { step: 0 });
+    this.setState(patch, () => { if (i === 0) this.arm(); });
+  }
+  policy() { return 'Hybrid work policy 2.1: hybrid roles may work remotely up to 2 days a week, Fridays allowed. Escalation policy 4.2: reminders to HR are automatic; after 24h unanswered Navo may escalate to HR Ops lead Neha Kapoor; asset changes such as loaner laptops need employee approval. IT: laptop needs Employee ID plus 2 working days. Day 1: Tower B, BKC, Mumbai; collect ID card, laptop and kit at Twin Tower Building B at 11:15; bring PAN and one photo ID; induction 9:30; 1:1 with Rahul Iyer 12:00; buddy Meera Shah 14:00. Benefits policy 3.2: health cover for employee, spouse and children, sum insured 5 lakh; parents optional at 1,200 rupees a month; enrol within 7 days of joining.'; }
+  scripted(q) {
+    const s = this.state.step, B = this.state.scen === 'B';
+    if (/hr|respond|reply|escalat/i.test(q)) {
+      if (B && s >= 2) return { text: 'That already happened. HR didn\'t reply in 24 hours, so I escalated to Neha Kapoor, HR Ops lead, and lined up a loaner laptop for your approval.', checked: 'Reminder R-1 · Escalation policy §4.2', act: 'hr' };
+      if (s >= 2) return { text: 'HR replied at 10:43 and the blocker is cleared. If they hadn\'t, I would have escalated to the HR Ops lead after 24 hours and offered you a loaner laptop.', checked: 'Reminder R-1 · Escalation policy §4.2', act: 'hr' };
+      return { text: 'I reminded Priya Nair at 09:17. If there\'s no reply by tomorrow 09:17, policy lets me escalate to the HR Ops lead. If the ID is still missing Friday, I\'ll line up a loaner laptop for your OK.', checked: 'your state · Escalation §4.2 · IT lead times', act: 'hr' };
+    }
+    if (/parent|insur|health|benefit/i.test(q)) return { text: 'You can add both parents for ₹1,200 a month, deducted from salary. Enrol by Mon 27 Oct. Want me to add them?', checked: 'Benefits policy §3.2 · your family details', act: null };
+    if (/home|wfh|remote|friday/i.test(q)) return { text: 'Yes, your hybrid role allows remote Fridays. Your first Friday has team planning at 11:00 in the office, so Rahul may expect you in.', checked: 'Hybrid policy §2.1 · team calendar', act: null };
+    if (/bring|monday|day 1|first day/i.test(q)) return { text: 'Bring your PAN card and one photo ID. Collect your ID card, laptop and kit at Twin Tower, Building B at 11:15.', checked: 'Day 1 plan · Facilities guide', act: null };
+    return { text: 'I don\'t have that in your onboarding records. I\'ve passed it to Priya Nair in HR and will update you here.', checked: 'your state · policy library', act: null };
+  }
+  async ask(q) {
+    q = (q || '').trim(); if (!q) return;
+    const id = Date.now();
+    this.setState(s => ({ sheet: 'ask', q: '', msgs: [...s.msgs, { role: 'u', text: q }, { role: 'a', id, text: 'Checking your state and policy…', pending: true }] }));
+    const sc = this.scripted(q); let text = sc.text;
+    if ((this.props.liveAI ?? true) && window.claude && window.claude.complete) {
+      try {
+        const v = this.core();
+        const r = await window.claude.complete(`You are Navo, the onboarding agent at Halden (fictional company) for Anand Mehta (Senior Product Manager, joins Mon 20 Oct 2026, Mumbai, hybrid; manager Rahul Iyer; HR Priya Nair; buddy Meera Shah). Voice: crisp operator. Max 3 short sentences, plain text, no markdown, no greetings. Use only these facts; if unknown say you'll check with HR.\nTime: ${v.dayClock}\nState: ${JSON.stringify(v.itemsRaw)}\nRecent actions: ${v.allEvents.map(e => e.time + ' ' + e.phase + ': ' + e.text).join(' | ')}\nPolicies: ${this.policy()}\nQuestion: ${q}`);
+        if (r && String(r).trim()) text = String(r).trim();
+      } catch (e) {}
+    } else await new Promise(r => setTimeout(r, 700));
+    this.setState(s => ({ msgs: s.msgs.map(m => m.id === id ? { role: 'a', id, text, checked: sc.checked, act: sc.act } : m) }));
+  }
+  core() {
+    const P = this.path(), k = this.state.step, cur = P[k], items = {};
+    P.slice(0, k + 1).forEach(p => Object.assign(items, p.items));
+    const allEvents = P.slice(0, k + 1).flatMap(p => p.events.map(([c, time, phase, text]) => ({ c, time, phase, text })));
+    const sc = this.state.screen;
+    const fixed = { launch: 'Wed 8 Oct · 18:00', signin: 'Wed 8 Oct · 18:01', meet: 'Wed 8 Oct · 18:02', docs: 'Wed 8 Oct · 18:05', privacy: 'Wed 8 Oct · 18:06', clarify: 'Wed 8 Oct · 18:08', forms: 'Wed 8 Oct · 18:12', idcard: 'Fri 17 Oct · 11:20', pickup: 'Fri 17 Oct · 11:22', day1: 'Mon 20 Oct · 07:30', confirm: 'Mon 20 Oct · 11:40', day1done: 'Mon 20 Oct · 17:30', week1: 'Fri 24 Oct · 09:00', benefits: 'Fri 24 Oct · 09:05', day30: 'Wed 19 Nov · 09:00' };
+    const dayClock = this.state.view === 'emp' && fixed[sc] ? fixed[sc] : cur.day + ' · ' + cur.clock;
+    return { P, cur, items, allEvents, dayClock, itemsRaw: Object.fromEntries(this.ITEMS.map(([id, n]) => [n, items[id][0] + ' · ' + items[id][1]])) };
+  }
+  renderVals() {
+    const st = this.state, C = this.C;
+    const { P, cur, items, allEvents, dayClock } = this.core();
+    const busy = st.pending != null, sc = st.screen;
+    const cnt = s => Object.values(items).filter(v => v[0] === s).length;
+    const risk = cnt('risk'), wait = cnt('wait');
+    const needs = cur.needs.filter(n => n !== 't' || !st.training).map(n => n === 't' ? this.TRAINING : this.LOANER).map(d => ({ simple: !!d.simple, approval: !!d.approval, border: d.approval ? '#F2C9C4' : '#fff', ...d }));
+    const pendTools = busy ? P[st.pending].tools : null;
+    const toolList = busy ? pendTools.slice(0, st.toolIdx + 1) : cur.tools;
+    const gCol = { read: ['#4A5363', '#EEF1F5'], policy: ['#6A4A00', '#FBF1D9'], auto: ['#13795B', '#E3F2EC'], approval: ['#C8372D', '#FBE7E5'], event: ['#2F5BEA', '#E4EAFB'] };
+    const tools = toolList.map((t, i) => { const run = busy && i === toolList.length - 1; return { fn: t[0], args: t[1], res: run ? 'running…' : t[2], guard: t[3], gInk: gCol[t[3]][0], gBg: gCol[t[3]][1], bg: run ? '#EEF2FE' : '#F7F8FB', resInk: run ? '#2F5BEA' : '#4A5363' }; });
+    const awaiting = st.scen === 'B' && st.step === 2 && !busy;
+    const curTool = busy ? pendTools[st.toolIdx][0] : null;
+    const face = busy ? (this.THINK.includes(curTool) ? 'thinking' : curTool === 'request_approval' ? 'needs' : 'acting') : awaiting ? 'needs' : risk ? 'concerned' : st.step >= 3 ? 'celebrating' : st.step === 2 ? 'calm' : 'watching';
+    const statusText = busy ? 'Navo is working · ' + this.HUMAN[curTool].toLowerCase() + '…' : awaiting ? 'Navo needs your input' : risk ? 'Navo is handling this' : 'Watching 9 items';
+    const phaseInk = { Noticed: '#5B6474', Decided: '#0B1530', Acted: C.agent, Reported: C.done, Asked: C.you, Planned: '#8A93A3' };
+    const caseMeta = { empid: 'Employee ID delay', setup: 'Day 1 setup', docs: 'Documents' };
+    const empSt = items.empid[0] === 'done' ? ['Resolved', C.done, '#E3F2EC'] : risk ? ['At risk', C.risk, '#FCEBDD'] : ['Watching', '#6A4A00', '#FBF1D9'];
+    const cases = [...new Set(allEvents.map(e => e.c).reverse())].map(c => ({ title: caseMeta[c], status: c === 'empid' ? empSt[0] : 'Done', ink: c === 'empid' ? empSt[1] : C.done, bg: c === 'empid' ? empSt[2] : '#E3F2EC', events: allEvents.filter(e => e.c === c).map(e => ({ ...e, ink: phaseInk[e.phase] })) }));
+    const w = cur.watch;
+    const watch = w ? { ...w, face: w.tone === 'risk' ? 'concerned' : 'watching', bg: w.tone === 'risk' ? '#FFF7EB' : '#fff', ink: w.tone === 'risk' ? '#B45309' : '#5B6474', footInk: w.foot.includes('OK') ? C.you : C.done } : {};
+    const g = s => () => this.go(s);
+    const go = Object.fromEntries(['signin', 'meet', 'docs', 'privacy', 'clarify', 'forms', 'home', 'culture', 'idtrack', 'journey', 'idcard', 'pickup', 'day1', 'confirm', 'day1done', 'week1', 'benefits', 'day30'].map(s => [s, g(s)]));
+    const is = Object.fromEntries(['launch', 'signin', 'meet', 'docs', 'privacy', 'clarify', 'forms', 'home', 'culture', 'idtrack', 'journey', 'idcard', 'pickup', 'day1', 'confirm', 'day1done', 'week1', 'benefits', 'day30'].map(s => [s, sc === s]));
+    // documents
+    const docsAll = st.addr && st.relieving;
+    const addrState = st.reading ? 'Reading…' : st.addr ? 'Verified' : 'Needed';
+    const relState = st.relieving ? 'Verified' : 'Clarify';
+    const pill = s => ({ Verified: ['#13795B', '#E3F2EC'], 'Under review': ['#B45309', '#FEF3E2'], Clarify: ['#B45309', '#FEF3E2'], Needed: ['#C8372D', '#FDECEC'], 'Reading…': ['#2F5BEA', '#E4EAFB'] }[s]);
+    const docs = [['PAN card', 'Read · name matches', 'Verified'], ['Aadhaar', 'Read · DOB matches', 'Verified'], ['Degree certificate', 'With verification vendor', 'Under review'], ['Relieving letter', st.relieving ? 'Last day 17 Oct confirmed' : 'Date unclear on page 2 · tap', relState, !st.relieving], ['Address proof', st.addr ? 'Read · matches Aadhaar' : 'Not uploaded', addrState], ['Cancelled cheque', 'Pre-filled payroll', 'Verified']]
+      .map(([name, note, state, tap]) => ({ name, note, state, ink: pill(state)[0], bg: pill(state)[1], tap: tap ? go.clarify : () => {}, cursor: tap ? 'pointer' : 'default' }));
+    const uploadAddr = () => { if (st.reading || st.addr) return; this.setState({ reading: true }); this.rt = setTimeout(() => { this.setState({ reading: false, addr: true }); this.say('Read your address proof. It matches your Aadhaar.'); }, 1500); };
+    const docsCta = !st.addr ? { label: st.reading ? 'Reading your document…' : 'Upload address proof', run: uploadAddr } : !st.relieving ? { label: 'Clarify relieving letter', run: go.clarify } : { label: 'Continue to forms', run: go.forms };
+    // forms
+    const formRows = [['Full name', 'Anand Mehta', 'From PAN'], ['Date of birth', '14 Mar 1991', 'From Aadhaar'], ['Address', 'Andheri West, Mumbai 400058', 'From address proof'], ['Bank account', 'HDFC •••• 4821', 'From cheque'], ['Nominee', 'Kavya Mehta, spouse', 'From offer form'], ['Emergency contact', st.emerg ? 'Kavya Mehta · +91 98200 11223' : 'Not provided', st.emerg ? 'Added by you' : 'Needs you']]
+      .map(([label, value, src]) => { const need = src === 'Needs you'; return { label, value, src, ink: need ? '#8A93A3' : '#0B1530', srcInk: need ? '#C8372D' : src === 'Added by you' ? '#13795B' : '#2F5BEA', srcBg: need ? '#FDECEC' : src === 'Added by you' ? '#E3F2EC' : '#E8F1FF' }; });
+    const formsCta = st.emerg ? { label: 'Confirm and submit', run: () => { this.go('home'); this.say('Forms sent to HR. I\'ll take it from here.'); } } : { label: 'Add emergency contact', run: () => this.setState({ emerg: true }) };
+    // culture
+    const slides = [['Culture', 'Curious people, building useful things.', 'Halden makes software for logistics teams across India. People stay because the problems are real and the teams are small.', 'Halden team photo'], ['How we work', 'Small teams, fast decisions, close to the customer.', 'Your product team ships every two weeks. Rahul runs planning on Monday mornings.', 'Team at work'], ['Your team', 'Rahul, Meera and six others.', 'Meera Shah is your buddy. She\'s been on the team two years and will walk you through the board on Day 1.', 'Product team'], ['Office', 'Tower B, BKC, Mumbai.', 'Hybrid: 3 days in office. Cafeteria on 2nd floor, quiet rooms on every floor.', 'Office photo'], ['Day 1', 'Induction, pickup, your manager, your buddy.', 'I\'ll guide you through each step on the day. Next up: security training.', 'Reception photo']];
+    const sl = slides[st.slide];
+    // id tracker
+    const issued = items.empid[0] === 'done';
+    const idt = issued
+      ? { face: 'celebrating', kick: 'RESOLVED', ink: C.done, head: 'Your Employee ID is EMP-204817.', sub: 'Laptop, email and VPN requests went out right after.', impact: 'None', next: 'Laptop delivery Fri 17 Oct', foot: 'Back on track for Monday.', footInk: C.done }
+      : st.step === 0 ? { face: 'watching', kick: 'WATCHING', ink: '#5B6474', head: 'Your Employee ID is being processed.', sub: 'Due 14 Oct from HR. I\'m keeping an eye on it.', impact: 'None yet', next: 'I\'ll check again at 09:15', foot: 'You don\'t need to do anything.', footInk: C.done }
+      : { face: 'concerned', kick: 'POTENTIAL DELAY DETECTED', ink: '#B45309', head: 'Your Employee ID hasn\'t been generated yet.', sub: 'Your ID card, laptop and access depend on it. I\'ve already followed up with HR.', impact: st.scen === 'B' && st.step >= 2 ? 'High · escalated to HR Ops' : 'Low · 2 days of slack', next: st.scen === 'B' && st.step >= 2 ? 'Loaner laptop needs your OK' : 'Escalate tomorrow 09:17 if no reply', foot: st.scen === 'B' && st.step >= 2 ? 'One decision needed on Home.' : 'You don\'t need to do anything.', footInk: st.scen === 'B' && st.step >= 2 ? C.you : C.done };
+    idt.bars = ['Requested', 'Processing', 'Generated', 'Available'].map((n, i) => ({ n, c: issued ? C.done : i === 0 ? C.done : i === 1 ? '#D97706' : '#E2E7EF', w: !issued && i === 1 ? 700 : 400 }));
+    const ownerInk = { HR: '#6D28D9', IT: '#0F766E' };
+    idt.deps = [['ID card', 'HR', issued ? 'Printing' : 'Waiting'], ['Laptop', 'IT', items.laptop[1]], ['Email', 'IT', items.email[1]], ['VPN, tools', 'IT', items.vpn[1]]].map(([n, o, s]) => ({ n, o, s, oInk: ownerInk[o], sInk: '#5B6474' }));
+    // journey
+    const jk = sc === 'journey' ? 4 : 4;
+    const journey = [['Application', '18 Sep', 'Applied for Senior Product Manager'], ['Assessment', '29 Sep', 'AI assessment completed'], ['Interview', '2 Oct', 'Panel with Rahul Iyer'], ['Offer', '6 Oct', 'Accepted 7 Oct'], ['Pre-joining', 'Now', `${needs.length} need you · Navo handling ${9 - cnt('done')}`], ['Day 1', 'Mon 20 Oct', 'Induction, pickup, 1:1, buddy'], ['First week', '21–24 Oct', 'Trainings, access, first project'], ['First 90 days', 'To 18 Jan', 'Goals, check-ins, feedback']]
+      .map(([name, when, sub], i) => { const k = i < jk ? 'd' : i === jk ? 'n' : 'u'; return { name, when, sub, dot: k === 'd' ? C.done : k === 'n' ? '#38BDF8' : '#fff', ring: k === 'u' ? '2px solid #CBD2DD' : 'none', glow: k === 'n' ? '0 0 0 4px rgba(56,189,248,.2),0 0 10px rgba(56,189,248,.8)' : 'none', line: k === 'd' ? C.done : '#E2E7EF', w: k === 'n' ? 700 : 500, subInk: k === 'n' ? '#2F5BEA' : '#5B6474' }; });
+    // day 1
+    const loaner = st.scen === 'B';
+    const day1 = [['09:30', 'Company induction', 'Auditorium, Tower B', 'HR', '#6D28D9'], ['11:15', 'Collect ID card', 'Twin Tower · Building B', 'HR', '#6D28D9'], ['11:30', loaner ? 'Loaner laptop and kit' : 'Laptop and onboarding kit', 'Twin Tower · Building B', 'IT', '#0F766E'], ['12:00', 'Meet Rahul, your manager', 'Room 4A', 'MANAGER', '#B45309'], ['14:00', 'Meet Meera, your buddy', 'Cafeteria, 2nd floor', 'BUDDY', '#4A5363']].map(([t, what, where, who, ink]) => ({ t, what, where, who, ink }));
+    const pick = [['id', 'Employee ID card'], ['laptop', loaner ? 'Loaner laptop' : 'Laptop'], ['kit', 'Onboarding kit']].map(([k, n]) => { const on = st.got[k]; return { n, border: on ? C.done : '#E2E7EF', bg: on ? '#F1FAF6' : '#fff', chk: on ? C.done : '#fff', ring: on ? 'none' : '1.5px solid #CBD2DD', mark: on ? '✓' : '', toggle: () => this.setState(s => ({ got: { ...s.got, [k]: !s.got[k] } })) }; });
+    const nGot = Object.values(st.got).filter(Boolean).length;
+    const doneList = [['ID card collected', st.got.id], [(loaner ? 'Loaner laptop' : 'Laptop') + ', email and VPN', st.got.laptop], ['Met Rahul and Meera', true], ['Onboarding kit', st.got.kit]].map(([n, ok]) => ({ n, s: ok ? '✓ Done' : 'Navo sorting with Facilities', ink: ok ? C.done : C.agent }));
+    // week 1
+    const week = [['Product induction', 'Tue', 1], ['Mandatory training', 'Tue', 1], ['Email and VPN access', 'Mon', 1], ['Team introductions', 'Wed', 1], ['First project setup', 'Thu', 0]].map(([n, d, ok]) => ({ n, d, done: !!ok, navo: !ok, w: ok ? 400 : 600, sub: ok ? '' : 'Requesting Jira and Figma access' }));
+    // HR
+    const hrQueue = [];
+    if (st.step >= 1 && !issued) hrQueue.push(st.scen === 'B' && st.step >= 2
+      ? { ini: 'AM', title: 'Escalated: Employee ID 24h overdue', who: 'Anand Mehta', body: 'starts Mon 20 Oct', navo: 'escalated to Neha Kapoor, loaner awaiting Anand\'s OK', cta: 'Generate ID', ctaBg: '#9AAFF0', ring: '0 0 0 1.5px #C2410C', run: () => {} }
+      : { ini: 'AM', title: 'Employee ID not generated', who: 'Anand Mehta', body: '2 days late, blocks laptop and access', navo: 'reminded you at 09:17, escalates in 24h', cta: busy ? 'Working…' : 'Generate ID', ctaBg: '#2F5BEA', ring: '0 0 0 1.5px #2F5BEA', run: () => { if (st.scen === 'A' && st.step === 1 && !busy) this.runTo(2); } });
+    hrQueue.push({ ini: 'PS', title: 'Background check past SLA', who: 'Priya Sharma', body: 'starts 27 Oct', navo: 'chased vendor twice, recommends limited-access start', cta: 'Decide', ctaBg: '#2F5BEA', ring: 'none', run: () => {} });
+    const joinStatus = issued ? (st.step >= 3 ? ['Ready', C.done] : ['On track', C.done]) : risk ? ['At risk', C.risk] : ['Watching', '#B45309'];
+    const joiners = [['Anand Mehta', 'Sr Product Manager', 'Mon 20 Oct', issued ? 'You 1' : 'HR 1 · IT 3 · You 1', ...joinStatus], ['Priya Sharma', 'Data Analyst', 'Mon 27 Oct', 'Vendor 1 · IT 3', 'Needs HR', C.risk], ['Rohit Mehta', 'Engineer II', 'Tue 28 Oct', 'Employee 2', 'On track', C.done], ['Neha Verma', 'Designer', 'Mon 3 Nov', 'Employee 4', 'On track', C.done], ['Karan Gupta', 'Sales Lead', 'Mon 10 Nov', 'Employee 1', 'On track', C.done]].map(([name, role, start, open, status, ink]) => ({ name, role, start, open, status, ink }));
+    const anandNote = issued ? 'Nothing. Navo raised IT requests the moment the ID was issued.' : st.step === 0 ? 'Nothing yet. Navo is tracking 9 items.' : st.scen === 'B' && st.step >= 2 ? 'Escalated to HR Ops after 24h. Navo asked Anand to approve a loaner.' : 'Employee ID is overdue. Generating it unblocks laptop, email and VPN automatically.';
+    const pulse = [1, 2, 3, 4, 5].map(n => { const on = st.pulse === n; return { n, border: on ? '#2F5BEA' : '#E2E7EF', bg: on ? '#F4F7FE' : '#fff', ink: on ? '#2F5BEA' : '#0B1530', w: on ? 600 : 400, pick: () => { this.setState({ pulse: n }); this.say('Thanks. Shared anonymously with HR.'); } }; });
+    const chapIdx = { launch: 0, signin: 0, meet: 0, docs: 1, privacy: 1, clarify: 1, forms: 1, home: 2, culture: 2, idtrack: 2, journey: 2, idcard: 3, pickup: 3, day1: 4, confirm: 4, day1done: 4, week1: 5, benefits: 5, day30: 5 }[sc];
+    const chapters = [['First launch', 'Sign in · meet Navo'], ['Documents and forms', 'Wed 8 Oct'], ['Pre-joining: Navo at work', 'Thu 16 Oct'], ['Ready for Day 1', 'Fri 17 Oct'], ['Day 1', 'Mon 20 Oct'], ['Week 1 to Day 30', '24 Oct – 19 Nov']].map(([name, when], i) => { const on = i === chapIdx && st.view === 'emp'; const done = i < chapIdx; return { n: done ? '✓' : i + 1, name, when, w: on ? 600 : 400, bg: on ? '#EEF2FE' : 'transparent', dotBg: on ? '#2F5BEA' : done ? '#E3F2EC' : '#F1F3F7', dotInk: on ? '#fff' : done ? C.done : '#5B6474', go: () => this.chap(i) }; });
+    const actions = { hr: [{ label: 'Show me', run: () => this.setState({ sheet: 'activity' }) }] };
+    const askChips = ['What if HR doesn\'t respond?', 'What should I bring Monday?', 'Can I add my parents to insurance?'];
+    const runLine = busy ? this.HUMAN[curTool] + '…' : { launch: 'Waiting for Anand to sign in.', signin: 'Verifying Anand against his application.', meet: 'Introducing itself and its guardrails.', docs: st.reading ? 'Reading address proof with document AI.' : 'Read 5 documents. 1 unclear, 1 missing.', clarify: 'Asking about one unclear field, not the whole document.', forms: 'Pre-filled 5 of 6 fields from documents.', privacy: 'Explaining data handling.', culture: 'Sharing context before training.', idcard: 'Bundled 3 pickups into one trip.', pickup: 'Coordinated HR, IT and Facilities.', day1: 'Running Day 1 reminders.', confirm: 'Waiting for collection confirmation.', day1done: 'Closed Day 1 requests with HR and IT.', week1: 'Spotted a benefits deadline and a free slot.', benefits: 'Matched policy §3.2 to family details.', day30: 'Prepared 30-day check-in.' }[sc] || (st.step === 0 ? 'Idle. Advance time to wake Navo.' : 'Up to date.');
+    const runFace = busy ? face : { docs: st.reading ? 'thinking' : 'needs', clarify: 'needs', forms: 'calm', confirm: 'needs', day1done: 'celebrating', week1: 'thinking', benefits: 'thinking', day30: 'celebrating', idcard: 'celebrating' }[sc] || face;
+    const navy = sc === 'launch' || sc === 'culture';
+    const NOTICE = [
+      'Navo introduces itself and its limits: what it does alone, and what it always asks first.',
+      'Navo reads the documents itself. It asks Anand about one unclear date and one missing file, then pre-fills the forms.',
+      'Press Advance time. Watch the face, the status line and the tool calls as Navo catches the late Employee ID and acts. Try the HR owner view too.',
+      'One trip for ID card, laptop and kit. Navo coordinated HR, IT and Facilities.',
+      'Navo runs the day and closes the requests once Anand confirms what he collected.',
+      'Navo keeps going after Day 1: a benefits deadline at the right moment, a booked walkthrough, the 30-day check-in.'
+    ];
+    const notice = st.view === 'hr' ? 'Priya sees only exceptions. Press Generate ID: Navo raises the IT requests and Anand\'s app updates.' : NOTICE[chapIdx];
+    return {
+      showIntro: st.intro, showOutro: st.outro, notice,
+      hasCap: !!st.cap && !st.intro && !st.outro, cap: st.cap, beatN: (st.beat ?? 0) + 1, beatTotal: this.beats().length - 1,
+      autoLabel: st.auto ? 'Pause' : 'Play', autoIcon: st.auto ? '❚❚' : '▶', toggleAuto: () => this.toggleAuto(), nextBeat: () => this.nextBeat(), prevBeat: () => this.prevBeat(),
+      autoPlay: () => this.setState({ auto: true, intro: false }, () => this.runBeat(0)),
+      capProgress: Math.round(((st.beat ?? 0) / (this.beats().length - 1)) * 100) + '%',
+      introChapters: [['Meet Navo', 'Sign in, set the rules'], ['Documents and forms', 'Navo reads, asks only what\'s unclear'], ['Navo at work', 'The late Employee ID'], ['Ready for Day 1', 'One pickup'], ['Day 1', 'Plan and confirm'], ['Weeks 1–4', 'Benefits, check-in']].map(([what, when], i) => ({ n: i + 1, what, when, w: i === 2 ? 700 : 500, bg: i === 2 ? '#2F5BEA' : '#E4EAFB', ink: i === 2 ? '#fff' : '#2F5BEA' })),
+      startDemo: () => this.setState({ intro: false, screen: 'launch' }, () => this.arm()),
+      openIntro: () => this.setState({ intro: true }),
+      openOutro: () => this.setState({ outro: true }), closeOutro: () => this.setState({ outro: false }),
+      restart: () => { clearInterval(this.ti); this.setState({ outro: false, intro: true, view: 'emp', screen: 'launch', step: 0, pending: null, sheet: null, why: false, msgs: [], addr: false, reading: false, relieving: false, emerg: false, training: false, slide: 0, got: { id: false, laptop: false, kit: false }, booked: false, enrolled: false, pulse: 0 }); },
+      showPresenter: this.props.showPresenter ?? true,
+      isEmp: st.view === 'emp', isHR: st.view === 'hr', dayClock, clock: dayClock.split('· ')[1],
+      viewEmp: () => this.setState({ view: 'emp' }), viewHR: () => this.setState({ view: 'hr', sheet: null }),
+      empBg: st.view === 'emp' ? '#fff' : 'transparent', hrBg: st.view === 'hr' ? '#fff' : 'transparent', empW: st.view === 'emp' ? 600 : 400, hrW: st.view === 'hr' ? 600 : 400,
+      chapters,
+      scenA: () => { if (!busy) this.setState(s => ({ scen: 'A', step: Math.min(s.step, 1) })); }, scenB: () => { if (!busy) this.setState(s => ({ scen: 'B', step: Math.min(s.step, 1) })); },
+      scenABg: st.scen === 'A' ? '#fff' : 'transparent', scenBBg: st.scen === 'B' ? '#fff' : 'transparent', scenAW: st.scen === 'A' ? 600 : 400, scenBW: st.scen === 'B' ? 600 : 400,
+      steps: P.map((p, i) => { const on = i === (busy ? st.pending : st.step); const done = i < st.step; return { n: done ? '✓' : i + 1, label: p.label, w: on ? 600 : 400, bg: on ? '#2F5BEA' : done ? '#E3F2EC' : '#fff', ink: on ? '#fff' : done ? C.done : '#5B6474', border: on ? '#2F5BEA' : done ? '#E3F2EC' : '#D6DCE5', go: () => this.stepTo(i) }; }),
+      advance: () => this.advance(), advBg: busy || st.step >= 3 || awaiting ? '#9AAFF0' : '#2F5BEA', awaitingApproval: awaiting, hrCanAct: st.scen === 'A' && st.step === 1 && !busy && st.view === 'emp',
+      reset: () => { clearInterval(this.ti); this.setState({ view: 'emp', screen: 'launch', step: 0, pending: null, sheet: null, why: false, msgs: [], addr: false, reading: false, relieving: false, emerg: false, training: false, slide: 0, got: { id: false, laptop: false, kit: false }, booked: false, enrolled: false, pulse: 0 }, () => this.arm()); },
+      phoneBg: navy ? '#0B1530' : sc === 'home' ? '#F4F6FA' : '#fff', phoneInk: navy ? '#fff' : '#0B1530',
+      go, is,
+      docsFace: docsAll ? 'celebrating' : st.reading ? 'thinking' : 'needs', docsKick: docsAll ? 'ALL VERIFIED' : 'NEXT BEST ACTION', docsKickInk: docsAll ? C.done : '#C8372D',
+      docsHead: !st.addr ? 'Your address proof is missing.' : !st.relieving ? 'One thing to clarify.' : 'All documents verified.', docsSub: !st.addr ? 'Upload it and I can finish verification today. I\'ve read everything else.' : !st.relieving ? 'I couldn\'t read one date on your relieving letter.' : 'HR has everything they need. Degree check is with the vendor.',
+      docsCta, docs, confirmDate: () => { this.setState({ relieving: true, screen: 'docs' }); this.say('Updated. Priya in HR is notified.'); },
+      formsSub: st.emerg ? 'All set. Check and submit.' : 'Check them. Only 1 field needs you.', formRows, formsCta,
+      face, statusText, statusInk: busy ? '#2F5BEA' : risk ? '#B45309' : '#13795B', statusBg: busy ? '#E4EAFB' : risk ? '#FEF3E2' : '#E3F2EC',
+      headline: cur.headline,
+      budget: [{ n: needs.length, label: 'Need you', dot: '#E5484D', ink: '#0B1530', bg: '#fff', ring: 'none' }, { n: 9 - cnt('done'), label: 'Navo handling', dot: C.agent, ink: '#0B1530', bg: '#fff', ring: busy ? 'inset 0 0 0 1px rgba(56,189,248,.55)' : 'none' }, { n: wait, label: 'Waiting on others', dot: C.wait, ink: '#0B1530', bg: '#fff', ring: 'none' }, { n: risk, label: 'At risk', dot: risk ? C.risk : '#C9CFD9', ink: risk ? C.risk : '#0B1530', bg: risk ? '#FFF7EB' : '#fff', ring: 'none' }],
+      needs, approve: () => { if (awaiting) this.runTo(3); }, doTraining: () => { this.setState({ training: true }); this.say('Training complete. I told IT to switch on your access.'); },
+      didHead: cur.didHead, did: cur.did.map(([icon, title, result, when, fresh]) => ({ title, result, when, isDone: icon === '✓', isNavo: icon !== '✓', face: icon === '↑' ? 'concerned' : 'acting', bg: fresh ? '#EEF2FE' : 'transparent', whenInk: fresh ? '#2F5BEA' : '#8A93A3' })),
+      hasWatch: !!w, watch, whyOpen: st.why, whyLabel: st.why ? 'Hide' : 'Why?', toggleWhy: () => this.setState(s => ({ why: !s.why })),
+      whySteps: allEvents.filter(e => e.c === 'empid').slice(-5).map(e => ({ phase: e.phase, text: e.text, ink: phaseInk[e.phase] })),
+      readyForDay1: st.step >= 3 && !busy, docsLink: docsAll ? 'All verified' : 'Action needed', docsLinkInk: docsAll ? C.done : C.you,
+      slide: { k: sl[0], t: sl[1], b: sl[2], photo: sl[3] }, slideN: st.slide + 1, slideBars: slides.map((_, i) => ({ c: i <= st.slide ? '#38BDF8' : 'rgba(255,255,255,.2)' })), slideCta: st.slide === 4 ? 'Done' : 'Next →', nextSlide: () => st.slide === 4 ? this.setState({ slide: 0, screen: 'home' }) : this.setState({ slide: st.slide + 1 }),
+      idt, journey,
+      laptopReady: loaner ? 'Loaner ready' : 'Ready', laptopInk: C.done,
+      day1, pick, pickLabel: nGot ? `Confirm ${nGot} item${nGot > 1 ? 's' : ''}` : 'Tap what you collected', pickBg: nGot ? '#2F5BEA' : '#9AAFF0', confirmPick: () => { if (nGot) { this.go('day1done'); this.say('Closed your pickup requests with HR and IT.'); } },
+      doneList, week, notBooked: !st.booked, bookText: st.booked ? 'Booked: roadmap walkthrough with Meera, today 16:00. Added to your calendar.' : 'Meera is free today at 16:00. Want me to book a roadmap walkthrough before your check-in with Rahul?', book: () => { this.setState({ booked: true }); this.say('Booked with Meera, 16:00.'); },
+      benefitsNudge: st.enrolled ? 'Health cover enrolled' : 'Health cover enrolment closes in 5 days', benefitsNudgeSub: st.enrolled ? 'You, spouse and child · confirmed' : 'Relevant to you now · 1 min',
+      enrol: () => { if (!st.enrolled) { this.setState({ enrolled: true }); this.say('Enrolled. HR and the insurer are notified.'); } }, enrolBg: st.enrolled ? C.done : '#2F5BEA', enrolLabel: st.enrolled ? 'Enrolled ✓' : 'Enrol family',
+      askParents: () => this.ask('Can I add my parents to insurance?'),
+      pulse, pulseQ: st.pulse ? 'Thanks for telling me.' : 'How has joining felt?',
+      hasToast: !!st.toast, toast: st.toast,
+      openActivity: () => this.setState({ sheet: 'activity' }), openAsk: () => this.setState({ sheet: 'ask' }), closeSheet: () => this.setState({ sheet: null }), askHR: () => this.ask(askChips[0]),
+      scrimOp: st.sheet ? 1 : 0, scrimPE: st.sheet ? 'auto' : 'none', actY: st.sheet === 'activity' ? '0%' : '105%', askY: st.sheet === 'ask' ? '0%' : '105%',
+      cases, noMsgs: st.msgs.length === 0,
+      msgs: st.msgs.map(m => m.role === 'u' ? { text: m.text, align: 'flex-end', bg: '#F1F3F7', pad: '9px 13px', ink: '#0B1530', hasChecked: false, hasActions: false, actions: [] } : { text: m.text, align: 'flex-start', bg: 'transparent', pad: '0', ink: m.pending ? '#5B6474' : '#0B1530', hasChecked: !!m.checked, checked: m.checked, hasActions: !!(m.act && actions[m.act]), actions: (m.act && actions[m.act]) || [] }),
+      chips: askChips.map(l => ({ label: l, run: () => this.ask(l) })),
+      q: st.q, onQ: e => this.setState({ q: e.target.value }), onKey: e => { if (e.key === 'Enter') this.ask(st.q); }, send: () => this.ask(st.q),
+      hrCount: hrQueue.length, hrHead: hrQueue.length === 1 ? '1 thing needs you.' : `${hrQueue.length} things need you.`, hrOnTrack: issued ? 12 : 11, hrResolved: 27 + (issued ? 3 : 0) + st.step, hrQueue, joiners,
+      anandStatus: joinStatus[0], anandNote, anandBg: issued ? '#E3F2EC' : risk ? '#FFF7EB' : '#F6F8FC', anandInk: issued ? C.done : risk ? '#B45309' : '#5B6474',
+      feed: allEvents.slice().reverse().map(e => ({ ...e, phase: e.phase.toUpperCase(), ink: phaseInk[e.phase] })),
+      runState: busy ? 'Running' : st.step === 0 ? 'Idle' : 'Up to date', runLine, runFace,
+      tools, noTools: tools.length === 0, diff: busy ? [] : cur.diff, hasDiff: !busy && cur.diff.length > 0
+    };
+  }
+}
+</script>
+</body>
+</html>
