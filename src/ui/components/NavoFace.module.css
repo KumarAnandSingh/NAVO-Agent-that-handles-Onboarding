@@ -1,0 +1,89 @@
+.face {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+
+.glowRest {
+  filter: drop-shadow(0 3px 4px rgba(11, 21, 48, 0.12));
+}
+
+.glowSignal {
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.55));
+}
+
+.glowNeeds {
+  filter: drop-shadow(0 0 5px rgba(240, 90, 79, 0.4));
+}
+
+.bob {
+  animation: nfBob 2.2s ease-in-out infinite;
+}
+
+.blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nfBlink 4.5s infinite;
+}
+
+.ping {
+  animation: nfPing 1s infinite;
+}
+
+.scan {
+  animation: nfScan 1.1s ease-in-out infinite alternate;
+}
+
+.think {
+  animation: nfThink 1.2s infinite;
+}
+
+@keyframes nfBlink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes nfBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6%);
+  }
+}
+
+@keyframes nfPing {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes nfScan {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(15px);
+  }
+}
+
+@keyframes nfThink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}

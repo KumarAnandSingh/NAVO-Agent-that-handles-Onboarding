@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+body{margin:0;background:#E9EDF3;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0E1420;-webkit-font-smoothing:antialiased}
+a{color:#2F5BEA;text-decoration:none}a:hover{color:#1E44C4;text-decoration:underline}
+button{font-family:inherit}
+@keyframes arrPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(47,91,234,.35)}50%{opacity:.55;box-shadow:0 0 0 5px rgba(47,91,234,0)}}
+</style>
+</helmet>
+<section data-screen-label="Turn 2" style="padding:64px 64px 24px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:8px;max-width:780px">
+<div style="font-size:13px;color:#5B6474;letter-spacing:.04em;text-transform:uppercase">Turn 2 · Home redesign, built around attention</div>
+<div style="font-size:28px;font-weight:600;letter-spacing:-.02em">Where I stand, what I do, what the agent is doing</div>
+<div style="font-size:15px;line-height:1.5;color:#4A5363;text-wrap:pretty">The live story plays on load: the Employee ID is late, the agent chases HR, the ID arrives, and the laptop request goes out. Tap any tile for its detail. The full timeline has moved behind "View my journey" (<a href="#2b">2b</a>).</div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:#4A5363;padding-top:4px">
+<span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#13795B"></span>Done</span>
+<span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#2F5BEA"></span>Agent handling</span>
+<span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#D19A14"></span>Waiting on others</span>
+<span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#C8372D"></span>Needs you</span>
+</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start">
+
+<div id="2a" style="display:flex;flex-direction:column;gap:14px;width:390px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:600;background:#0E1420;color:#fff;border-radius:6px;padding:3px 8px">2a</span><span style="font-size:17px;font-weight:600">Home</span></div><button onClick="{{ replay }}" style="background:#fff;border:1px solid #D6DCE5;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;color:#0E1420">Replay story</button></div>
+<div style="width:390px;height:844px;border-radius:44px;background:#F4F6FA;border:1px solid #D6DCE5;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px -30px rgba(14,20,32,.35)">
+<div style="height:46px;flex:none;display:flex;align-items:center;padding:0 30px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ clock }}</div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:2px 16px 20px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px 4px"><span style="font-size:15px;font-weight:600;letter-spacing:-.01em">Navo</span><span style="width:30px;height:30px;border-radius:50%;background:#E4EAFB;color:#2F5BEA;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center">AM</span></div>
+
+<div style="background:#fff;border-radius:20px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:14px;color:#5B6474">Good morning, Anand</span><span style="font-size:13px;color:#5B6474">Day 1 · Mon 20 Oct</span></div>
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:44px;line-height:1;font-weight:600;letter-spacing:-.035em;font-variant-numeric:tabular-nums">9 of 10</span><span style="font-size:15px;color:#4A5363;line-height:1.3">off your plate</span></div>
+<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">
+<sc-for list="{{ segments }}" as="s" hint-placeholder-count="10"><div style="height:6px;border-radius:3px;background:{{ s.c }};transition:background .5s"></div></sc-for>
+</div>
+<div style="font-size:15px;font-weight:600;color:{{ heroInk }}">{{ heroLine }}</div>
+</div>
+
+<div style="background:#fff;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#C8372D"><span style="width:7px;height:7px;border-radius:50%;background:#C8372D"></span>One thing from you</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:18px;font-weight:600;letter-spacing:-.01em">Security training</span><span style="font-size:13px;color:#5B6474">15 min · due Sunday</span></div>
+<button style="background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;flex:none">Start →</button>
+</div>
+</div>
+
+<div style="background:#fff;border-radius:20px;padding:16px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 4px"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#2F5BEA">Navo is handling 9</span><span style="font-size:12px;color:#5B6474">{{ blockersLabel }} · {{ waitingLabel }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+<sc-for list="{{ tiles }}" as="t" hint-placeholder-count="9">
+<button onClick="{{ t.select }}" style="display:flex;align-items:center;gap:6px;padding:9px 8px;border-radius:10px;border:1px solid {{ t.border }};background:{{ t.bg }};cursor:pointer;text-align:left;font-size:12.5px;color:#0E1420;transition:background .5s,border-color .5s;min-width:0"><span style="width:7px;height:7px;border-radius:50%;background:{{ t.dot }};flex:none;transition:background .5s"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.label }}</span></button>
+</sc-for>
+</div>
+<sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;font-size:13px;padding:2px 2px 0"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:600">{{ sel.label }} · {{ sel.owner }}</span><span style="color:#4A5363;line-height:1.4">{{ sel.sub }}</span></div><button onClick="{{ clearSel }}" style="background:none;border:none;color:#5B6474;font-size:13px;cursor:pointer;padding:0">Close</button></div>
+</sc-if>
+<sc-if value="{{ atRisk }}" hint-placeholder-val="{{ true }}">
+<div style="background:#FBF3E2;border-radius:12px;padding:11px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">Laptop could miss Day 1</span><span style="font-size:12px;color:#4A5363">Employee ID is late. {{ riskAction }}</span></div>
+<button onClick="{{ toggleTrace2 }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0;flex:none">{{ whyLabel2 }}</button>
+</div>
+<sc-if value="{{ traceOpen2 }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:6px;padding:0 4px">
+<sc-for list="{{ trace2 }}" as="r" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:62px 1fr;gap:8px;font-size:12px;line-height:1.4"><span style="color:#5B6474">{{ r.mode }}</span><span>{{ r.text }}</span></div></sc-for>
+</div>
+</sc-if>
+</sc-if>
+</div>
+
+<div style="background:#fff;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">{{ liveDot }}Working for you</div>
+<div style="display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:12px;background:{{ latest.bg }};transition:background .6s">
+<div style="display:flex;justify-content:space-between;gap:8px"><span style="font-size:15px;font-weight:600">{{ latest.title }}</span><span style="font-size:12px;color:#5B6474;flex:none">Just now</span></div>
+<span style="font-size:13px;color:#4A5363;line-height:1.4;text-wrap:pretty">{{ latest.body }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px;padding:0 4px">
+<sc-for list="{{ earlier }}" as="e" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:40px 14px 1fr;gap:6px;font-size:13px;align-items:baseline"><span style="color:#5B6474;font-variant-numeric:tabular-nums">{{ e.time }}</span><span style="color:{{ e.c }};font-size:12px">{{ e.icon }}</span><span style="color:#2A3240">{{ e.title }}</span></div></sc-for>
+</div>
+</div>
+
+<a href="#2b" style="display:flex;justify-content:space-between;align-items:center;padding:12px 6px;font-size:14px;font-weight:600;color:#0E1420;text-decoration:none"><span>View my journey</span><span style="color:#2F5BEA">→</span></a>
+</div>
+<div style="flex:none;padding:10px 16px 28px;background:#fff;border-top:1px solid #E2E6ED"><div style="border:1px solid #E2E6ED;border-radius:22px;padding:11px 16px;font-size:14px;color:#5B6474">Ask Navo</div></div>
+</div>
+</div>
+
+<div id="2b" style="display:flex;flex-direction:column;gap:14px;width:390px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:600;background:#0E1420;color:#fff;border-radius:6px;padding:3px 8px">2b</span><span style="font-size:17px;font-weight:600">My journey (one level down)</span></div>
+<div style="width:390px;height:844px;border-radius:44px;background:#F4F6FA;border:1px solid #D6DCE5;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px -30px rgba(14,20,32,.35)">
+<div style="height:46px;flex:none;display:flex;align-items:center;padding:0 30px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ clock }}</div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:2px 16px 24px;display:flex;flex-direction:column;gap:14px">
+<a href="#2a" style="font-size:14px;color:#2F5BEA;padding:0 4px;text-decoration:none">‹ Home</a>
+<div style="display:flex;flex-direction:column;gap:14px;padding:0 4px">
+<span style="font-size:26px;font-weight:600;letter-spacing:-.025em">Your journey</span>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#13795B"></div><span style="font-size:12px;color:#5B6474">Offer</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#2F5BEA"></div><span style="font-size:12px;font-weight:600">Pre-joining</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#DCE1E9"></div><span style="font-size:12px;color:#5B6474">Day 1</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#DCE1E9"></div><span style="font-size:12px;color:#5B6474">Week 1</span></div>
+</div>
+</div>
+<sc-for list="{{ phases }}" as="p" hint-placeholder-count="3">
+<div style="background:#fff;border-radius:20px;padding:14px 18px;display:flex;flex-direction:column;gap:2px">
+<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474;padding-bottom:6px"><span>{{ p.name }}</span><span style="font-weight:400;letter-spacing:0;text-transform:none">{{ p.when }}</span></div>
+<sc-for list="{{ p.items }}" as="i" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:center;padding:8px 0;font-size:14px"><span style="width:7px;height:7px;border-radius:50%;background:{{ i.dot }};transition:background .5s"></span><span>{{ i.label }}</span><span style="font-size:12px;color:#5B6474">{{ i.sub }}</span></div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+<section data-screen-label="Turn 1" style="padding:64px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:8px;max-width:780px">
+<div style="font-size:13px;color:#5B6474;letter-spacing:.04em;text-transform:uppercase">Turn 1 · Employee home, pre-joining (mobile)</div>
+<div style="font-size:28px;font-weight:600;letter-spacing:-.02em">Three layouts, one state</div>
+<div style="font-size:15px;line-height:1.5;color:#4A5363;text-wrap:pretty">Simulated time: Thu 16 Oct, 10:15. Anand joins Mon 20 Oct. His Employee ID is late, which puts his laptop at risk. All three layouts share the same state: confirming bank details in one updates the others. Tap "Why?" to see the agent's reasoning on the risk. Use Tweaks to switch the scenario to on track. </div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start">
+
+<div id="1a" style="display:flex;flex-direction:column;gap:14px;width:390px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:600;background:#0E1420;color:#fff;border-radius:6px;padding:3px 8px">1a</span><span style="font-size:17px;font-weight:600">Command Centre</span></div>
+<div style="font-size:14px;line-height:1.5;color:#4A5363;text-wrap:pretty">Needs you, then handling, then risk, then next. The agent's reasoning opens inline from the item it affects.</div>
+<div style="width:390px;height:844px;border-radius:44px;background:#F7F9FC;border:1px solid #D6DCE5;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px -30px rgba(14,20,32,.35)">
+<div style="height:46px;flex:none;display:flex;align-items:center;padding:0 30px;font-size:15px;font-weight:600">10:15</div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:6px 20px 28px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:600;letter-spacing:-.01em">Navo</span><span style="width:32px;height:32px;border-radius:50%;background:#EEF2FE;color:#2F5BEA;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center">AM</span></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:15px;color:#5B6474">Good morning, Anand</div>
+<div style="font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-.025em;text-wrap:pretty">You're {{ readiness }}% ready for Day 1</div>
+<div style="height:4px;border-radius:2px;background:#E2E6ED;overflow:hidden"><div style="height:4px;background:#2F5BEA;width:{{ readinessPct }}"></div></div>
+<div style="font-size:13px;color:#5B6474">Monday 20 October · 4 days away</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:13px;font-weight:600">{{ needLabel }}</div>
+<sc-if value="{{ bankNotDone }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:#C8372D;margin-top:7px;flex:none"></span><div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:600">Upload bank proof</div><div style="font-size:13px;color:#5B6474">I read your cancelled cheque. Check and confirm · 1 min</div></div></div>
+<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;padding-left:18px"><span style="color:#5B6474">Holder</span><span>Anand Mehta</span><span style="color:#5B6474">Bank</span><span>HDFC Bank</span><span style="color:#5B6474">Account</span><span>•••• 4821</span><span style="color:#5B6474">IFSC</span><span>HDFC0001234</span></div>
+<div style="display:flex;gap:8px;padding-left:18px"><button onClick="{{ confirmBank }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">Confirm</button><button style="background:#fff;color:#0E1420;border:1px solid #E2E6ED;border-radius:10px;padding:10px 16px;font-size:14px;cursor:pointer">Edit</button></div>
+</div>
+</sc-if>
+<div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:#C8372D;margin-top:7px;flex:none"></span><div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:600">Complete security training</div><div style="font-size:13px;color:#5B6474">15 min · due before Day 1</div></div></div>
+<button style="background:#EEF2FE;color:#2F5BEA;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer">Start</button>
+</div>
+<sc-if value="{{ bankDone }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:0 2px"><span style="color:#13795B">Bank proof confirmed. Payroll notified.</span><button onClick="{{ undoBank }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">Undo</button></div>
+</sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:13px;font-weight:600">{{ handlingLabel }}</div>
+<div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:4px 16px;display:flex;flex-direction:column">
+<sc-for list="{{ handled }}" as="h" hint-placeholder-count="8">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #EEF1F5;font-size:14px"><span style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#13795B;width:12px">✓</span>{{ h.name }}</span><span style="font-size:13px;color:#5B6474">{{ h.status }}</span></div>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ isRisk }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:13px;font-weight:600">1 potential risk</div>
+<div style="background:#FDF4EA;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="width:8px;height:8px;border-radius:2px;background:#C26A12;margin-top:7px;flex:none;transform:rotate(45deg)"></span><div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:16px;font-weight:600;line-height:1.3">Employee ID is delaying laptop provisioning</div><div style="font-size:14px;color:#4A5363">I'm following up with HR.</div></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;border-top:1px solid #F0E1CF;padding-top:10px;padding-left:18px"><span style="color:#4A5363">Reminder sent to Priya Nair · 10:08</span><button onClick="{{ toggleTrace }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">{{ whyLabel }}</button></div>
+<sc-if value="{{ traceOpen }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:10px;padding-left:18px">
+<sc-for list="{{ trace }}" as="t" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:40px 1fr;gap:8px;font-size:13px"><span style="color:#5B6474;font-variant-numeric:tabular-nums">{{ t.time }}</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#5B6474">{{ t.mode }}</span><span style="line-height:1.4;text-wrap:pretty">{{ t.text }}</span></div></div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:13px;font-weight:600">What happens next</div>
+<sc-for list="{{ next }}" as="n" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:76px 1fr;gap:12px;font-size:14px;padding:2px 0"><span style="color:#5B6474;font-size:13px">{{ n.when }}</span><span>{{ n.what }}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;padding:12px 16px 30px;background:#fff;border-top:1px solid #E2E6ED"><div style="border:1px solid #E2E6ED;border-radius:22px;padding:12px 16px;font-size:14px;color:#5B6474">Ask Navo about policies, Day 1, anything</div></div>
+</div>
+</div>
+
+<div id="1b" style="display:flex;flex-direction:column;gap:14px;width:390px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:600;background:#0E1420;color:#fff;border-radius:6px;padding:3px 8px">1b</span><span style="font-size:17px;font-weight:600">Journey</span></div>
+<div style="font-size:14px;line-height:1.5;color:#4A5363;text-wrap:pretty">Offer to Week 1 on one timeline. What needs you stays pinned at the top. The agent's actions sit on the timeline at the point they happened.</div>
+<div style="width:390px;height:844px;border-radius:44px;background:#F7F9FC;border:1px solid #D6DCE5;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px -30px rgba(14,20,32,.35)">
+<div style="height:46px;flex:none;display:flex;align-items:center;padding:0 30px;font-size:15px;font-weight:600">10:15</div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:6px 20px 28px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:600;letter-spacing:-.01em">Navo</span><span style="width:32px;height:32px;border-radius:50%;background:#EEF2FE;color:#2F5BEA;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center">AM</span></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="font-size:26px;line-height:1.15;font-weight:600;letter-spacing:-.025em">4 days to Day 1</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#2F5BEA"></div><span style="font-size:12px;color:#5B6474">Offer</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:linear-gradient(90deg,#2F5BEA 70%,#E2E6ED 70%)"></div><span style="font-size:12px;font-weight:600">Pre-joining</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#E2E6ED"></div><span style="font-size:12px;color:#5B6474">Day 1</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#E2E6ED"></div><span style="font-size:12px;color:#5B6474">Week 1</span></div>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:6px 16px;display:flex;flex-direction:column">
+<div style="font-size:12px;font-weight:600;color:#5B6474;padding:10px 0 4px">{{ needLabel }}</div>
+<sc-if value="{{ bankNotDone }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF1F5"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Upload bank proof</span><span style="font-size:12px;color:#5B6474">Read from cheque · HDFC •••• 4821</span></div><button onClick="{{ confirmBank }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">Confirm</button></div>
+</sc-if>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Complete security training</span><span style="font-size:12px;color:#5B6474">15 min · before Day 1</span></div><button style="background:#EEF2FE;color:#2F5BEA;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">Start</button></div>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6474;padding-bottom:10px">Done</div>
+<div style="display:grid;grid-template-columns:16px 1fr;gap:0 12px">
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#13795B;margin-top:5px"></span><span style="flex:1;width:1px;background:#D6DCE5"></span></div>
+<div style="padding-bottom:14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">Offer signed, PAN and Aadhaar verified</span><span style="font-size:12px;color:#5B6474">8–12 Oct</span></div>
+<sc-if value="{{ bankDone }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#13795B;margin-top:5px"></span><span style="flex:1;width:1px;background:#D6DCE5"></span></div>
+<div style="padding-bottom:14px;display:flex;justify-content:space-between;gap:8px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">Bank proof confirmed, payroll notified</span><span style="font-size:12px;color:#5B6474">Today, 10:15 · by you</span></div><button onClick="{{ undoBank }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0;align-self:flex-start">Undo</button></div>
+</sc-if>
+</div>
+<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6474;padding:8px 0 10px">In progress · Navo is handling</div>
+<div style="display:grid;grid-template-columns:16px 1fr;gap:0 12px">
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;border:2px solid #2F5BEA;box-sizing:border-box;margin-top:5px"></span><span style="flex:1;width:1px;background:#D6DCE5"></span></div>
+<div style="padding-bottom:14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">Background verification</span><span style="font-size:12px;color:#5B6474">With vendor · expected Fri 17 Oct</span></div>
+<sc-if value="{{ isRisk }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:2px;background:#C26A12;transform:rotate(45deg);margin-top:5px"></span><span style="flex:1;width:1px;background:#D6DCE5"></span></div>
+<div style="padding-bottom:14px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">Employee ID is delaying laptop provisioning</span><span style="font-size:12px;color:#A6510A">ID was due 14 Oct · laptop needs 2 working days</span></div>
+<div style="background:#fff;border:1px solid #E2E6ED;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><span><span style="color:#2F5BEA;font-weight:600">Navo</span> · I'm following up with HR</span><button onClick="{{ toggleTrace }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">{{ whyLabel }}</button></div>
+<sc-if value="{{ traceOpen }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ trace }}" as="t" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:40px 1fr;gap:8px;font-size:12px"><span style="color:#5B6474;font-variant-numeric:tabular-nums">{{ t.time }}</span><span style="line-height:1.4;text-wrap:pretty">{{ t.text }}</span></div>
+</sc-for>
+</sc-if>
+</div>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;border:2px solid #9AA1AE;box-sizing:border-box;margin-top:5px"></span><span style="flex:1;width:1px;background:#D6DCE5"></span></div>
+<div style="padding-bottom:14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">Laptop, email, VPN</span><span style="font-size:12px;color:#5B6474">IT · {{ itStatus }}</span></div>
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;border:2px solid #9AA1AE;box-sizing:border-box;margin-top:5px"></span><span style="flex:1;width:1px;background:#D6DCE5"></span></div>
+<div style="padding-bottom:14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">Manager setup and buddy</span><span style="font-size:12px;color:#5B6474">Rahul Iyer · Meera Shah confirmed</span></div>
+</div>
+<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6474;padding:8px 0 10px">Day 1 · Mon 20 Oct</div>
+<div style="display:grid;grid-template-columns:16px 1fr;gap:0 12px">
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#D6DCE5;margin-top:5px"></span><span style="flex:1;width:1px;background:#D6DCE5"></span></div>
+<div style="padding-bottom:14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">Induction, 9:30 · 1:1 with Rahul, 12:00</span><span style="font-size:12px;color:#5B6474">Mumbai office, Tower B</span></div>
+</div>
+<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6474;padding:8px 0 10px">Week 1</div>
+<div style="display:grid;grid-template-columns:16px 1fr;gap:0 12px">
+<div style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#D6DCE5;margin-top:5px"></span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">Product induction, team intros, first-week check-in</span><span style="font-size:12px;color:#5B6474">21–24 Oct</span></div>
+</div>
+</div>
+</div>
+<div style="flex:none;padding:12px 16px 30px;background:#fff;border-top:1px solid #E2E6ED"><div style="border:1px solid #E2E6ED;border-radius:22px;padding:12px 16px;font-size:14px;color:#5B6474">Ask Navo about policies, Day 1, anything</div></div>
+</div>
+</div>
+
+<div id="1c" style="display:flex;flex-direction:column;gap:14px;width:390px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:600;background:#0E1420;color:#fff;border-radius:6px;padding:3px 8px">1c</span><span style="font-size:17px;font-weight:600">Agent-first</span></div>
+<div style="font-size:14px;line-height:1.5;color:#4A5363;text-wrap:pretty">The agent writes short briefings with action cards attached. A status bar stays pinned at the top so the full onboarding state is always one glance away.</div>
+<div style="width:390px;height:844px;border-radius:44px;background:#F7F9FC;border:1px solid #D6DCE5;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px -30px rgba(14,20,32,.35)">
+<div style="height:46px;flex:none;display:flex;align-items:center;padding:0 30px;font-size:15px;font-weight:600;background:#fff">10:15</div>
+<div style="flex:none;background:#fff;border-bottom:1px solid #E2E6ED;padding:4px 20px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:600">Navo</span><span style="font-size:13px;color:#5B6474;white-space:nowrap">Day 1 in 4 days · {{ readiness }}% ready</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+<div style="border:1px solid #E2E6ED;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:600">{{ needCount }}</span><span style="font-size:11px;color:#5B6474">Need you</span></div>
+<div style="border:1px solid #E2E6ED;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:600">{{ handlingCount }}</span><span style="font-size:11px;color:#5B6474">Handling</span></div>
+<div style="border:1px solid #E2E6ED;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px;background:{{ riskTileBg }}"><span style="font-size:18px;font-weight:600;color:{{ riskTileInk }}">{{ riskCount }}</span><span style="font-size:11px;color:#5B6474">At risk</span></div>
+</div>
+</div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:22px 20px 28px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font-size:12px;color:#5B6474">Today, 10:02</div>
+<div style="font-size:16px;line-height:1.5;text-wrap:pretty">Good morning, Anand. Two things need you before Monday. I'm handling the rest.</div>
+<sc-if value="{{ bankNotDone }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:600">Upload bank proof</div><div style="font-size:13px;color:#5B6474">I read your cheque: HDFC Bank, •••• 4821, HDFC0001234</div></div>
+<div style="display:flex;gap:8px"><button onClick="{{ confirmBank }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">Confirm</button><button style="background:#fff;color:#0E1420;border:1px solid #E2E6ED;border-radius:10px;padding:10px 16px;font-size:14px;cursor:pointer">Edit</button></div>
+</div>
+</sc-if>
+<sc-if value="{{ bankDone }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;font-size:13px;border-left:2px solid #13795B;padding:2px 0 2px 12px"><span style="color:#13795B">Bank proof confirmed. Payroll notified.</span><button onClick="{{ undoBank }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">Undo</button></div>
+</sc-if>
+<div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+<div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:600">Complete security training</div><div style="font-size:13px;color:#5B6474">15 min · due before Day 1</div></div>
+<button style="background:#EEF2FE;color:#2F5BEA;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer">Start</button>
+</div>
+</div>
+<sc-if value="{{ isRisk }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font-size:12px;color:#5B6474">Today, 10:08</div>
+<div style="font-size:16px;line-height:1.5;text-wrap:pretty">Your Employee ID is 2 days late. IT can't start your laptop without it, so I've followed up with HR. You don't need to do anything yet.</div>
+<div style="background:#FDF4EA;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px"><span style="background:#fff;border:1px solid #F0D9BF;color:#A6510A;border-radius:999px;padding:4px 10px">Employee ID · late</span><span style="color:#A39A90">→</span><span style="background:#fff;border:1px solid #E8E2DA;border-radius:999px;padding:4px 10px">Laptop</span><span style="color:#A39A90">→</span><span style="background:#fff;border:1px solid #E8E2DA;border-radius:999px;padding:4px 10px">VPN</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#4A5363">Reminder sent to Priya Nair, HR</span><button onClick="{{ toggleTrace }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">{{ whyLabel }}</button></div>
+<sc-if value="{{ traceOpen }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ trace }}" as="t" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:40px 1fr;gap:8px;font-size:12px"><span style="color:#5B6474;font-variant-numeric:tabular-nums">{{ t.time }}</span><span style="line-height:1.4;text-wrap:pretty">{{ t.text }}</span></div>
+</sc-for>
+</sc-if>
+</div>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font-size:12px;color:#5B6474">Today, 10:12</div>
+<div style="font-size:16px;line-height:1.5;text-wrap:pretty">Rahul confirmed your 1:1 on Monday at 12:00. Meera Shah will be your buddy and will meet you after induction.</div>
+</div>
+</div>
+<div style="flex:none;padding:12px 16px 30px;background:#fff;border-top:1px solid #E2E6ED;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:6px;overflow:hidden"><span style="flex:none;border:1px solid #E2E6ED;border-radius:999px;padding:6px 12px;font-size:13px">What should I bring on Day 1?</span><span style="flex:none;border:1px solid #E2E6ED;border-radius:999px;padding:6px 12px;font-size:13px">WFH policy</span></div>
+<div style="border:1px solid #E2E6ED;border-radius:22px;padding:12px 16px;font-size:14px;color:#5B6474">Message Navo</div>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;scenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;risk&quot;,&quot;ontrack&quot;],&quot;default&quot;:&quot;risk&quot;,&quot;tsType&quot;:&quot;'risk'|'ontrack'&quot;}}">
+class Component extends DCLogic {
+  state = { bank: false, trace: false, step: 0, sel: null, trace2: false };
+  componentDidMount() { this.play(); }
+  componentWillUnmount() { clearInterval(this.timer); clearTimeout(this.kick); }
+  play() {
+    clearInterval(this.timer); clearTimeout(this.kick);
+    this.setState({ step: 0, trace2: false });
+    this.kick = setTimeout(() => {
+      this.timer = setInterval(() => {
+        if (this.state.step >= 4) return clearInterval(this.timer);
+        this.setState(s => ({ step: s.step + 1 }));
+      }, 2600);
+    }, 1400);
+  }
+  homeVals() {
+    const step = this.state.step;
+    const C = { done: '#13795B', agent: '#2F5BEA', wait: '#D19A14', you: '#C8372D' };
+    const st = {
+      docs: ['done', 'HR', 'PAN, Aadhaar, bank proof verified'],
+      bgv: ['wait', 'Vendor', 'Background check in progress. Expected Fri 17 Oct.'],
+      empid: step >= 2 ? ['done', 'HR', 'Issued 10:51. EMP-204817.'] : ['wait', 'HR', 'Due 14 Oct, 2 days late. Laptop and email depend on it.'],
+      laptop: step >= 3 ? ['agent', 'IT', 'Request sent 10:52. Ships Fri, ready at desk Mon.'] : ['wait', 'IT', 'Can start once Employee ID is issued. Needs 2 working days.'],
+      email: step >= 4 ? ['agent', 'IT', 'Account requested 10:53. Live Mon 9:00.'] : ['agent', 'IT', 'Queued until Employee ID is issued.'],
+      vpn: ['agent', 'IT', 'Set up on your laptop before Day 1.'],
+      manager: ['done', 'Rahul Iyer', '1:1 booked Mon 12:00.'],
+      buddy: ['done', 'Meera Shah', 'Meets you after induction.'],
+      induction: ['done', 'HR', 'Mon 9:30, Mumbai office, Tower B.']
+    };
+    const names = { docs: 'Documents', bgv: 'BG check', empid: 'Employee ID', laptop: 'Laptop', email: 'Email', vpn: 'VPN', manager: 'Manager', buddy: 'Buddy', induction: 'Induction' };
+    const order = ['docs', 'empid', 'bgv', 'laptop', 'email', 'vpn', 'manager', 'buddy', 'induction'];
+    const sel = this.state.sel;
+    const tiles = order.map(id => {
+      const [k, owner, sub] = st[id];
+      const on = sel === id;
+      return { id, label: names[id], owner, sub, dot: C[k], bg: on ? '#EEF2FE' : (k === 'wait' && id === 'empid' ? '#FBF3E2' : '#fff'), border: on ? '#2F5BEA' : '#E6E9EF', select: () => this.setState(s => ({ sel: s.sel === id ? null : id })) };
+    });
+    const waiting = order.filter(id => st[id][0] === 'wait').length;
+    const atRisk = step < 3;
+    const segs = [...order].sort((a, b) => ['done', 'agent', 'wait'].indexOf(st[a][0]) - ['done', 'agent', 'wait'].indexOf(st[b][0])).map(id => ({ c: C[st[id][0]] }));
+    segs.push({ c: C.you });
+    const events = [
+      { time: '10:38', icon: '✓', c: C.done, title: 'Documents verified', body: '' },
+      { time: '10:40', icon: '✓', c: C.done, title: 'Manager 1:1 booked', body: '' },
+      { time: '10:42', icon: '!', c: '#B07A0A', title: 'Spotted: Employee ID is late', body: 'Your laptop needs it plus 2 working days. Friday is the last safe start.', bg: '#FBF3E2' },
+      { time: '10:44', icon: '→', c: C.agent, title: 'Followed up with HR', body: 'Sent Priya Nair the Day 1 deadline. Allowed without approval.', bg: '#EEF2FE' },
+      { time: '10:51', icon: '✓', c: C.done, title: 'Employee ID came through', body: 'HR issued EMP-204817. Starting the IT requests now.', bg: '#E8F4EF' },
+      { time: '10:52', icon: '✓', c: C.done, title: 'Laptop request created', body: "Your Employee ID came through. I've sent the laptop request to IT.", bg: '#E8F4EF' },
+      { time: '10:53', icon: '✓', c: C.done, title: 'Email account requested', body: 'Live Monday 9:00. Laptop still on track for Friday.', bg: '#E8F4EF' }
+    ];
+    const vis = events.slice(0, 3 + step);
+    const latest = vis[vis.length - 1];
+    const clocks = ['10:42', '10:44', '10:51', '10:52', '10:53'];
+    const phase = (k) => order.filter(id => k.includes(id)).map(id => ({ label: names[id], sub: st[id][1], dot: C[st[id][0]] }));
+    return {
+      clock: clocks[step],
+      segments: segs,
+      heroLine: atRisk ? 'One risk. I’m on it.' : 'Almost ready for Day 1',
+      heroInk: atRisk ? '#9A6400' : '#13795B',
+      tiles, hasSel: !!sel, sel: tiles.find(t => t.id === sel) || {}, clearSel: () => this.setState({ sel: null }),
+      blockersLabel: atRisk ? '1 blocker' : '0 blockers',
+      waitingLabel: `${waiting} waiting on others`,
+      atRisk, riskAction: step >= 1 ? 'HR reminded 10:44.' : 'Chasing HR now.',
+      trace2: [
+        { mode: 'Observed', text: 'Employee ID due 14 Oct. Not issued.' },
+        { mode: 'Reasoned', text: 'Laptop needs ID + 2 working days. Fri is the cut-off for Mon.' },
+        { mode: 'Acted', text: 'Reminded Priya Nair, HR. Auto-allowed.' },
+        { mode: 'Plan', text: 'No ID by Fri 12:00 → request loaner laptop. Asks you first.' }
+      ],
+      traceOpen2: this.state.trace2, whyLabel2: this.state.trace2 ? 'Hide' : 'Why?',
+      toggleTrace2: () => this.setState(s => ({ trace2: !s.trace2 })),
+      latest, earlier: vis.slice(0, -1).reverse().slice(0, 3),
+      liveDot: React.createElement('span', { style: { width: 7, height: 7, borderRadius: '50%', background: '#2F5BEA', animation: 'arrPulse 1.8s ease-in-out infinite', flex: 'none' } }),
+      replay: () => this.play(),
+      phases: [
+        { name: 'Offer', when: '6–12 Oct', items: [{ label: 'Offer signed', sub: 'You', dot: C.done }, ...phase(['docs'])] },
+        { name: 'Pre-joining', when: 'Now → Sun 19', items: [...phase(['empid', 'bgv', 'laptop', 'email', 'vpn']), { label: 'Security training', sub: 'You', dot: C.you }] },
+        { name: 'Day 1', when: 'Mon 20 Oct', items: [{ label: 'Induction', sub: '9:30', dot: C.done }, { label: '1:1 with Rahul Iyer', sub: '12:00', dot: C.done }, { label: 'Meet buddy, Meera Shah', sub: '14:00', dot: C.done }] },
+        { name: 'Week 1', when: '21–24 Oct', items: [{ label: 'Product induction', sub: 'Tue', dot: C.agent }, { label: 'Team intros', sub: 'Wed', dot: C.agent }, { label: 'First-week check-in', sub: 'Fri', dot: C.agent }] }
+      ]
+    };
+  }
+  renderVals() {
+    return { ...this.homeVals(), ...this.turn1Vals() };
+  }
+  turn1Vals() {
+    const risk = (this.props.scenario ?? 'risk') === 'risk';
+    const bank = this.state.bank;
+    const need = bank ? 1 : 2;
+    const handling = 8 + (bank ? 1 : 0);
+    const readiness = (risk ? 82 : 90) + (bank ? 5 : 0);
+    const handled = [
+      { name: 'Background verification', status: 'With vendor' },
+      { name: 'Laptop', status: risk ? 'Waiting on ID' : 'Ships Fri' },
+      { name: 'Email', status: 'After Employee ID' },
+      { name: 'VPN', status: 'After laptop' },
+      { name: 'Manager setup', status: 'Rahul Iyer' },
+      { name: 'Induction', status: 'Mon 9:30' },
+      { name: 'Buddy', status: 'Meera Shah' },
+      { name: 'Day 1 calendar', status: 'Sent' },
+      ...(bank ? [{ name: 'Payroll setup', status: 'Bank proof received' }] : [])
+    ];
+    return {
+      isRisk: risk, onTrack: !risk, bankDone: bank, bankNotDone: !bank,
+      needCount: need, needLabel: need === 1 ? '1 thing needs you' : `${need} things need you`,
+      handlingCount: handling, handlingLabel: `Navo is handling ${handling} things`,
+      riskCount: risk ? 1 : 0,
+      riskTileBg: risk ? '#FDF4EA' : '#fff', riskTileInk: risk ? '#A6510A' : '#0E1420',
+      readiness, readinessPct: readiness + '%',
+      itStatus: risk ? 'starts when Employee ID is issued' : 'laptop ships Fri 17 Oct',
+      handled,
+      next: [
+        { when: 'Fri 17 Oct', what: 'Background verification result' },
+        { when: 'Mon 9:30', what: 'Induction, Mumbai office' },
+        { when: 'Mon 12:00', what: '1:1 with Rahul Iyer' }
+      ],
+      trace: [
+        { time: '10:02', mode: 'Observed', text: 'Employee ID not issued. Due 14 Oct, owner HR.' },
+        { time: '10:03', mode: 'Reasoned', text: 'Laptop needs ID plus 2 working days. Fri is the last day to start and still make Mon.' },
+        { time: '10:08', mode: 'Acted · auto', text: 'Sent reminder to Priya Nair (HR) with the Day 1 deadline.' },
+        { time: 'Next', mode: 'Plan', text: 'If no ID by Fri 12:00, ask IT for a loaner laptop. Needs your OK.' }
+      ],
+      traceOpen: this.state.trace, whyLabel: this.state.trace ? 'Hide' : 'Why?',
+      confirmBank: () => this.setState({ bank: true }),
+      undoBank: () => this.setState({ bank: false }),
+      toggleTrace: () => this.setState(s => ({ trace: !s.trace }))
+    };
+  }
+}
+</script>
+</body>
+</html>

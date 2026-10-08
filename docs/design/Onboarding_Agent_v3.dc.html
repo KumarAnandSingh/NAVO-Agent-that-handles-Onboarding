@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#E9EDF3;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0E1420;-webkit-font-smoothing:antialiased}
+a{color:#2F5BEA;text-decoration:none}a:hover{color:#1E44C4}
+button,input{font-family:inherit}
+@keyframes agPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(47,91,234,.4)}50%{opacity:.5;box-shadow:0 0 0 5px rgba(47,91,234,0)}}
+</style>
+</helmet>
+<div data-screen-label="Prototype" style="min-height:100vh;padding:40px 32px;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:32px;justify-content:center;align-items:flex-start">
+
+<sc-if value="{{ showPresenter }}" hint-placeholder-val="{{ true }}">
+<div style="width:300px;display:flex;flex-direction:column;gap:14px">
+<div style="background:#fff;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">Demo · simulated time</span><span style="font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums">{{ dayClock }}</span><span style="font-size:13px;color:#5B6474">Anand joins Mon 20 Oct</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#F1F3F7;border-radius:10px;padding:3px">
+<button onClick="{{ scenA }}" style="border:none;border-radius:8px;padding:8px 6px;font-size:13px;cursor:pointer;background:{{ scenABg }};color:#0E1420;font-weight:{{ scenAW }}">HR responds</button>
+<button onClick="{{ scenB }}" style="border:none;border-radius:8px;padding:8px 6px;font-size:13px;cursor:pointer;background:{{ scenBBg }};color:#0E1420;font-weight:{{ scenBW }}">HR stays silent</button>
+</div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+<button onClick="{{ s.go }}" style="display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;text-align:left;background:none;border:none;padding:8px 0;cursor:pointer;color:#0E1420">
+<span style="width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;background:{{ s.bg }};color:{{ s.ink }};border:1px solid {{ s.border }};box-sizing:border-box">{{ s.n }}</span>
+<span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:12px;color:#5B6474">{{ s.time }}</span><span style="font-size:14px;font-weight:{{ s.w }};line-height:1.3">{{ s.label }}</span></span>
+</button>
+</sc-for>
+</div>
+<div style="display:flex;gap:8px">
+<button onClick="{{ advance }}" style="flex:1;background:{{ advBg }};color:#fff;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer">Advance time ▸</button>
+<button onClick="{{ reset }}" style="background:#fff;color:#0E1420;border:1px solid #D6DCE5;border-radius:10px;padding:11px 14px;font-size:14px;cursor:pointer">Reset</button>
+</div>
+<sc-if value="{{ awaitingApproval }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.4;color:#9A3B12">Waiting on Anand. Approve the loaner in the app to continue.</div></sc-if>
+</div>
+</div>
+</sc-if>
+
+<div style="width:390px;height:844px;border-radius:44px;background:#F4F6FA;border:1px solid #D6DCE5;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 70px -34px rgba(14,20,32,.4);flex:none">
+<div style="height:46px;flex:none;display:flex;align-items:center;padding:0 30px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ clock }}</div>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:2px 16px 20px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px">
+<div style="display:flex;align-items:center;gap:8px;min-width:0"><dc-import name="NavoFace" state="{{ face }}" size="34" hint-size="34px,34px"></dc-import><span style="font-size:15px;font-weight:600">{{ agent }}</span><span style="display:flex;align-items:center;gap:6px;font-size:12px;color:{{ statusInk }};background:{{ statusBg }};border-radius:999px;padding:4px 9px;white-space:nowrap;overflow:hidden;transition:background .3s">{{ liveDot }}{{ statusText }}</span></div>
+<span style="width:30px;height:30px;border-radius:50%;background:#E4EAFB;color:#2F5BEA;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none">AM</span>
+</div>
+
+<div style="padding:14px 4px 6px;display:flex;flex-direction:column;gap:6px">
+<span style="font-size:14px;color:#5B6474">Good morning, Anand.</span>
+<span style="font-size:27px;line-height:1.15;font-weight:600;letter-spacing:-.025em;text-wrap:pretty">{{ headline }}</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+<sc-for list="{{ budget }}" as="b" hint-placeholder-count="4">
+<div style="background:{{ b.bg }};border-radius:12px;padding:10px 10px 9px;display:flex;flex-direction:column;gap:3px;transition:background .5s">
+<span style="display:flex;align-items:center;gap:6px;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ b.ink }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ b.dot }}"></span>{{ b.n }}</span>
+<span style="font-size:11px;color:#4A5363;line-height:1.2">{{ b.label }}</span>
+</div>
+</sc-for>
+</div>
+
+<sc-for list="{{ needs }}" as="d" hint-placeholder-count="1">
+<div style="background:#fff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;border:1px solid {{ d.border }}">
+<span style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#C8372D"><span style="width:9px;height:9px;border-radius:50%;background:#E5484D"></span>YOU · {{ d.kicker }}</span>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.25">{{ d.title }}</span><span style="font-size:13px;color:#5B6474;line-height:1.4">{{ d.meta }}</span></div>
+<sc-if value="{{ d.simple }}" hint-placeholder-val="{{ true }}"><button style="background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;flex:none">Start →</button></sc-if>
+</div>
+<sc-if value="{{ d.approval }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:8px"><button onClick="{{ approve }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">Approve</button><button style="background:#fff;color:#0E1420;border:1px solid #E2E6ED;border-radius:12px;padding:10px 16px;font-size:14px;cursor:pointer">Not now</button></div>
+</sc-if>
+</div>
+</sc-for>
+
+<div style="background:#fff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:6px"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#2F5BEA">{{ didHead }}</span><button onClick="{{ openActivity }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">Activity</button></div>
+<sc-for list="{{ did }}" as="r" hint-placeholder-count="3">
+<button onClick="{{ openActivity }}" style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;text-align:left;border:none;border-radius:12px;padding:9px 8px;margin:0 -8px;background:{{ r.bg }};cursor:pointer;color:#0E1420;transition:background .6s">
+<sc-if value="{{ r.isDone }}" hint-placeholder-val="{{ true }}"><span style="width:20px;height:20px;border-radius:50%;background:#13795B;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center">✓</span></sc-if><sc-if value="{{ r.isNavo }}" hint-placeholder-val="{{ false }}"><dc-import name="NavoFace" state="{{ r.face }}" size="20" hint-size="20px,20px"></dc-import></sc-if>
+<span style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-size:14px;font-weight:600">{{ r.title }}</span><span style="font-size:12px;color:#5B6474">{{ r.result }}</span></span>
+<span style="font-size:11px;color:{{ r.whenInk }};white-space:nowrap">{{ r.when }}</span>
+</button>
+</sc-for>
+</div>
+
+<sc-if value="{{ hasWatch }}" hint-placeholder-val="{{ false }}">
+<div style="background:{{ watch.bg }};border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:background .5s">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:{{ watch.ink }}"><dc-import name="NavoFace" state="{{ watch.face }}" size="26" hint-size="26px,26px"></dc-import>{{ watch.kicker }}</span><button onClick="{{ toggleWhy }}" style="background:none;border:none;color:#2F5BEA;font-size:13px;cursor:pointer;padding:0">{{ whyLabel }}</button></div>
+<span style="font-size:16px;font-weight:600">{{ watch.title }}</span>
+<span style="font-size:13px;line-height:1.45;color:#4A5363;text-wrap:pretty">{{ watch.body }}</span>
+<span style="font-size:12px;font-weight:600;color:{{ watch.ink }}">{{ watch.foot }}</span>
+<sc-if value="{{ whyOpen }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:7px;border-top:1px solid rgba(14,20,32,.08);padding-top:10px">
+<sc-for list="{{ whySteps }}" as="w" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:62px 1fr;gap:8px;font-size:12px;line-height:1.4"><span style="color:{{ w.ink }};font-weight:600">{{ w.phase }}</span><span>{{ w.text }}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<button onClick="{{ toJourney }}" style="display:flex;justify-content:space-between;align-items:center;padding:12px 6px;font-size:14px;font-weight:600;color:#0E1420;background:none;border:none;cursor:pointer"><span>View full journey</span><span style="color:#2F5BEA">→</span></button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isJourney }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:2px 16px 20px;display:flex;flex-direction:column;gap:12px">
+<button onClick="{{ toHome }}" style="align-self:flex-start;background:none;border:none;font-size:14px;color:#2F5BEA;padding:0 4px;cursor:pointer">‹ Home</button>
+<div style="display:flex;flex-direction:column;gap:14px;padding:0 4px 4px">
+<span style="font-size:26px;font-weight:600;letter-spacing:-.025em">Your journey</span>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#13795B"></div><span style="font-size:12px;color:#5B6474">Offer</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#2F5BEA"></div><span style="font-size:12px;font-weight:600">Pre-joining</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#DCE1E9"></div><span style="font-size:12px;color:#5B6474">Day 1</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:3px;background:#DCE1E9"></div><span style="font-size:12px;color:#5B6474">Week 1</span></div>
+</div>
+</div>
+<sc-for list="{{ phases }}" as="p" hint-placeholder-count="4">
+<div style="background:#fff;border-radius:18px;padding:12px 16px;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474;padding:4px 0 6px"><span>{{ p.name }}</span><span style="font-weight:400;letter-spacing:0;text-transform:none">{{ p.when }}</span></div>
+<sc-for list="{{ p.items }}" as="i" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:center;padding:8px 0;font-size:14px"><span style="width:7px;height:7px;border-radius:50%;background:{{ i.dot }};transition:background .5s"></span><span>{{ i.label }}</span><span style="font-size:12px;color:#5B6474;text-align:right">{{ i.sub }}</span></div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="flex:none;padding:10px 16px 28px;background:#fff;border-top:1px solid #E2E6ED;display:flex;flex-direction:column;gap:8px">
+<button onClick="{{ askHR }}" style="align-self:flex-start;border:1px solid #E2E6ED;background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:#0E1420">What if HR doesn't respond?</button>
+<button onClick="{{ openAsk }}" style="border:1px solid #E2E6ED;background:#fff;border-radius:22px;padding:11px 16px;font-size:14px;color:#5B6474;text-align:left;cursor:pointer">Ask {{ agent }}</button>
+</div>
+
+<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(14,20,32,.28);opacity:{{ scrimOp }};pointer-events:{{ scrimPE }};transition:opacity .3s"></div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:86%;background:#fff;border-radius:24px 24px 0 0;transform:translateY({{ actY }});transition:transform .38s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column">
+<div style="flex:none;padding:16px 20px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #EEF1F5"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:17px;font-weight:600">Navo is working</span></div><button onClick="{{ closeSheet }}" style="background:#F1F3F7;border:none;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer">Done</button></div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:16px 20px 28px;display:flex;flex-direction:column;gap:22px">
+<sc-for list="{{ cases }}" as="c" hint-placeholder-count="2">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:600">{{ c.title }}</span><span style="font-size:12px;color:{{ c.ink }};background:{{ c.bg }};border-radius:999px;padding:3px 9px">{{ c.status }}</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ c.events }}" as="e" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:52px 12px 1fr;gap:8px">
+<span style="font-size:12px;color:#5B6474;font-variant-numeric:tabular-nums;padding-top:1px">{{ e.time }}</span>
+<span style="display:flex;flex-direction:column;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:{{ e.ink }};margin-top:5px;flex:none"></span><span style="flex:1;width:1px;background:#E2E6ED"></span></span>
+<span style="display:flex;flex-direction:column;gap:2px;padding-bottom:12px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:{{ e.ink }}">{{ e.phase }}</span><span style="font-size:13px;line-height:1.4">{{ e.text }}</span></span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:86%;background:#fff;border-radius:24px 24px 0 0;transform:translateY({{ askY }});transition:transform .38s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column">
+<div style="flex:none;padding:16px 20px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #EEF1F5"><span style="font-size:17px;font-weight:600">Ask {{ agent }}</span><button onClick="{{ closeSheet }}" style="background:#F1F3F7;border:none;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer">Done</button></div>
+<div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:16px 20px;display:flex;flex-direction:column;gap:18px">
+<sc-if value="{{ noMsgs }}" hint-placeholder-val="{{ true }}"><dc-import name="NavoFace" state="calm" size="44" hint-size="44px,44px"></dc-import><div style="font-size:14px;color:#5B6474;line-height:1.5">I know your onboarding state, your calendar and company policy. Ask about anything coming up.</div></sc-if>
+<sc-for list="{{ msgs }}" as="m" hint-placeholder-count="0">
+<div style="display:flex;flex-direction:column;gap:8px;align-items:{{ m.align }}">
+<span style="font-size:14px;line-height:1.5;max-width:92%;background:{{ m.bg }};border-radius:14px;padding:{{ m.pad }};color:{{ m.ink }};text-wrap:pretty">{{ m.text }}</span>
+<sc-if value="{{ m.hasChecked }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#5B6474">Checked: {{ m.checked }}</span></sc-if>
+<sc-if value="{{ m.hasActions }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ m.actions }}" as="x" hint-placeholder-count="2"><button onClick="{{ x.run }}" style="background:#EEF2FE;color:#2F5BEA;border:none;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer">{{ x.label }}</button></sc-for></div></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="flex:none;padding:10px 16px 28px;border-top:1px solid #EEF1F5;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ chips }}" as="q" hint-placeholder-count="3"><button onClick="{{ q.run }}" style="border:1px solid #E2E6ED;background:#fff;border-radius:999px;padding:6px 11px;font-size:12px;cursor:pointer;color:#0E1420">{{ q.label }}</button></sc-for></div>
+<div style="display:flex;gap:8px"><input value="{{ q }}" onChange="{{ onQ }}" onKeyDown="{{ onKey }}" placeholder="Type a question" style="flex:1;border:1px solid #E2E6ED;border-radius:22px;padding:11px 16px;font-size:14px;outline:none;color:#0E1420;min-width:0"><button onClick="{{ send }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:22px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer">Ask</button></div>
+</div>
+</div>
+</div>
+
+<sc-if value="{{ showPresenter }}" hint-placeholder-val="{{ true }}">
+<div style="width:380px;max-width:100%;display:flex;flex-direction:column;gap:14px">
+<div style="background:#fff;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">Agent runtime</span><span style="font-size:12px;color:{{ statusInk }};font-weight:600">{{ runState }}</span></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:13px;font-weight:600">Tool calls</span>
+<sc-if value="{{ noTools }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:#5B6474">Idle. Last run Wed 18:23. Advance time to wake the agent.</span></sc-if>
+<sc-for list="{{ tools }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:3px;padding:9px 10px;border-radius:10px;background:{{ t.bg }};font-family:'SF Mono',Menlo,Consolas,monospace;font-size:11.5px;line-height:1.45;transition:background .4s">
+<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#0E1420;font-weight:600;word-break:break-word">{{ t.fn }}<span style="color:#5B6474;font-weight:400">({{ t.args }})</span></span><span style="flex:none;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:10.5px;font-weight:600;color:{{ t.gInk }};background:{{ t.gBg }};border-radius:6px;padding:2px 6px;height:fit-content">{{ t.guard }}</span></div>
+<span style="color:{{ t.resInk }}">→ {{ t.res }}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ hasDiff }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid #EEF1F5;padding-top:14px">
+<span style="font-size:13px;font-weight:600">State changes</span>
+<sc-for list="{{ diff }}" as="f" hint-placeholder-count="2"><span style="font-family:'SF Mono',Menlo,Consolas,monospace;font-size:11.5px;color:#2A3240">{{ f }}</span></sc-for>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid #EEF1F5;padding-top:14px;font-size:12px;line-height:1.45;color:#4A5363">
+<span style="font-size:13px;font-weight:600;color:#0E1420">Guardrails</span>
+<span><span style="color:#13795B;font-weight:600">Auto</span> · read state and policy, reminders, IT tickets, scheduling, escalation after 24h</span>
+<span><span style="color:#C8372D;font-weight:600">Needs approval</span> · employee data, asset changes, sensitive HR actions</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;agentName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Navo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;liveAI&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showPresenter&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { scen: 'A', step: 0, pending: null, toolIdx: 0, screen: 'home', sheet: null, why: false, msgs: [], q: '' };
+  componentWillUnmount() { clearInterval(this.ti); }
+
+  C = { done: '#13795B', agent: '#2F5BEA', wait: '#D19A14', risk: '#C2410C', you: '#C8372D' };
+  ITEMS = [['docs', 'Documents'], ['empid', 'Employee ID'], ['bgv', 'Background check'], ['laptop', 'Laptop'], ['email', 'Email'], ['vpn', 'VPN'], ['manager', 'Manager 1:1'], ['buddy', 'Buddy'], ['induction', 'Induction']];
+  TRAINING = { kicker: 'One thing from you', title: 'Security training', meta: '15 min · due Sunday', simple: true };
+  LOANER = { kicker: 'Navo needs your input', title: 'Use a loaner laptop for Day 1?', meta: 'IT can have one at your desk Monday 9:00. Your own laptop follows.', approval: true };
+
+  S0 = { day: 'Thu 16 Oct', clock: '09:00', label: 'Baseline', headline: 'Monday is 4 days away. One course left for you.',
+    items: { docs: ['done', 'Verified'], empid: ['wait', 'HR · due 14 Oct'], bgv: ['wait', 'With vendor'], laptop: ['wait', 'Needs Employee ID'], email: ['wait', 'Needs Employee ID'], vpn: ['wait', 'Needs laptop'], manager: ['done', 'Mon 12:00'], buddy: ['done', 'Meera Shah'], induction: ['done', 'Mon 9:30'] },
+    needs: ['t'], didHead: 'Navo handled 3 things overnight',
+    did: [['✓', 'Bank proof verified', 'Sent to payroll', 'Wed 18:20'], ['✓', 'Manager 1:1 booked', 'Mon 12:00 with Rahul Iyer', 'Wed 18:22'], ['✓', 'Buddy assigned', 'Meera Shah, same team', 'Wed 18:23']],
+    watch: null, tools: [], diff: [],
+    events: [['docs', 'Wed 18:20', 'Acted', 'Read bank proof from cheque. Verified and sent to payroll.'], ['setup', 'Wed 18:22', 'Acted', 'Booked 1:1 with Rahul Iyer, Mon 12:00.'], ['setup', 'Wed 18:23', 'Acted', 'Matched buddy Meera Shah, same product team.']] };
+  S1 = { day: 'Thu 16 Oct', clock: '10:43', label: 'Agent detects Day-1 risk', headline: 'One risk to Monday. I’m on it.',
+    items: { empid: ['risk', 'HR · 2 days late'], laptop: ['risk', 'May miss Day 1'] },
+    needs: ['t'], didHead: 'Navo is handling this',
+    did: [['→', 'Followed up with HR', 'Employee ID is 2 days late', 'Just now', true], ['✓', 'Bank proof verified', 'Sent to payroll', 'Wed'], ['✓', 'Manager 1:1 booked', 'Mon 12:00 with Rahul Iyer', 'Wed']],
+    watch: { tone: 'risk', kicker: 'At risk', title: 'Laptop may miss Day 1', body: 'Your Employee ID is 2 days late, and the laptop needs 2 working days after it. I followed up with HR.', foot: 'No action needed from you' },
+    tools: [['get_onboarding_state', 'employee="anand.mehta"', '9 tasks · 1 overdue: employee_id', 'read'], ['get_dependencies', 'task="laptop"', 'employee_id → laptop → email, vpn', 'read'], ['calculate_day1_risk', 'joining="2026-10-20"', 'HIGH · 0 working days slack', 'read'], ['check_permission', 'action="send_reminder"', 'allowed · auto', 'policy'], ['send_reminder', 'to="priya.nair", task="employee_id"', 'sent 10:43', 'auto']],
+    diff: ['employee_id: pending → overdue', 'laptop: blocked → at_risk', 'day1_risk: none → high', 'reminder R-1: created'],
+    events: [['empid', '10:42', 'Noticed', 'Employee ID not issued. Due 14 Oct, owner HR.'], ['empid', '10:42', 'Noticed', 'Laptop, email and VPN depend on it.'], ['empid', '10:43', 'Decided', 'Laptop needs ID + 2 working days. Friday is the last safe start. Day 1 at risk.'], ['empid', '10:43', 'Acted', 'Reminded Priya Nair, HR. Allowed automatically.'], ['empid', '10:43', 'Planned', 'No reply in 24h → escalate to HR Ops lead.']] };
+  S2A = { day: 'Thu 16 Oct', clock: '10:49', label: 'HR issues Employee ID', headline: 'Blocker cleared. You’re on track for Monday.',
+    items: { empid: ['done', 'EMP-204817'], laptop: ['agent', 'Delivery Fri'], email: ['agent', 'Live Mon 9:00'] },
+    needs: ['t'], didHead: 'Navo handled this',
+    did: [['✓', 'Employee ID confirmed', 'HR issued EMP-204817', '10:47', true], ['✓', 'Laptop request created', 'Expected delivery Friday', '10:48', true], ['✓', 'Email provisioning started', 'Live Monday 9:00', '10:48', true]],
+    watch: { tone: 'calm', kicker: 'Watching', title: 'VPN access', body: 'Set up once your laptop arrives on Friday.', foot: 'No action needed from you' },
+    tools: [['on_event', 'hr.employee_id.issued', 'EMP-204817', 'event'], ['update_task', 'employee_id, status="done"', 'ok', 'auto'], ['create_it_ticket', 'type="laptop", deliver_by="2026-10-17"', 'IT-55231', 'auto'], ['create_it_ticket', 'type="email"', 'IT-55232', 'auto'], ['calculate_day1_risk', 'joining="2026-10-20"', 'LOW', 'read'], ['notify_employee', 'summary', 'sent', 'auto']],
+    diff: ['employee_id: overdue → done', 'laptop: at_risk → requested', 'email: blocked → requested', 'day1_risk: high → low', 'reminder R-1: resolved'],
+    events: [['empid', '10:47', 'Noticed', 'HR issued Employee ID EMP-204817.'], ['empid', '10:48', 'Acted', 'Created laptop request IT-55231. Delivery Friday.'], ['empid', '10:48', 'Acted', 'Started email provisioning, IT-55232.'], ['empid', '10:49', 'Reported', 'Blocker cleared. Told Anand no action needed.']] };
+  S3A = { day: 'Fri 17 Oct', clock: '09:10', label: 'Ready for Monday', headline: 'You’re ready for Monday.',
+    items: { bgv: ['done', 'Cleared'], laptop: ['agent', 'Arrives today'], email: ['done', 'Ready'], vpn: ['agent', 'Configuring'] },
+    needs: ['t'], didHead: 'Since yesterday',
+    did: [['✓', 'Background check cleared', 'Vendor confirmed', '08:40', true], ['✓', 'Laptop shipped', 'Arrives today', '09:05', true], ['✓', 'Email ready', 'Live Monday 9:00', 'Thu']],
+    watch: { tone: 'calm', kicker: 'Watching', title: 'VPN access', body: 'Configured on your laptop before Monday.', foot: 'No action needed from you' },
+    tools: [['on_event', 'vendor.bgv.cleared', 'ok', 'event'], ['on_event', 'it.laptop.shipped', 'IT-55231', 'event'], ['calculate_day1_risk', 'joining="2026-10-20"', 'NONE · ready', 'read'], ['notify_employee', '"Ready for Monday"', 'sent', 'auto']],
+    diff: ['background_check: pending → done', 'laptop: requested → shipped', 'day1_status: on_track → ready'],
+    events: [['setup', 'Fri 08:40', 'Noticed', 'Background check cleared by vendor.'], ['setup', 'Fri 09:05', 'Noticed', 'Laptop out for delivery.'], ['setup', 'Fri 09:10', 'Reported', 'Ready for Monday. One task left for Anand.']] };
+  S2B = { day: 'Fri 17 Oct', clock: '10:45', label: '24h, no reply from HR', headline: 'I need one decision from you.',
+    items: { empid: ['risk', 'Escalated to HR Ops'], laptop: ['risk', 'Will miss Day 1'] },
+    needs: ['l', 't'], didHead: 'Navo is handling this',
+    did: [['↑', 'Escalated to HR Ops', 'No reply from HR in 24h', 'Just now', true], ['→', 'Followed up with HR', 'Thu 10:43', 'Thu']],
+    watch: { tone: 'risk', kicker: 'At risk', title: 'Laptop will miss Day 1', body: 'HR hasn’t replied in 24 hours. I escalated to Neha Kapoor, HR Ops lead, and lined up a loaner as backup.', foot: 'The loaner needs your OK' },
+    tools: [['check_sla', 'reminder="R-1"', '24h · no response', 'read'], ['calculate_day1_risk', 'joining="2026-10-20"', 'CRITICAL · last safe day', 'read'], ['check_permission', 'action="escalate_owner"', 'allowed after 24h · auto', 'policy'], ['escalate', 'to="neha.kapoor", cc="priya.nair"', 'sent 10:44', 'auto'], ['check_permission', 'action="request_loaner"', 'asset change · needs employee', 'policy'], ['request_approval', 'from="anand", action="loaner"', 'pending', 'approval']],
+    diff: ['reminder R-1: open → breached', 'day1_risk: high → critical', 'escalation E-1: created', 'approval A-1: pending'],
+    events: [['empid', 'Fri 10:43', 'Noticed', 'No reply from HR in 24 hours.'], ['empid', 'Fri 10:44', 'Decided', 'Laptop will miss Day 1 unless the ID arrives today.'], ['empid', 'Fri 10:44', 'Acted', 'Escalated to Neha Kapoor, HR Ops lead. Allowed after 24h.'], ['empid', 'Fri 10:45', 'Asked', 'Loaner laptop is an asset change. Asked Anand to approve.']] };
+  S3B = { day: 'Fri 17 Oct', clock: '11:02', label: 'Anand approves loaner', headline: 'Day 1 is covered.',
+    items: { empid: ['wait', 'With HR Ops'], laptop: ['agent', 'Loaner · Mon 9:00'] },
+    needs: ['t'], didHead: 'Navo handled this',
+    did: [['✓', 'Loaner reserved', 'At your desk Mon 9:00', 'Just now', true], ['↑', 'Escalated to HR Ops', 'Fri 10:44', '10:44']],
+    watch: { tone: 'calm', kicker: 'Watching', title: 'Employee ID', body: 'Escalated to HR Ops. Your own laptop follows once the ID is issued.', foot: 'No action needed from you' },
+    tools: [['on_approval', 'A-1, by="anand"', 'approved', 'event'], ['create_it_ticket', 'type="loaner", deliver_by="2026-10-20T09:00"', 'IT-55240', 'auto'], ['calculate_day1_risk', 'joining="2026-10-20"', 'LOW · covered', 'read']],
+    diff: ['approval A-1: pending → approved', 'laptop: at_risk → loaner_requested', 'day1_risk: critical → low'],
+    events: [['empid', 'Fri 11:02', 'Acted', 'Anand approved. Reserved loaner IT-55240 for Mon 9:00.'], ['empid', 'Fri 11:02', 'Reported', 'Day 1 covered. Still chasing the Employee ID.']] };
+
+  HUMAN = { get_onboarding_state: 'Checking your onboarding', get_dependencies: 'Tracing dependencies', calculate_day1_risk: 'Checking Day 1 risk', check_permission: 'Checking permissions', send_reminder: 'Following up with HR', on_event: 'Reading update', update_task: 'Updating state', create_it_ticket: 'Raising IT request', notify_employee: 'Writing your update', check_sla: 'Checking response time', escalate: 'Escalating', request_approval: 'Asking you', on_approval: 'Reading your approval' };
+
+  path(scen) { return (scen || this.state.scen) === 'A' ? [this.S0, this.S1, this.S2A, this.S3A] : [this.S0, this.S1, this.S2B, this.S3B]; }
+
+  runTo(t) {
+    if (this.state.pending != null) return;
+    const tools = this.path()[t].tools;
+    clearInterval(this.ti);
+    this.setState({ pending: t, toolIdx: 0, sheet: null, why: false, screen: 'home' });
+    let i = 0;
+    this.ti = setInterval(() => {
+      i++;
+      if (i >= tools.length) { clearInterval(this.ti); this.setState({ step: t, pending: null, toolIdx: 0 }); }
+      else this.setState({ toolIdx: i });
+    }, 620);
+  }
+  advance() {
+    const s = this.state.step;
+    if (this.state.pending != null || s >= 3) return;
+    if (this.state.scen === 'B' && s === 2) return;
+    this.runTo(s + 1);
+  }
+  goTo(n) {
+    if (this.state.pending != null) return;
+    if (n === this.state.step + 1 && !(this.state.scen === 'B' && n === 3)) return this.runTo(n);
+    if (n === this.state.step + 1) return this.runTo(n);
+    clearInterval(this.ti);
+    this.setState({ step: n, pending: null, why: false });
+  }
+
+  policy() {
+    return 'Hybrid work policy 2.1: hybrid roles may work remotely up to 2 days a week, Fridays allowed. Team rituals take priority. Escalation policy 4.2: onboarding reminders to HR are automatic; if unanswered after 24h the agent may escalate to the HR Ops lead (Neha Kapoor); asset changes such as loaner laptops need employee approval. IT lead times: laptop needs Employee ID plus 2 working days. Day 1: arrive 9:15 at Tower B reception, Mumbai; bring PAN card and one photo ID; induction 9:30; 1:1 with Rahul Iyer 12:00; buddy Meera Shah 14:00. First Friday 24 Oct: team planning session 11:00 in office.';
+  }
+  scripted(q) {
+    const s = this.state.step, B = this.state.scen === 'B';
+    if (/hr|respond|reply|escalat/i.test(q)) {
+      if (B && s >= 2) return { text: 'That already happened. HR didn’t reply in 24 hours, so I escalated to Neha Kapoor, HR Ops lead, and lined up a loaner laptop for your approval.', checked: 'Reminder R-1 · Escalation policy §4.2', act: 'hr' };
+      if (s >= 2) return { text: 'HR replied at 10:47 and the blocker is cleared. If they hadn’t, I would have escalated to the HR Ops lead after 24 hours and offered you a loaner laptop.', checked: 'Reminder R-1 · Escalation policy §4.2', act: 'hr' };
+      return { text: 'You join in 4 days. I reminded Priya Nair at 10:43. If there’s no reply by tomorrow 10:43, policy lets me escalate to the HR Ops lead, and I’ll line up a loaner laptop for your OK.', checked: 'Onboarding state · Escalation policy §4.2 · IT lead times', act: 'hr' };
+    }
+    if (/home|wfh|remote|friday/i.test(q)) return { text: 'Yes, your hybrid role allows remote Fridays. Your first Friday, 24 Oct, has a team planning session at 11:00 in the office, so Rahul may expect you in.', checked: 'Hybrid work policy §2.1 · Team calendar', act: 'wfh' };
+    if (/bring|monday|day 1|first day/i.test(q)) return { text: 'Bring your PAN card and one photo ID for building access. Arrive at Tower B reception by 9:15. Your laptop will be at your desk.', checked: 'Day 1 plan · Facilities guide', act: null };
+    return { text: 'I don’t have that in your onboarding records. I’ve passed the question to Priya Nair in HR and will update you here.', checked: 'Onboarding state · Policy library', act: null };
+  }
+  async ask(q) {
+    q = (q || '').trim(); if (!q) return;
+    const id = Date.now();
+    this.setState(s => ({ sheet: 'ask', q: '', msgs: [...s.msgs, { role: 'u', text: q }, { role: 'a', id, text: 'Checking your state and policy…', pending: true }] }));
+    const sc = this.scripted(q);
+    let text = sc.text;
+    const live = this.props.liveAI ?? true;
+    if (live && window.claude && window.claude.complete) {
+      try {
+        const v = this.vals();
+        const prompt = `You are ${this.props.agentName ?? 'Navo'}, an onboarding agent for Anand Mehta (Product Manager, joins Mon 20 Oct 2026, Mumbai, hybrid; manager Rahul Iyer; HR Priya Nair; buddy Meera Shah). Voice: crisp operator. Answer in at most 3 short sentences, plain text, no markdown, no greetings. Use only the facts below; if unknown, say you'll check with HR.\nSimulated time: ${v.dayClock}.\nOnboarding state: ${JSON.stringify(v.itemsRaw)}\nRecent agent actions: ${v.allEvents.map(e => e.time + ' ' + e.phase + ': ' + e.text).join(' | ')}\nPolicies: ${this.policy()}\nQuestion: ${q}`;
+        const r = await window.claude.complete(prompt);
+        if (r && String(r).trim()) text = String(r).trim();
+      } catch (e) {}
+    } else await new Promise(r => setTimeout(r, 700));
+    this.setState(s => ({ msgs: s.msgs.map(m => m.id === id ? { role: 'a', id, text, checked: sc.checked, act: sc.act } : m) }));
+  }
+
+  vals() {
+    const st = this.state, P = this.path(), C = this.C;
+    const k = st.step, cur = P[k];
+    const items = {};
+    P.slice(0, k + 1).forEach(p => Object.assign(items, p.items));
+    const allEvents = P.slice(0, k + 1).flatMap(p => p.events.map(([c, time, phase, text]) => ({ c, time, phase, text })));
+    return { cur, items, itemsRaw: Object.fromEntries(this.ITEMS.map(([id, n]) => [n, items[id][0] + ' · ' + items[id][1]])), allEvents, dayClock: cur.day + ' · ' + cur.clock };
+  }
+
+  renderVals() {
+    const st = this.state, P = this.path(), C = this.C;
+    const { cur, items, allEvents, dayClock } = this.vals();
+    const busy = st.pending != null;
+    const cnt = s => Object.values(items).filter(v => v[0] === s).length;
+    const risk = cnt('risk'), wait = cnt('wait');
+    const needs = cur.needs.map(n => n === 't' ? this.TRAINING : this.LOANER).map(d => ({ simple: !!d.simple, approval: !!d.approval, border: d.approval ? '#F2C9C4' : '#fff', ...d }));
+    const pendTools = busy ? P[st.pending].tools : null;
+    const toolList = busy ? pendTools.slice(0, st.toolIdx + 1) : cur.tools;
+    const gCol = { read: ['#4A5363', '#EEF1F5'], policy: ['#6A4A00', '#FBF1D9'], auto: ['#13795B', '#E3F2EC'], approval: ['#C8372D', '#FBE7E5'], event: ['#2F5BEA', '#E4EAFB'] };
+    const tools = toolList.map((t, i) => { const running = busy && i === toolList.length - 1; return { fn: t[0], args: t[1], res: running ? 'running…' : t[2], guard: t[3], gInk: gCol[t[3]][0], gBg: gCol[t[3]][1], bg: running ? '#EEF2FE' : '#F7F8FB', resInk: running ? '#2F5BEA' : '#4A5363' }; });
+    const statusText = busy ? this.HUMAN[pendTools[st.toolIdx][0]] + '…' : 'Up to date · ' + cur.clock;
+    const phaseInk = { Noticed: '#5B6474', Decided: '#0E1420', Acted: C.agent, Reported: C.done, Asked: C.you, Planned: '#8A93A3' };
+    const caseMeta = { empid: 'Employee ID delay', setup: 'Day 1 setup', docs: 'Documents' };
+    const caseOrder = [...new Set(allEvents.map(e => e.c).reverse())];
+    const empStatus = items.empid[0] === 'done' ? ['Resolved', C.done, '#E3F2EC'] : (risk ? ['At risk', C.risk, '#FCEBDD'] : ['Watching', '#6A4A00', '#FBF1D9']);
+    const cases = caseOrder.map(c => ({ title: caseMeta[c], status: c === 'empid' ? empStatus[0] : 'Done', ink: c === 'empid' ? empStatus[1] : C.done, bg: c === 'empid' ? empStatus[2] : '#E3F2EC', events: allEvents.filter(e => e.c === c).map(e => ({ ...e, ink: phaseInk[e.phase] })) }));
+    const whySteps = allEvents.filter(e => e.c === 'empid').slice(-5).map(e => ({ phase: e.phase, text: e.text, ink: phaseInk[e.phase] }));
+    const w = cur.watch;
+    const watch = w ? { ...w, face: w.tone === 'risk' ? 'concerned' : 'watching', bg: w.tone === 'risk' ? '#FCEFE3' : '#fff', ink: w.tone === 'risk' ? C.risk : '#5B6474' } : {};
+    const sheet = st.sheet;
+    const names = Object.fromEntries(this.ITEMS);
+    const ph = ids => ids.map(id => ({ label: names[id], sub: items[id][1], dot: C[items[id][0]] }));
+    const askChips = ['What if HR doesn’t respond?', 'Can I work from home Friday?', 'What should I bring Monday?'];
+    const actions = { hr: [{ label: 'Show me', run: () => this.setState({ sheet: 'activity' }) }], wfh: [{ label: 'Ask Rahul', run: () => {} }, { label: 'Show policy', run: () => {} }] };
+    const awaiting = st.scen === 'B' && st.step === 2 && !busy;
+    return {
+      agent: this.props.agentName ?? 'Navo',
+      showPresenter: this.props.showPresenter ?? true,
+      dayClock, clock: cur.clock,
+      scenA: () => { if (busy) return; this.setState(s => ({ scen: 'A', step: Math.min(s.step, 1) })); },
+      scenB: () => { if (busy) return; this.setState(s => ({ scen: 'B', step: Math.min(s.step, 1) })); },
+      scenABg: st.scen === 'A' ? '#fff' : 'transparent', scenBBg: st.scen === 'B' ? '#fff' : 'transparent',
+      scenAW: st.scen === 'A' ? 600 : 400, scenBW: st.scen === 'B' ? 600 : 400,
+      steps: P.map((p, i) => { const on = i === (busy ? st.pending : st.step); const done = i < st.step; return { n: done ? '✓' : i + 1, time: p.day + ' · ' + p.clock, label: p.label, w: on ? 600 : 400, bg: on ? '#2F5BEA' : (done ? '#E3F2EC' : '#fff'), ink: on ? '#fff' : (done ? C.done : '#5B6474'), border: on ? '#2F5BEA' : (done ? '#E3F2EC' : '#D6DCE5'), go: () => this.goTo(i) }; }),
+      advance: () => this.advance(), reset: () => { clearInterval(this.ti); this.setState({ step: 0, pending: null, sheet: null, why: false, msgs: [], screen: 'home' }); },
+      advBg: busy || st.step >= 3 || awaiting ? '#9AAFF0' : '#2F5BEA', awaitingApproval: awaiting,
+      isHome: st.screen === 'home', isJourney: st.screen === 'journey',
+      toJourney: () => this.setState({ screen: 'journey' }), toHome: () => this.setState({ screen: 'home' }),
+      face: busy ? ({ get_onboarding_state: 'thinking', get_dependencies: 'thinking', calculate_day1_risk: 'thinking', check_permission: 'thinking', check_sla: 'thinking', request_approval: 'needs' }[pendTools[st.toolIdx][0]] || 'acting') : (awaiting ? 'needs' : risk ? 'concerned' : st.step >= 3 ? 'celebrating' : st.step === 2 ? 'calm' : 'watching'),
+      liveDot: React.createElement('span', { style: { width: 6, height: 6, borderRadius: '50%', background: busy ? '#2F5BEA' : '#13795B', animation: busy ? 'agPulse 1.2s ease-in-out infinite' : 'none', flex: 'none' } }),
+      statusText, statusInk: busy ? '#2F5BEA' : '#13795B', statusBg: busy ? '#E4EAFB' : '#E3F2EC',
+      runState: busy ? 'Running' : (st.step === 0 ? 'Idle' : 'Up to date'),
+      headline: cur.headline,
+      budget: [
+        { n: needs.length, label: 'Need you', dot: C.you, ink: '#0E1420', bg: '#fff' },
+        { n: 9, label: 'I’m handling', dot: C.agent, ink: '#0E1420', bg: '#fff' },
+        { n: wait, label: 'Waiting on others', dot: C.wait, ink: '#0E1420', bg: '#fff' },
+        { n: risk, label: 'At risk', dot: risk ? C.risk : '#C9CFD9', ink: risk ? C.risk : '#0E1420', bg: risk ? '#FCEFE3' : '#fff' }
+      ],
+      needs, approve: () => { if (awaiting) this.runTo(3); },
+      didHead: cur.didHead,
+      did: cur.did.map(([icon, title, result, when, fresh]) => ({ icon, title, result, when, isDone: icon === '✓', isNavo: icon !== '✓', face: icon === '↑' ? 'concerned' : 'acting', bg: fresh ? '#EEF2FE' : 'transparent', whenInk: fresh ? '#2F5BEA' : '#8A93A3', chip: icon === '✓' ? C.done : (icon === '↑' ? C.risk : C.agent) })),
+      hasWatch: !!w, watch, whyOpen: st.why, whyLabel: st.why ? 'Hide' : 'Why?', whySteps, toggleWhy: () => this.setState(s => ({ why: !s.why })),
+      phases: [
+        { name: 'Offer', when: '6–12 Oct', items: [{ label: 'Offer signed', sub: 'You', dot: C.done }, ...ph(['docs'])] },
+        { name: 'Pre-joining', when: 'Now → Sun 19', items: [...ph(['empid', 'bgv', 'laptop', 'email', 'vpn']), { label: 'Security training', sub: 'You · Sunday', dot: C.you }] },
+        { name: 'Day 1', when: 'Mon 20 Oct', items: ph(['induction', 'manager', 'buddy']) },
+        { name: 'Week 1', when: '21–24 Oct', items: [{ label: 'Product induction', sub: 'Tue', dot: C.agent }, { label: 'Team intros', sub: 'Wed', dot: C.agent }, { label: 'First-week check-in', sub: 'Fri', dot: C.agent }] }
+      ],
+      openActivity: () => this.setState({ sheet: 'activity' }), openAsk: () => this.setState({ sheet: 'ask' }), closeSheet: () => this.setState({ sheet: null }),
+      askHR: () => this.ask(askChips[0]),
+      scrimOp: sheet ? 1 : 0, scrimPE: sheet ? 'auto' : 'none',
+      actY: sheet === 'activity' ? '0%' : '105%', askY: sheet === 'ask' ? '0%' : '105%',
+      cases,
+      noMsgs: st.msgs.length === 0,
+      msgs: st.msgs.map(m => m.role === 'u'
+        ? { text: m.text, align: 'flex-end', bg: '#F1F3F7', pad: '9px 13px', ink: '#0E1420', hasChecked: false, hasActions: false, actions: [] }
+        : { text: m.text, align: 'flex-start', bg: 'transparent', pad: '0', ink: m.pending ? '#5B6474' : '#0E1420', hasChecked: !!m.checked, checked: m.checked, hasActions: !!(m.act && actions[m.act]), actions: (m.act && actions[m.act]) || [] }),
+      chips: askChips.map(l => ({ label: l, run: () => this.ask(l) })),
+      q: st.q, onQ: e => this.setState({ q: e.target.value }), onKey: e => { if (e.key === 'Enter') this.ask(st.q); }, send: () => this.ask(st.q),
+      tools, noTools: tools.length === 0, diff: busy ? [] : cur.diff, hasDiff: !busy && cur.diff.length > 0
+    };
+  }
+}
+</script>
+</body>
+</html>

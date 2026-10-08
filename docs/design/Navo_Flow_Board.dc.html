@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<script src="./image-slot.js"></script>
+<style>
+body{margin:0;background:#EEF2F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0B1530;-webkit-font-smoothing:antialiased}
+a{color:#2F5BEA;text-decoration:none}a:hover{color:#1E44C4}
+button{font-family:inherit}
+@keyframes nvPulse{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.55)}60%{box-shadow:0 0 0 6px rgba(56,189,248,0)}}
+@keyframes nvOrbit{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes nvBreath{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.7);opacity:.6}}
+@keyframes nvScan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+</style>
+</helmet>
+<div style="width:1980px;display:flex;flex-direction:column">
+<div style="background:linear-gradient(180deg,#0B1530 0%,#111E44 100%);padding:36px 48px 30px;display:flex;flex-direction:column;gap:26px;color:#fff">
+<div style="display:flex;align-items:center;gap:40px">
+<div style="display:flex;flex-direction:column;gap:4px;padding-right:40px;border-right:1px solid rgba(255,255,255,.14)"><span style="font-size:40px;font-weight:600;letter-spacing:-.03em">Navo<span style="color:#38BDF8">.</span></span><span style="font-size:15px;color:#B9C4DE">AI That Handles Onboarding</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;flex:1"><span style="font-size:24px;font-weight:600;letter-spacing:-.015em">From offer to your first few weeks.</span><span style="font-size:15px;color:#B9C4DE">Navo understands your state, coordinates teams and gets things done. You only see what needs you.</span></div>
+<a href="Navo Prototype.dc.html" style="flex:none;display:flex;align-items:center;gap:8px;background:#2F5BEA;color:#fff;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 0 0 1px rgba(56,189,248,.5),0 10px 24px -10px rgba(56,189,248,.7)">▶ Play the demo</a>
+<div style="display:flex;gap:22px">
+<div style="display:flex;flex-direction:column;gap:2px;font-size:13px;color:#D6DDEE"><span style="color:#38BDF8;font-weight:600">Understands</span><span>your state</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;font-size:13px;color:#D6DDEE"><span style="color:#38BDF8;font-weight:600">Orchestrates</span><span>across teams</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;font-size:13px;color:#D6DDEE"><span style="color:#38BDF8;font-weight:600">Acts</span><span>within policy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;font-size:13px;color:#D6DDEE"><span style="color:#38BDF8;font-weight:600">Steps in</span><span>when at risk</span></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06)"><span style="width:22px;height:22px;border-radius:50%;background:#13795B;font-size:12px;display:flex;align-items:center;justify-content:center">✓</span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">Selected</span><span style="font-size:12px;color:#9FB0D3">Offer accepted</span></span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06)"><span style="width:22px;height:22px;border-radius:50%;background:#13795B;font-size:12px;display:flex;align-items:center;justify-content:center">✓</span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">Offer and acceptance</span><span style="font-size:12px;color:#9FB0D3">Signed 6 Oct</span></span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(47,91,234,.22);box-shadow:inset 0 0 0 1px rgba(56,189,248,.55),0 0 24px -6px rgba(56,189,248,.6)"><span style="width:10px;height:10px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.8s infinite;margin:0 6px"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">Pre-joining</span><span style="font-size:12px;color:#BFE9FC">Navo working · now</span></span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.04)"><span style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.3);box-sizing:border-box"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">Day 1</span><span style="font-size:12px;color:#9FB0D3">Mon 20 Oct</span></span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.04)"><span style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.3);box-sizing:border-box"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">First week</span><span style="font-size:12px;color:#9FB0D3">21–24 Oct</span></span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.04)"><span style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.3);box-sizing:border-box"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">First 30 days</span><span style="font-size:12px;color:#9FB0D3">To 19 Nov</span></span></div>
+</div>
+</div>
+<div style="padding:36px 48px 0;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#2F5BEA">First launch</span><span style="font-size:22px;font-weight:600;letter-spacing:-.015em">Sign in, meet Navo, set the rules</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:28px 30px;padding:20px 48px 0">
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">0a. Launch</span><span style="font-size:13px;color:#5B6474">One beat, under a second</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#0B1530;border:1px solid #1E2A52;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff;position:relative;box-shadow:0 20px 50px -30px rgba(11,21,48,.6)">
+<span style="position:absolute;top:0;left:0;height:34px;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</span>
+<div style="width:64px;height:64px;border-radius:20px;background:#13214A;box-shadow:inset 0 0 0 1px rgba(56,189,248,.35);position:relative;display:flex;align-items:center;justify-content:center"><span style="font-size:30px;font-weight:600;letter-spacing:-.04em">N</span><span style="position:absolute;right:10px;top:10px;width:9px;height:9px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><span style="font-size:30px;font-weight:600;letter-spacing:-.03em">Navo</span><span style="font-size:13px;color:#9FB0D3">AI That Handles Onboarding</span></div>
+<span style="position:absolute;bottom:34px;font-size:11px;color:#6B7BA3">by Halden</span>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">0b. Sign in</span><span style="font-size:13px;color:#5B6474">No Halden account yet, so offer number + OTP</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:30px 22px 22px;display:flex;flex-direction:column;gap:18px">
+<span style="font-size:16px;font-weight:600">Navo<span style="color:#38BDF8">.</span></span>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-.02em">Welcome to Halden.</span><span style="font-size:13px;line-height:1.5;color:#4A5363">Sign in with the mobile number on your offer letter. Your Halden account is set up before Day 1.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">Mobile number</span><div style="border:1px solid #2F5BEA;box-shadow:0 0 0 3px #E4EAFB;border-radius:12px;padding:12px 14px;font-size:15px;display:flex;gap:10px"><span style="color:#5B6474">+91</span><span>98200 41276</span></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">Code sent by SMS</span><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px"><span style="border:1px solid #E2E7EF;border-radius:10px;padding:11px 0;text-align:center;font-size:17px;font-weight:600">4</span><span style="border:1px solid #E2E7EF;border-radius:10px;padding:11px 0;text-align:center;font-size:17px;font-weight:600">8</span><span style="border:1px solid #E2E7EF;border-radius:10px;padding:11px 0;text-align:center;font-size:17px;font-weight:600">1</span><span style="border:1px solid #2F5BEA;border-radius:10px;padding:11px 0;text-align:center;font-size:17px;color:#2F5BEA">|</span><span style="border:1px solid #E2E7EF;border-radius:10px;padding:11px 0"></span><span style="border:1px solid #E2E7EF;border-radius:10px;padding:11px 0"></span></div><span style="font-size:11px;color:#5B6474">Resend in 0:24</span></div>
+<button style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600">Continue</button>
+<span style="font-size:11px;color:#5B6474;text-align:center;line-height:1.4">Already joined? Sign in with Halden SSO</span>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">0c. Meet Navo</span><span style="font-size:13px;color:#5B6474">Introduces itself and its limits</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#F6F8FC;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:18px 18px 20px;display:flex;flex-direction:column;gap:14px">
+<div style="width:44px;height:44px;border-radius:14px;background:#0B1530;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:600;letter-spacing:-.04em">N<span style="position:absolute;right:6px;top:6px;width:7px;height:7px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:22px;line-height:1.2;font-weight:600;letter-spacing:-.02em">Meet Navo, your AI onboarding agent.</span><span style="font-size:13px;line-height:1.5;color:#4A5363">I'll get you ready for Day 1 and through your first month. I work with HR, IT and your manager so you don't have to chase anyone.</span></div>
+<div style="background:#fff;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#13795B">I'll do on my own</span><span style="font-size:12px;line-height:1.45;color:#2A3240">Follow up with HR and IT, raise requests, book meetings, track deadlines</span></div>
+<div style="height:1px;background:#EEF1F5"></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#C8372D">I'll always ask first</span><span style="font-size:12px;line-height:1.45;color:#2A3240">Anything with your personal data, bank details or equipment changes</span></div>
+<div style="height:1px;background:#EEF1F5"></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#2F5BEA">You can always see</span><span style="font-size:12px;line-height:1.45;color:#2A3240">What I did, when, and why. Undo where possible.</span></div>
+</div>
+<button style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600">Sounds good</button>
+<span style="font-size:11px;color:#5B6474;text-align:center">Change this anytime in Settings</span>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:630px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">Navo persona</span><span style="font-size:13px;color:#5B6474">Character comes from voice and state, not a mascot</span></div>
+<div style="height:620px;border-radius:20px;background:#fff;border:1px solid #DCE2EC;padding:24px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:22px;font-weight:600;letter-spacing:-.02em">A calm operator who's always a step ahead</span><span style="font-size:13px;line-height:1.5;color:#4A5363;max-width:520px">Navo acts like the best onboarding coordinator you've worked with: it already knows what's next, quietly fixes what it can, and tells you plainly when it needs you.</span></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5B6474">The mark shows what Navo is doing</span>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<div style="background:#F6F8FC;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><div style="width:44px;height:44px;border-radius:14px;background:#0B1530;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:600">N<span style="position:absolute;right:6px;top:6px;width:7px;height:7px;border-radius:50%;background:#5E6B8C"></span></div><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600">Idle</span><span style="font-size:11px;color:#5B6474">All caught up</span></span></div>
+<div style="background:#F6F8FC;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><div style="width:44px;height:44px;border-radius:14px;background:#0B1530;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:600">N<span style="position:absolute;right:6px;top:6px;width:7px;height:7px;border-radius:50%;background:#38BDF8;animation:nvBreath 1.4s ease-in-out infinite"></span></div><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600">Thinking</span><span style="font-size:11px;color:#5B6474">Checking state, policy</span></span></div>
+<div style="background:#F6F8FC;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><div style="width:44px;height:44px;border-radius:14px;background:#0B1530;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:600;box-shadow:0 0 0 1px rgba(56,189,248,.6),0 0 18px -2px rgba(56,189,248,.7)">N<span style="position:absolute;right:6px;top:6px;width:7px;height:7px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.2s infinite"></span></div><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600">Acting</span><span style="font-size:11px;color:#5B6474">Raising a request</span></span></div>
+<div style="background:#F6F8FC;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><div style="width:44px;height:44px;border-radius:14px;background:#0B1530;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:600">N<span style="position:absolute;right:6px;top:6px;width:7px;height:7px;border-radius:50%;background:#F05A4F"></span></div><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600">Needs you</span><span style="font-size:11px;color:#5B6474">Decision waiting</span></span></div>
+</div></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;font-weight:600">Ahead</span><span style="font-size:12px;line-height:1.45;color:#4A5363">Spots problems before you do and says what it's already doing about them.</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;font-weight:600">Plain</span><span style="font-size:12px;line-height:1.45;color:#4A5363">Short sentences. Facts, owners, dates. No HR jargon, no exclamation marks.</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;font-weight:600">Accountable</span><span style="font-size:12px;line-height:1.45;color:#4A5363">Says "I" for what it did. Shows why. Asks before anything sensitive.</span></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto">
+<div style="background:#E3F2EC;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#13795B">Navo says</span><span style="font-size:13px;line-height:1.45;color:#0E3B2E">"Your Employee ID is 2 days late. I've followed up with HR. Nothing needed from you."</span></div>
+<div style="background:#FBE7E5;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#C8372D">Never</span><span style="font-size:13px;line-height:1.45;color:#5A1B15">"Oops! Looks like there's a tiny hiccup 😅 Don't worry, we've got you!"</span></div>
+</div>
+</div>
+</div>
+</div>
+<div style="padding:40px 48px 0;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#2F5BEA">Journey</span><span style="font-size:22px;font-weight:600;letter-spacing:-.015em">Offer to first 30 days</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:28px 30px;padding:20px 48px 60px">
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">1. Offer accepted</span><span style="font-size:13px;color:#5B6474">What happens next</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 18px 18px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:16px;font-weight:600">Navo<span style="color:#38BDF8">.</span></span><span style="font-size:11px;color:#13795B;background:#E3F2EC;border-radius:999px;padding:3px 9px">Offer accepted</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:22px;line-height:1.2;font-weight:600;letter-spacing:-.02em">Congratulations, Anand.</span><span style="font-size:13px;color:#4A5363;line-height:1.45">You're joining Halden as Senior Product Manager. I'll take it from here.</span></div>
+<div style="border:1px solid #E6EAF1;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#5B6474">Joining on</span><span style="font-size:15px;font-weight:600">Mon, 20 Oct 2026</span></span><span style="font-size:12px;color:#5B6474">14 days</span></div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-size:13px;font-weight:600;padding-bottom:4px">I've planned your next steps</span>
+<div style="display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:7px 0"><span style="width:20px;height:20px;border-radius:50%;background:#13795B;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center">✓</span><span style="display:flex;flex-direction:column"><span style="font-size:13px">Review and accept offer</span><span style="font-size:11px;color:#5B6474">Done · 6 Oct</span></span><span style="font-size:10px;color:#5B6474">You</span></div>
+<div style="display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:7px 0"><span style="width:20px;height:20px;border-radius:50%;border:1.5px solid #C8372D;box-sizing:border-box;font-size:10px;color:#C8372D;display:flex;align-items:center;justify-content:center">2</span><span style="display:flex;flex-direction:column"><span style="font-size:13px">Submit documents</span><span style="font-size:11px;color:#5B6474">2 pending · I'll read them for you</span></span><span style="font-size:10px;color:#C8372D">You</span></div>
+<div style="display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:7px 0"><span style="width:20px;height:20px;border-radius:50%;background:#E4EAFB;box-shadow:0 0 0 1px rgba(56,189,248,.6);font-size:10px;color:#2F5BEA;display:flex;align-items:center;justify-content:center">3</span><span style="display:flex;flex-direction:column"><span style="font-size:13px">Background verification</span><span style="font-size:11px;color:#2F5BEA">Navo handling</span></span><span style="font-size:10px;color:#2F5BEA">Navo</span></div>
+<div style="display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:7px 0"><span style="width:20px;height:20px;border-radius:50%;background:#E4EAFB;font-size:10px;color:#2F5BEA;display:flex;align-items:center;justify-content:center">4</span><span style="display:flex;flex-direction:column"><span style="font-size:13px">IT, email, laptop, access</span><span style="font-size:11px;color:#5B6474">I'll request once your ID is issued</span></span><span style="font-size:10px;color:#2F5BEA">Navo</span></div>
+<div style="display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:7px 0"><span style="width:20px;height:20px;border-radius:50%;background:#F1F3F7;font-size:10px;color:#5B6474;display:flex;align-items:center;justify-content:center">5</span><span style="display:flex;flex-direction:column"><span style="font-size:13px">Day 1 plan</span><span style="font-size:11px;color:#5B6474">Shared closer to the date</span></span><span style="font-size:10px;color:#5B6474">Navo</span></div>
+</div>
+<button style="margin-top:auto;background:#0B1530;color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600">Upload documents →</button>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">2. Pre-joining home</span><span style="font-size:13px;color:#5B6474">Navo's briefing</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#F6F8FC;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 14px 12px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px"><span style="font-size:16px;font-weight:600">Navo<span style="color:#38BDF8">.</span></span><span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#1D4ED8;background:#E8F1FF;border-radius:999px;padding:4px 9px;box-shadow:0 0 0 1px rgba(56,189,248,.45),0 0 14px -4px rgba(56,189,248,.7)"><span style="width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span>Watching 9 items</span></div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:6px 4px 2px"><span style="font-size:13px;color:#5B6474">Good morning, Anand.</span><span style="font-size:22px;line-height:1.2;font-weight:600;letter-spacing:-.02em">You're 87% ready for Day 1.</span><span style="font-size:13px;color:#4A5363">I've handled most of it. 2 things need you.</span></div>
+<div style="height:4px;border-radius:2px;background:#E2E7EF;margin:0 4px;overflow:hidden"><div style="width:87%;height:4px;background:linear-gradient(90deg,#2F5BEA,#38BDF8)"></div></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+<div style="background:#fff;border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:600;color:#C8372D">2</span><span style="font-size:10px;color:#4A5363">Need you</span></div>
+<div style="background:#fff;border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:1px;box-shadow:inset 0 0 0 1px rgba(56,189,248,.5)"><span style="font-size:18px;font-weight:600;color:#2F5BEA">8</span><span style="font-size:10px;color:#4A5363">I'm handling</span></div>
+<div style="background:#fff;border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:600;color:#B07A0A">1</span><span style="font-size:10px;color:#4A5363">Waiting</span></div>
+<div style="background:#fff;border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:600">0</span><span style="font-size:10px;color:#4A5363">At risk</span></div>
+</div>
+<div style="background:#fff;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#C8372D">Your actions · 2</span>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Complete security training</span><span style="font-size:11px;color:#5B6474">15 min · due Sun 19 Oct</span></span><span style="font-size:12px;color:#2F5BEA;font-weight:600">Start</span></div>
+<div style="height:1px;background:#EEF1F5"></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Confirm bank proof</span><span style="font-size:11px;color:#5B6474">I pre-filled it from your cheque</span></span><span style="font-size:12px;color:#2F5BEA;font-weight:600">Review</span></div>
+</div>
+<div style="background:#fff;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 0 0 1px rgba(56,189,248,.4),0 10px 24px -14px rgba(56,189,248,.8);position:relative;overflow:hidden">
+<div style="position:absolute;left:0;right:0;top:0;height:2px;overflow:hidden"><div style="width:100%;height:2px;background:linear-gradient(90deg,transparent,#38BDF8,transparent);animation:nvScan 2.4s linear infinite"></div></div>
+<div style="display:flex;justify-content:space-between"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#2F5BEA">Just now · Navo</span><span style="font-size:11px;color:#5B6474">Auto</span></div>
+<span style="font-size:13px;font-weight:600">Laptop request submitted</span>
+<span style="font-size:12px;color:#4A5363;line-height:1.4">Your Employee ID came through at 10:43. I sent the laptop request to IT. Delivery Fri 17 Oct.</span>
+<div style="display:flex;gap:14px;font-size:12px"><span style="color:#2F5BEA">Why?</span><span style="color:#5B6474">View activity</span></div>
+</div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 10px 18px;background:#fff;border-top:1px solid #E6EAF1;font-size:10px;color:#5B6474;text-align:center"><span style="color:#2F5BEA;font-weight:600">Home</span><span>Journey</span><span>Ask Navo</span><span>More</span></div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">3. Agent at work</span><span style="font-size:13px;color:#5B6474">Live story: noticed, decided, acted</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 16px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;color:#5B6474">‹</span><span style="font-size:15px;font-weight:600">Navo is working</span></div>
+<div style="background:#0B1530;color:#fff;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 0 0 1px rgba(56,189,248,.5),0 12px 28px -12px rgba(56,189,248,.7)">
+<div style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#7DD3FC"><span style="width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span>Detected a potential delay</div>
+<span style="font-size:12px;line-height:1.45;color:#D6DDEE">Employee ID wasn't issued. That could delay your laptop and VPN for Day 1.</span>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:36px 14px 1fr;gap:8px"><span style="font-size:11px;color:#5B6474;padding-top:2px">09:15</span><span style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#C8372D;margin-top:4px"></span><span style="flex:1;width:1px;background:#E2E7EF"></span></span><span style="display:flex;flex-direction:column;gap:2px;padding-bottom:12px"><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:#C8372D">NOTICED</span><span style="font-size:13px;font-weight:600">Detected dependency</span><span style="font-size:11px;color:#5B6474">Laptop depends on Employee ID</span></span></div>
+<div style="display:grid;grid-template-columns:36px 14px 1fr;gap:8px"><span style="font-size:11px;color:#5B6474;padding-top:2px">09:16</span><span style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#0B1530;margin-top:4px"></span><span style="flex:1;width:1px;background:#E2E7EF"></span></span><span style="display:flex;flex-direction:column;gap:2px;padding-bottom:12px"><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:#0B1530">DECIDED</span><span style="font-size:13px;font-weight:600">Checked policy and options</span><span style="font-size:11px;color:#5B6474">Day 1 in 4 days. Escalation allowed after 24h · §4.2</span></span></div>
+<div style="display:grid;grid-template-columns:36px 14px 1fr;gap:8px"><span style="font-size:11px;color:#5B6474;padding-top:2px">09:17</span><span style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#2F5BEA;margin-top:4px"></span><span style="flex:1;width:1px;background:#E2E7EF"></span></span><span style="display:flex;flex-direction:column;gap:2px;padding-bottom:12px"><span style="display:flex;gap:6px;align-items:center"><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:#2F5BEA">ACTED</span><span style="font-size:9px;color:#13795B;background:#E3F2EC;border-radius:4px;padding:1px 5px">Auto</span></span><span style="font-size:13px;font-weight:600">Followed up with HR</span><span style="font-size:11px;color:#5B6474">Reminder to Priya Nair with context</span></span></div>
+<div style="display:grid;grid-template-columns:36px 14px 1fr;gap:8px"><span style="font-size:11px;color:#5B6474;padding-top:2px">10:43</span><span style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#13795B;margin-top:4px"></span><span style="flex:1;width:1px;background:#E2E7EF"></span></span><span style="display:flex;flex-direction:column;gap:2px;padding-bottom:12px"><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:#13795B">RESOLVED</span><span style="font-size:13px;font-weight:600">Employee ID received</span><span style="font-size:11px;color:#5B6474">HR issued EMP-204817</span></span></div>
+<div style="display:grid;grid-template-columns:36px 14px 1fr;gap:8px"><span style="font-size:11px;color:#2F5BEA;padding-top:2px;font-weight:600">10:44</span><span style="display:flex;flex-direction:column;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#38BDF8;margin-top:4px;animation:nvPulse 1.6s infinite"></span></span><span style="display:flex;flex-direction:column;gap:2px"><span style="display:flex;gap:6px;align-items:center"><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:#2F5BEA">ACTED</span><span style="font-size:9px;color:#13795B;background:#E3F2EC;border-radius:4px;padding:1px 5px">Auto</span></span><span style="font-size:13px;font-weight:600">Created laptop request</span><span style="font-size:11px;color:#5B6474">IT-55231 · delivery Fri 17 Oct</span></span></div>
+</div>
+<div style="margin-top:auto;background:#E3F2EC;border-radius:12px;padding:11px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600;color:#0E5A44">No action needed from you.</span><span style="font-size:11px;color:#2E5E50">I'll keep tracking and tell you if anything changes.</span></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">4. My journey</span><span style="font-size:13px;color:#5B6474">Full timeline, with who owns what</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#F6F8FC;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 14px 14px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 4px 4px"><span style="font-size:16px;color:#5B6474">‹</span><span style="font-size:15px;font-weight:600">My journey</span></div>
+<div style="background:#fff;border-radius:14px;padding:11px 12px;display:grid;grid-template-columns:24px 1fr;gap:10px"><span style="width:22px;height:22px;border-radius:50%;background:#13795B;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center">✓</span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Offer signed</span><span style="font-size:11px;color:#5B6474">6 Oct · you accepted the offer</span></span></div>
+<div style="background:#fff;border-radius:14px;padding:11px 12px;display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;box-shadow:0 0 0 1px rgba(56,189,248,.5),0 10px 22px -14px rgba(56,189,248,.8)"><span style="width:22px;height:22px;border-radius:50%;background:#E8F1FF;display:flex;align-items:center;justify-content:center"><span style="width:7px;height:7px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span></span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600">Pre-joining</span><span style="font-size:11px;color:#2F5BEA">Now → 19 Oct</span><span style="font-size:11px;color:#5B6474">5 of 8 done · 2 from you · 1 waiting</span></span><span style="color:#9AA3B2">›</span></div>
+<div style="background:#fff;border-radius:14px;padding:11px 12px;display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center"><span style="width:22px;height:22px;border-radius:50%;border:1.5px solid #CBD2DD;box-sizing:border-box"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Day 1</span><span style="font-size:11px;color:#5B6474">Mon 20 Oct · induction, IT setup, 1:1, buddy</span></span><span style="color:#9AA3B2">›</span></div>
+<div style="background:#fff;border-radius:14px;padding:11px 12px;display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center"><span style="width:22px;height:22px;border-radius:50%;border:1.5px solid #CBD2DD;box-sizing:border-box"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Week 1</span><span style="font-size:11px;color:#5B6474">21–24 Oct · trainings, access, first projects</span></span><span style="color:#9AA3B2">›</span></div>
+<div style="background:#fff;border-radius:14px;padding:11px 12px;display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center"><span style="width:22px;height:22px;border-radius:50%;border:1.5px solid #CBD2DD;box-sizing:border-box"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">First 30 days</span><span style="font-size:11px;color:#5B6474">To 19 Nov · goals, check-ins, feedback</span></span><span style="color:#9AA3B2">›</span></div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:6px;padding:10px 4px 0;border-top:1px solid #E2E7EF">
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#5B6474">Navo's forecast</span>
+<span style="font-size:12px;line-height:1.45;color:#2A3240">Day 1 is on track. Highest remaining risk: VPN setup, which depends on the laptop arriving Friday.</span>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">5. Task detail</span><span style="font-size:13px;color:#5B6474">Why it matters and what Navo did</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 18px 16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;color:#5B6474">‹</span><span style="font-size:15px;font-weight:600">Security training</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="align-self:flex-start;font-size:11px;color:#C8372D;background:#FBE7E5;border-radius:999px;padding:3px 9px">Needs your action</span><span style="font-size:20px;font-weight:600;letter-spacing:-.015em">Complete security training</span><span style="font-size:12px;color:#5B6474">15 min · due Sun 19 Oct</span></div>
+<button style="background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600">Start training →</button>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Why this matters</span><span style="font-size:12px;line-height:1.5;color:#4A5363">It's required before IT can switch on your email, VPN and core tools. If it's done by Sunday, your access is live Monday 9:00.</span></div>
+<div style="border-radius:12px;background:#F6F8FC;padding:11px 12px;display:flex;flex-direction:column;gap:6px">
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#2F5BEA">What I've done</span>
+<span style="font-size:12px;color:#2A3240">✓ Enrolled you in the course</span>
+<span style="font-size:12px;color:#2A3240">✓ Blocked 15 min on Sat 10:00 in your calendar</span>
+<span style="font-size:12px;color:#2A3240">✓ Linked it to your access requests</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px"><span style="font-size:13px;font-weight:600">What happens next</span>
+<span style="display:flex;gap:8px;font-size:12px;color:#2A3240"><span style="color:#C8372D">○</span>You complete the course and a 5-min check</span>
+<span style="display:flex;gap:8px;font-size:12px;color:#2A3240"><span style="color:#2F5BEA">○</span>Navo marks it done and notifies HR and IT</span>
+</div>
+<div style="margin-top:auto;border:1px solid #E6EAF1;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:12px;font-weight:600">Questions about this?</span><span style="font-size:11px;color:#5B6474">Ask Navo about the course or policy</span></span><span style="color:#2F5BEA">›</span></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">6. Ask Navo</span><span style="font-size:13px;color:#5B6474">Grounded in your state and policy</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 16px 12px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;color:#5B6474">‹</span><span style="font-size:15px;font-weight:600">Ask Navo</span></div>
+<span style="align-self:flex-end;max-width:82%;background:#EEF2F8;border-radius:14px 14px 4px 14px;padding:9px 12px;font-size:13px;line-height:1.4">What if HR doesn't respond about my Employee ID?</span>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;flex-wrap:wrap;gap:4px"><span style="font-size:10px;color:#1D4ED8;background:#E8F1FF;border-radius:6px;padding:2px 6px">✓ Your onboarding state</span><span style="font-size:10px;color:#1D4ED8;background:#E8F1FF;border-radius:6px;padding:2px 6px">✓ Escalation §4.2</span><span style="font-size:10px;color:#1D4ED8;background:#E8F1FF;border-radius:6px;padding:2px 6px">✓ IT lead times</span></div>
+<span style="font-size:13px;line-height:1.5;color:#0B1530">I reminded Priya Nair at 09:17. If there's no reply by tomorrow 09:17, I'll escalate to the HR Ops lead.</span>
+<span style="font-size:13px;line-height:1.5;color:#0B1530">If the ID is still missing on Friday, I'll line up a loaner laptop so Day 1 isn't affected. That needs your OK.</span>
+<span style="font-size:12px;color:#13795B">No action needed from you right now.</span>
+<div style="display:flex;gap:6px"><span style="font-size:12px;color:#2F5BEA;background:#E8F1FF;border-radius:8px;padding:6px 10px;font-weight:600">Show the plan</span><span style="font-size:12px;color:#0B1530;border:1px solid #E2E7EF;border-radius:8px;padding:5px 10px">Notify me</span></div>
+</div>
+<div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:5px"><span style="font-size:11px;border:1px solid #E2E7EF;border-radius:999px;padding:5px 9px">Who will be notified?</span><span style="font-size:11px;border:1px solid #E2E7EF;border-radius:999px;padding:5px 9px">What to bring on Day 1?</span><span style="font-size:11px;border:1px solid #E2E7EF;border-radius:999px;padding:5px 9px">WFH policy</span></div>
+<div style="border:1px solid #E2E7EF;border-radius:22px;padding:10px 14px;font-size:13px;color:#5B6474">Ask Navo anything</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">7. Day 1</span><span style="font-size:13px;color:#5B6474">Navo runs the day in the background</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:150px;flex:none;position:relative;background:#1A2547">
+<image-slot id="nv-day1-office" placeholder="Halden office photo" style="position:absolute;inset:0"></image-slot>
+<div style="position:absolute;left:0;top:0;height:34px;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600;color:#fff">9:41</div>
+</div>
+<div style="flex:1;padding:14px 18px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:19px;line-height:1.2;font-weight:600;letter-spacing:-.015em">Welcome to Halden, Anand. Here's your Day 1.</span><span style="font-size:12px;color:#5B6474">Mon 20 Oct · Mumbai office</span></div>
+<div style="display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:40px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:11px;color:#5B6474">09:30</span><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Induction</span><span style="font-size:11px;color:#5B6474">Tower B, Auditorium</span></span></div>
+<div style="display:grid;grid-template-columns:40px 1fr;gap:10px;padding:7px 8px;margin:0 -8px;border-radius:10px;background:#E8F1FF;box-shadow:inset 0 0 0 1px rgba(56,189,248,.5)"><span style="font-size:11px;color:#2F5BEA;font-weight:600">11:00</span><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">IT setup and laptop</span><span style="font-size:11px;color:#2F5BEA">Now · IT service desk, 3rd floor</span></span></div>
+<div style="display:grid;grid-template-columns:40px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid #EEF1F5"><span style="font-size:11px;color:#5B6474">12:00</span><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">1:1 with Rahul Iyer</span><span style="font-size:11px;color:#5B6474">Conference room 4A</span></span></div>
+<div style="display:grid;grid-template-columns:40px 1fr;gap:10px;padding:7px 0"><span style="font-size:11px;color:#5B6474">14:00</span><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Meet buddy, Meera Shah</span><span style="font-size:11px;color:#5B6474">Cafeteria, 2nd floor</span></span></div>
+</div>
+<div style="margin-top:auto;background:#E3F2EC;border-radius:12px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start"><span style="color:#13795B;font-size:12px">✓</span><span style="font-size:12px;line-height:1.4;color:#0E5A44">Your laptop is ready at the service desk. I've added the pickup to your plan.</span></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">8. Week 1 progress</span><span style="font-size:13px;color:#5B6474">Done, in progress, upcoming</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 18px 16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;color:#5B6474">‹</span><span style="font-size:15px;font-weight:600">Week 1</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:600;letter-spacing:-.015em">You're on track.</span><span style="font-size:12px;color:#5B6474">5 of 6 done · Navo is setting up the last one</span><div style="height:4px;border-radius:2px;background:#E2E7EF;overflow:hidden"><div style="width:83%;height:4px;background:linear-gradient(90deg,#2F5BEA,#38BDF8)"></div></div></div>
+<div style="display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #EEF1F5"><span style="width:18px;height:18px;border-radius:50%;background:#13795B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center">✓</span><span style="font-size:13px">Product induction</span><span style="font-size:11px;color:#5B6474">Tue</span></div>
+<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #EEF1F5"><span style="width:18px;height:18px;border-radius:50%;background:#13795B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center">✓</span><span style="font-size:13px">Mandatory training</span><span style="font-size:11px;color:#5B6474">Tue</span></div>
+<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #EEF1F5"><span style="width:18px;height:18px;border-radius:50%;background:#13795B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center">✓</span><span style="font-size:13px">Email and VPN access</span><span style="font-size:11px;color:#5B6474">Mon</span></div>
+<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #EEF1F5"><span style="width:18px;height:18px;border-radius:50%;background:#13795B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center">✓</span><span style="font-size:13px">Team introductions</span><span style="font-size:11px;color:#5B6474">Wed</span></div>
+<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:9px 8px;margin:0 -8px;border-radius:10px;background:#E8F1FF;box-shadow:inset 0 0 0 1px rgba(56,189,248,.5)"><span style="width:18px;height:18px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><span style="width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span></span><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">First project setup</span><span style="font-size:11px;color:#2F5BEA">Navo requesting Jira and Figma access</span></span><span style="font-size:11px;color:#2F5BEA">Thu</span></div>
+<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:9px 0"><span style="width:18px;height:18px;border-radius:50%;border:1.5px solid #CBD2DD;box-sizing:border-box"></span><span style="font-size:13px">Feedback check-in with Rahul</span><span style="font-size:11px;color:#5B6474">Fri</span></div>
+</div>
+<div style="margin-top:auto;border-top:1px solid #EEF1F5;padding-top:10px;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#5B6474">Navo suggests</span><span style="font-size:12px;line-height:1.45;color:#2A3240">Meera is free Thu 16:00. Want me to book a walkthrough of the product roadmap?</span><div style="display:flex;gap:6px;padding-top:4px"><span style="font-size:12px;color:#fff;background:#2F5BEA;border-radius:8px;padding:6px 12px;font-weight:600">Book it</span><span style="font-size:12px;border:1px solid #E2E7EF;border-radius:8px;padding:5px 12px">Not now</span></div></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">9. Updates</span><span style="font-size:13px;color:#5B6474">Grouped by what needs you</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;color:#5B6474">‹</span><span style="font-size:15px;font-weight:600">Updates</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:#F1F3F7;border-radius:10px;padding:3px;font-size:11px;text-align:center"><span style="background:#fff;border-radius:8px;padding:6px 0;font-weight:600">All · 6</span><span style="padding:6px 0">Needs you · 2</span><span style="padding:6px 0">By Navo · 4</span></div>
+<span style="font-size:11px;font-weight:600;color:#5B6474">Today</span>
+<div style="display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:start"><span style="width:7px;height:7px;border-radius:50%;background:#C8372D;margin-top:5px"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Security training due</span><span style="font-size:11px;color:#5B6474">15 min · due Sun 19 Oct</span></span><span style="font-size:10px;color:#5B6474">10:30</span></div>
+<div style="display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:start"><span style="width:7px;height:7px;border-radius:50%;background:#38BDF8;margin-top:5px;box-shadow:0 0 8px #38BDF8"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Laptop request submitted</span><span style="font-size:11px;color:#5B6474">Sent to IT once your Employee ID was issued</span></span><span style="font-size:10px;color:#5B6474">10:44</span></div>
+<div style="display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:start"><span style="width:7px;height:7px;border-radius:50%;background:#13795B;margin-top:5px"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Employee ID received</span><span style="font-size:11px;color:#5B6474">HR issued EMP-204817</span></span><span style="font-size:10px;color:#5B6474">10:43</span></div>
+<div style="display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:start"><span style="width:7px;height:7px;border-radius:50%;background:#2F5BEA;margin-top:5px"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Background verification</span><span style="font-size:11px;color:#5B6474">In progress with vendor</span></span><span style="font-size:10px;color:#5B6474">09:20</span></div>
+<span style="font-size:11px;font-weight:600;color:#5B6474;padding-top:4px">Yesterday</span>
+<div style="display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:start"><span style="width:7px;height:7px;border-radius:50%;background:#13795B;margin-top:5px"></span><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Offer accepted</span><span style="font-size:11px;color:#5B6474">Welcome to Halden</span></span><span style="font-size:10px;color:#5B6474">18:20</span></div>
+<div style="margin-top:auto;font-size:11px;color:#5B6474;line-height:1.4;border-top:1px solid #EEF1F5;padding-top:10px">Navo only notifies you when something needs you or changes your plan. Routine updates stay here.</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">10. Dependencies</span><span style="font-size:13px;color:#5B6474">Critical path to Day 1, highlighted</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#0B1530;border:1px solid #1E2A52;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.6);color:#fff">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 18px 16px;display:flex;flex-direction:column;gap:6px;align-items:center">
+<div style="align-self:stretch;display:flex;align-items:center;gap:10px;padding-bottom:10px"><span style="font-size:16px;color:#9FB0D3">‹</span><span style="font-size:15px;font-weight:600">Dependencies</span></div>
+<div style="width:180px;border-radius:12px;padding:10px 12px;background:rgba(19,121,91,.18);box-shadow:inset 0 0 0 1px rgba(52,211,153,.5);display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Employee ID</span><span style="font-size:11px;color:#6EE7B7">Done · 10:43 · HR</span></div>
+<div style="width:2px;height:22px;background:linear-gradient(#34D399,#38BDF8)"></div>
+<div style="width:200px;border-radius:12px;padding:10px 12px;background:rgba(47,91,234,.25);box-shadow:inset 0 0 0 1px rgba(56,189,248,.8),0 0 26px -4px rgba(56,189,248,.7);display:flex;flex-direction:column;gap:1px"><span style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600"><span style="width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span>Laptop provisioning</span><span style="font-size:11px;color:#BFE9FC">In progress · IT · arrives Fri</span></div>
+<div style="width:2px;height:22px;background:#38BDF8;box-shadow:0 0 8px #38BDF8"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+<div style="border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Email</span><span style="font-size:11px;color:#9FB0D3">Waiting · IT</span></div>
+<div style="border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(56,189,248,.5);display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">VPN access</span><span style="font-size:11px;color:#BFE9FC">Waiting on laptop</span></div>
+</div>
+<div style="width:2px;height:22px;background:#38BDF8;box-shadow:0 0 8px #38BDF8"></div>
+<div style="width:180px;border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600">Day 1 readiness</span><span style="font-size:11px;color:#6EE7B7">On track · Mon 20 Oct</span></div>
+<div style="margin-top:auto;align-self:stretch;border-top:1px solid rgba(255,255,255,.12);padding-top:12px;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#7DD3FC">Critical path</span><span style="font-size:12px;line-height:1.45;color:#D6DDEE">Laptop → VPN has 1 working day of slack. If the laptop slips past Friday, I'll arrange a loaner and ask you first.</span></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">11. Manager view</span><span style="font-size:13px;color:#5B6474">Exceptions only, across the team</span></div>
+<div style="width:300px;height:620px;border-radius:32px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="height:34px;flex:none;display:flex;align-items:center;padding:0 22px;font-size:12px;font-weight:600">9:41</div>
+<div style="flex:1;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;color:#5B6474">‹</span><span style="font-size:15px;font-weight:600">Team onboarding</span></div>
+<div style="background:#F6F8FC;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.45;color:#2A3240"><span style="font-weight:600;color:#0B1530">Navo summary · </span>5 joiners. 4 on track. 1 needs you: Priya Sharma's background check is late.</div>
+<div style="display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #EEF1F5"><image-slot id="nv-av-anand" shape="circle" style="width:30px;height:30px" placeholder=""></image-slot><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Anand Mehta</span><span style="font-size:11px;color:#5B6474">Mon 20 Oct</span></span><span style="font-size:11px;color:#13795B">On track</span></div>
+<div style="display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px 8px;margin:0 -8px;border-radius:10px;background:#FCEFE3"><image-slot id="nv-av-priya" shape="circle" style="width:30px;height:30px" placeholder=""></image-slot><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Priya Sharma</span><span style="font-size:11px;color:#9A3B12">BG check late · Navo chasing vendor</span></span><span style="font-size:11px;color:#C2410C;font-weight:600">At risk</span></div>
+<div style="display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #EEF1F5"><image-slot id="nv-av-rohit" shape="circle" style="width:30px;height:30px" placeholder=""></image-slot><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Rohit Mehta</span><span style="font-size:11px;color:#5B6474">Tue 28 Oct</span></span><span style="font-size:11px;color:#13795B">On track</span></div>
+<div style="display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #EEF1F5"><image-slot id="nv-av-neha" shape="circle" style="width:30px;height:30px" placeholder=""></image-slot><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Neha Verma</span><span style="font-size:11px;color:#5B6474">Mon 3 Nov</span></span><span style="font-size:11px;color:#13795B">On track</span></div>
+<div style="display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px 0"><image-slot id="nv-av-karan" shape="circle" style="width:30px;height:30px" placeholder=""></image-slot><span style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600">Karan Gupta</span><span style="font-size:11px;color:#5B6474">Mon 10 Nov</span></span><span style="font-size:11px;color:#B07A0A">Docs pending</span></div>
+</div>
+<div style="margin-top:auto;border:1px solid #F2C9C4;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#C8372D">Navo needs your input</span><span style="font-size:12px;line-height:1.4">Move Priya's start to 3 Nov, or keep 27 Oct with limited access?</span><div style="display:flex;gap:6px"><span style="font-size:12px;color:#fff;background:#2F5BEA;border-radius:8px;padding:6px 10px;font-weight:600">Keep 27 Oct</span><span style="font-size:12px;border:1px solid #E2E7EF;border-radius:8px;padding:5px 10px">Move</span></div></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;width:300px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">12. Demo control panel</span><span style="font-size:13px;color:#5B6474">Judge view, drives the live story</span></div>
+<div style="width:300px;height:620px;border-radius:20px;background:#fff;border:1px solid #DCE2EC;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px -30px rgba(11,21,48,.4)">
+<div style="background:#0B1530;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600">Simulation controls</span><span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#7DD3FC"><span style="width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.6s infinite"></span>Agent running</span></div>
+<div style="flex:1;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">Scenario</span><div style="border:1px solid #E2E7EF;border-radius:10px;padding:9px 12px;font-size:13px;display:flex;justify-content:space-between"><span>Employee ID delayed</span><span style="color:#5B6474">⌄</span></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">Current time</span><div style="border:1px solid #E2E7EF;border-radius:10px;padding:9px 10px;font-size:12px">Thu 16 Oct · 09:00</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">HR response</span><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#F1F3F7;border-radius:10px;padding:2px;font-size:11px;text-align:center"><span style="background:#2F5BEA;color:#fff;border-radius:8px;padding:7px 0;font-weight:600">Responds</span><span style="padding:7px 0">Silent</span></div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:600">Live tool calls</span>
+<div style="background:#0B1530;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:10.5px;line-height:1.4;color:#B9C4DE">
+<span><span style="color:#6EE7B7">✓</span> get_dependencies(laptop)</span>
+<span><span style="color:#6EE7B7">✓</span> calculate_day1_risk → HIGH</span>
+<span><span style="color:#6EE7B7">✓</span> check_permission(reminder) → auto</span>
+<span style="color:#7DD3FC"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:nvPulse 1.4s infinite;margin-right:5px"></span>send_reminder(priya.nair) …</span>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:11px;line-height:1.45;color:#4A5363"><span style="font-size:12px;font-weight:600;color:#0B1530">Guardrails</span><span><span style="color:#13795B;font-weight:600">Auto</span> · reminders, IT tickets, scheduling</span><span><span style="color:#C8372D;font-weight:600">Needs approval</span> · asset changes, employee data</span></div>
+<button style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;box-shadow:0 8px 22px -8px rgba(56,189,248,.8)">Advance time →</button>
+<button style="background:#fff;color:#0B1530;border:1px solid #E2E7EF;border-radius:12px;padding:11px;font-size:14px">Reset</button>
+<span style="font-size:11px;color:#5B6474;line-height:1.4;text-align:center">Runs real scenarios to show how Navo reasons, coordinates and acts.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+</body>
+</html>
