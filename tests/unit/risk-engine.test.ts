@@ -72,6 +72,28 @@ describe("risk engine", () => {
     expect(report.byTask.get("laptop")?.level).toBe("critical");
   });
 
+  it("treats a committed ETA (e.g. an approved loaner) as covering the Day-1 need", () => {
+    const etas = new Map([["laptop", atIst("2026-10-16", "16:00")]]);
+    const report = assessRisk({ graph: anandGraph(), now: atIst("2026-10-16", "09:31"), day1Start: DAY1, etas });
+    expect(report.byTask.get("laptop")?.level).toBe("low");
+  });
+
+  it("ignores lateness that is not on the critical chain", () => {
+    // Access waits on email (fine) and on training due Sunday; the late ID isn't what sets its finish.
+    const graph = new DependencyGraph(
+      [
+        node("employee_id", { ownerType: "hr", status: "waiting", dueAt: ID_DUE, requiredForDay1: true }),
+        node("email", { leadWorkingDays: 1, requiredForDay1: true }),
+        node("training", { ownerType: "employee", status: "needs_user", dueAt: atIst("2026-10-18", "23:59").toISOString() }),
+        node("access", { requiredForDay1: true }),
+      ],
+      [blocks("employee_id", "email"), blocks("email", "access"), blocks("training", "access")],
+    );
+    const report = assessRisk({ graph, now: atIst("2026-10-14", "09:15"), day1Start: DAY1 });
+    expect(report.byTask.get("access")?.level).toBe("low");
+    expect(report.byTask.get("access")?.overdueUpstream).toHaveLength(0);
+  });
+
   it("orders risk levels", () => {
     expect(maxRisk("low", "high")).toBe("high");
     expect(maxRisk("critical", "medium")).toBe("critical");

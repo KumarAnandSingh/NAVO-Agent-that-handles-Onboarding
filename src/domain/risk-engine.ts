@@ -11,7 +11,7 @@ export interface TaskRisk {
   slackWorkingDays: number | null;
   willMiss: boolean;
   overdue: boolean;
-  /** Overdue, incomplete tasks this task (transitively) waits on. */
+  /** Overdue, incomplete tasks on this task's critical chain. */
   overdueUpstream: TaskNode[];
 }
 
@@ -47,6 +47,7 @@ const isOverdue = (task: TaskNode, now: Date) =>
  * - a Day-1 task with no working-day slack behind an overdue prerequisite is high;
  * - one working day of slack behind an overdue prerequisite is medium; more is low;
  * - a tight but healthy chain (zero slack, nothing overdue) is low;
+ * - a delivery date committed by the owning system (an ETA) overrides upstream lateness;
  * - an overdue task carries the highest risk it causes downstream.
  */
 export function assessRisk({ graph, now, day1Start, etas, calendar = HALDEN_CALENDAR }: RiskInput): RiskReport {
@@ -58,15 +59,21 @@ export function assessRisk({ graph, now, day1Start, etas, calendar = HALDEN_CALE
     const projectedAt = projection.get(task.id) ?? now;
     const deadline = task.requiredForDay1 ? day1Start : task.dueAt ? new Date(task.dueAt) : null;
     const overdue = isOverdue(task, now);
-    const overdueUpstream = graph.upstream(task.id).filter((t) => isOverdue(t, now));
+    // Only lateness on the critical chain matters: an overdue item that isn't what the
+    // task is actually waiting for doesn't shorten its slack.
+    const overdueUpstream = graph.criticalChain(task.id, now, etas, calendar).filter((t) => isOverdue(t, now));
     // An item already past its own deadline is "overdue", not a future miss; Day-1 items
     // are judged against Day 1 itself.
     const willMiss = deadline !== null && projectedAt.getTime() > deadline.getTime() && (task.requiredForDay1 || !overdue);
     const slack = deadline ? workingDaysBetween(dateKeyOf(projectedAt), dateKeyOf(deadline), calendar) : null;
 
+    // A delivery date committed by the owning system replaces upstream uncertainty.
+    const committed = etas?.has(task.id) ?? false;
     let level: RiskLevel = "none";
     if (willMiss) {
       level = "critical";
+    } else if (committed) {
+      level = task.requiredForDay1 && slack === 0 ? "low" : "none";
     } else if (task.requiredForDay1 && slack !== null) {
       const behindOverdue = overdue || overdueUpstream.length > 0;
       if (behindOverdue) level = slack === 0 ? "high" : slack === 1 ? "medium" : "low";

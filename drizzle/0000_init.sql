@@ -120,6 +120,7 @@ CREATE TABLE "employees" (
 	"employee_number" text,
 	"home_area" text,
 	"family" jsonb,
+	"day1_risk" text DEFAULT 'none' NOT NULL,
 	"featured" boolean DEFAULT false NOT NULL,
 	"simulated" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "employees_workspace_id_person_id_pk" PRIMARY KEY("workspace_id","person_id")

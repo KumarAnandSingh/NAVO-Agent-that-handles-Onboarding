@@ -1,5 +1,5 @@
 {
-  "id": "ade2a4b3-71a6-47b6-9328-80db49520dfc",
+  "id": "b16385e2-06bd-4e9d-9972-2951e336ddd7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -882,6 +882,13 @@
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false
+        },
+        "day1_risk": {
+          "name": "day1_risk",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'none'"
         },
         "featured": {
           "name": "featured",

@@ -128,7 +128,27 @@ export class DependencyGraph {
    * projection; anything that still misses its deadline under it is a certain miss.
    */
   projectCompletions(now: Date, etas: ReadonlyMap<string, Date> = new Map(), calendar: WorkingCalendar = HALDEN_CALENDAR): Map<string, Date> {
+    return this.project(now, etas, calendar).projection;
+  }
+
+  /**
+   * The chain of prerequisites that actually sets a task's projected finish: at each
+   * step, the incomplete blocking prerequisite expected to finish last.
+   */
+  criticalChain(taskId: string, now: Date, etas: ReadonlyMap<string, Date> = new Map(), calendar: WorkingCalendar = HALDEN_CALENDAR): TaskNode[] {
+    const { critical } = this.project(now, etas, calendar);
+    const chain: TaskNode[] = [];
+    let current = critical.get(taskId);
+    while (current && !chain.some((t) => t.id === current)) {
+      chain.push(this.task(current));
+      current = critical.get(current);
+    }
+    return chain;
+  }
+
+  private project(now: Date, etas: ReadonlyMap<string, Date>, calendar: WorkingCalendar) {
     const projection = new Map<string, Date>();
+    const critical = new Map<string, string>();
     for (const task of this.topologicalOrder()) {
       if (task.status === "completed") {
         projection.set(task.id, task.completedAt ? new Date(task.completedAt) : now);
@@ -141,9 +161,12 @@ export class DependencyGraph {
       }
       let start = now;
       for (const edge of this.prerequisites.get(task.id) ?? []) {
-        if (edge.type !== "blocks") continue;
+        if (edge.type !== "blocks" || this.task(edge.prerequisiteTaskId).status === "completed") continue;
         const prerequisiteDone = projection.get(edge.prerequisiteTaskId) ?? now;
-        if (prerequisiteDone.getTime() > start.getTime()) start = prerequisiteDone;
+        if (prerequisiteDone.getTime() >= start.getTime()) {
+          start = prerequisiteDone;
+          critical.set(task.id, edge.prerequisiteTaskId);
+        }
       }
       const started = task.status === "waiting" || task.status === "in_progress" || task.status === "needs_user";
       if (task.leadWorkingDays > 0) {
@@ -155,7 +178,7 @@ export class DependencyGraph {
         projection.set(task.id, start);
       }
     }
-    return projection;
+    return { projection, critical };
   }
 }
 

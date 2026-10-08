@@ -85,6 +85,8 @@ export const employees = pgTable(
     employeeNumber: text("employee_number"),
     homeArea: text("home_area"),
     family: jsonb("family").$type<FamilyDetails>(),
+    /** Latest Day-1 risk computed by the risk engine. */
+    day1Risk: text("day1_risk").$type<RiskLevel>().notNull().default("none"),
     /** True for the featured joiner whose phone is shown in the demo. */
     featured: boolean("featured").notNull().default(false),
     /**
@@ -421,7 +423,7 @@ export const itTickets = pgTable(
     workspaceId: workspaceRef(),
     id: text("id").notNull(),
     employeeId: text("employee_id").notNull(),
-    type: text("type").$type<"laptop" | "email" | "vpn" | "loaner" | "tool_access">().notNull(),
+    type: text("type").$type<"laptop" | "email" | "vpn" | "loaner" | "tool_access" | "access">().notNull(),
     status: text("status").$type<"requested" | "in_progress" | "ready" | "closed">().notNull(),
     detail: text("detail").notNull(),
     createdAt: ts("created_at").notNull(),

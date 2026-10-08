@@ -82,6 +82,11 @@ describe("dependency engine", () => {
     expect(projection.get("vpn")?.toISOString()).toBe(atIst("2026-10-16", "18:00").toISOString());
   });
 
+  it("finds the critical chain that sets a task's finish", () => {
+    const now = atIst("2026-10-15", "09:15");
+    expect(chain().criticalChain("vpn", now).map((t) => t.id)).toEqual(["laptop", "employee_id"]);
+  });
+
   it("uses ETAs reported by owning systems", () => {
     const now = atIst("2026-10-15", "11:00");
     const graph = new DependencyGraph([node("laptop", { status: "in_progress", leadWorkingDays: 2 })], []);

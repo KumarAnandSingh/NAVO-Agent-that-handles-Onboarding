@@ -38,10 +38,12 @@ export type Fulfilment =
   | { kind: "vendor" }
   | { kind: "facilities"; item: string }
   | { kind: "hr_request"; type: "employee_id" | "id_card" }
-  | { kind: "it_ticket"; type: "laptop" | "email" | "vpn" | "tool_access"; detail: string }
+  | { kind: "it_ticket"; type: "laptop" | "email" | "vpn" | "tool_access" | "access"; detail: string }
+  /** A Day-1 or later session booked by another task; completes when the calendar event ends. */
+  | { kind: "attend" }
   | { kind: "training"; course: string; minutes: number }
   | { kind: "meeting"; slot: MeetingSlot }
-  | { kind: "booking"; slot: MeetingSlot; bookedLabel: string };
+  | { kind: "booking"; slot: MeetingSlot; bookedLabel: string; attendTask: TaskKey };
 
 export interface MeetingSlot {
   /** Calendar days relative to Day 1 (0 = Day 1). */
@@ -79,16 +81,16 @@ export const ONBOARDING_TEMPLATE: readonly TaskTemplate[] = [
   t("vpn", "VPN", "VPN profile configured on the laptop.", "pre_joining", "it", { kind: "it_ticket", type: "vpn", detail: "VPN profile on laptop" }, { watched: true, requiredForDay1: true }),
   t("id_card", "ID card", "Photo ID card for building access.", "pre_joining", "hr", { kind: "hr_request", type: "id_card" }, { requiredForDay1: true, leadWorkingDays: 1 }),
   t("onboarding_kit", "Onboarding kit", "Welcome kit prepared by Facilities.", "pre_joining", "facilities", { kind: "facilities", item: "Onboarding kit" }, { requiredForDay1: true }),
-  t("manager_1on1", "Manager 1:1", "First 1:1 with the hiring manager on Day 1.", "pre_joining", "navo", { kind: "booking", bookedLabel: "Manager 1:1 booked", slot: { dayOffset: 0, start: "12:00", end: "12:30", title: "1:1 with Rahul Iyer", location: "Room 4A", with: "manager", kind: "one_on_one" } }, { watched: true }),
-  t("buddy", "Buddy", "A buddy from the same team for the first weeks.", "pre_joining", "navo", { kind: "booking", bookedLabel: "Buddy assigned", slot: { dayOffset: 0, start: "14:00", end: "14:30", title: "Meet Meera, your buddy", location: "Cafeteria, 2nd floor", with: "buddy", kind: "buddy" } }, { watched: true }),
-  t("induction", "Induction", "Company induction on Day 1.", "pre_joining", "navo", { kind: "booking", bookedLabel: "Induction booked", slot: { dayOffset: 0, start: "09:30", end: "11:00", title: "Company induction", location: DAY1_LOCATION, with: "hr", kind: "induction" } }, { watched: true }),
+  t("manager_1on1", "Manager 1:1", "First 1:1 with the hiring manager on Day 1.", "pre_joining", "navo", { kind: "booking", bookedLabel: "Manager 1:1 booked", attendTask: "day1_manager", slot: { dayOffset: 0, start: "12:00", end: "12:30", title: "1:1 with Rahul Iyer", location: "Room 4A", with: "manager", kind: "one_on_one" } }, { watched: true }),
+  t("buddy", "Buddy", "A buddy from the same team for the first weeks.", "pre_joining", "navo", { kind: "booking", bookedLabel: "Buddy assigned", attendTask: "day1_buddy", slot: { dayOffset: 0, start: "14:00", end: "14:30", title: "Meet Meera, your buddy", location: "Cafeteria, 2nd floor", with: "buddy", kind: "buddy" } }, { watched: true }),
+  t("induction", "Induction", "Company induction on Day 1.", "pre_joining", "navo", { kind: "booking", bookedLabel: "Induction booked", attendTask: "day1_induction", slot: { dayOffset: 0, start: "09:30", end: "11:00", title: "Company induction", location: DAY1_LOCATION, with: "hr", kind: "induction" } }, { watched: true }),
   t("security_training", "Security training", "15-minute security awareness course and a 5-minute check.", "pre_joining", "employee", { kind: "training", course: "Security awareness", minutes: 15 }, { requiredForDay1: true }),
-  t("access_activation", "Email and VPN access", "IT switches on email, VPN and core tools once training is done.", "pre_joining", "it", { kind: "navo" }, { requiredForDay1: true }),
+  t("access_activation", "Email and VPN access", "IT switches on email, VPN and core tools once training is done.", "pre_joining", "it", { kind: "it_ticket", type: "access", detail: "Email, VPN and core tools switched on" }, { requiredForDay1: true }),
   t("pickup", "Day 1 pickup", "One pickup for ID card, laptop and kit.", "pre_joining", "navo", { kind: "navo" }),
-  t("day1_induction", "Company induction", "Day 1 induction session.", "day1", "hr", { kind: "navo" }),
+  t("day1_induction", "Company induction", "Day 1 induction session.", "day1", "hr", { kind: "attend" }),
   t("day1_collect", "Collect ID card, laptop and kit", "Confirm what you collected at the pickup.", "day1", "employee", { kind: "employee" }),
-  t("day1_manager", "Meet Rahul, your manager", "Day 1 1:1.", "day1", "manager", { kind: "navo" }),
-  t("day1_buddy", "Meet Meera, your buddy", "Day 1 buddy meeting.", "day1", "buddy", { kind: "navo" }),
+  t("day1_manager", "Meet Rahul, your manager", "Day 1 1:1.", "day1", "manager", { kind: "attend" }),
+  t("day1_buddy", "Meet Meera, your buddy", "Day 1 buddy meeting.", "day1", "buddy", { kind: "attend" }),
   t("product_induction", "Product induction", "Walkthrough of Halden's products.", "week1", "manager", { kind: "meeting", slot: { dayOffset: 1, start: "10:00", end: "11:30", title: "Product induction", location: "Room 4A", with: "manager", kind: "product_induction" } }),
   t("mandatory_training", "Mandatory training", "Code of conduct and data protection.", "week1", "employee", { kind: "meeting", slot: { dayOffset: 1, start: "14:00", end: "15:00", title: "Mandatory training", location: "Learning portal", kind: "training" } }),
   t("team_intros", "Team introductions", "Meet the product team.", "week1", "manager", { kind: "meeting", slot: { dayOffset: 2, start: "11:00", end: "12:00", title: "Team introductions", location: "Room 4A", with: "manager", kind: "team_intros" } }),
