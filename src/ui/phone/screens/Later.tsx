@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CULTURE_SLIDES } from "@/content/culture";
 import type { ViewModel } from "@/services/view-model/types";
 import { NavoFace } from "@/ui/components/NavoFace";
+import { useOptionalGuide } from "@/ui/stage/Guide";
 import { useNavo } from "@/ui/state/NavoStore";
 import p from "../phone.module.css";
 import s from "./screens.module.css";
@@ -168,6 +169,7 @@ export function BenefitsScreen({ vm }: { vm: ViewModel }) {
 
 export function DayThirtyScreen({ vm }: { vm: ViewModel }) {
   const { employee } = useNavo();
+  const guide = useOptionalGuide();
   const d = vm.day30;
   const [picked, setPicked] = useState<number | null>(d.pulse);
   const manager = vm.employee.managerName.split(" ")[0] ?? "your manager";
@@ -224,6 +226,11 @@ export function DayThirtyScreen({ vm }: { vm: ViewModel }) {
         <span className={p.rowNote}>Goes to HR anonymously, to improve onboarding</span>
       </div>
       <span className={`${p.muted} ${p.bottom}`}>Next: {d.next}</span>
+      {guide && (
+        <button className={p.dark} onClick={() => guide.setOverlay("outro")}>
+          See the impact →
+        </button>
+      )}
     </div>
   );
 }

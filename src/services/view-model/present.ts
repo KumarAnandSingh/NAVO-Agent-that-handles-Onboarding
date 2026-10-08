@@ -34,6 +34,7 @@ import type {
   HomeVM,
   HrVM,
   IdTrackerVM,
+  ImpactVM,
   JourneyStepVM,
   NeedVM,
   RuntimeVM,
@@ -108,6 +109,7 @@ export function present(state: LoadedState, options: PresentOptions): ViewModel 
     week1: presentWeek1(ctx),
     day30: presentDay30(ctx),
     updates: presentUpdates(ctx),
+    impact: presentImpact(ctx),
     hr: presentHr(ctx),
     runtime: presentRuntime(ctx, options),
     pendingApproval: pendingApproval ? { id: pendingApproval.id, title: pendingApproval.title, detail: pendingApproval.detail } : null,
@@ -704,6 +706,24 @@ function presentDay30(ctx: Ctx) {
     next: `60-day goals review · ${formatShortDate(atIst(addCalendarDays(ctx.employee.joiningDate, 60), "12:00"))}`,
     pulse: ctx.state.pulse?.score ?? null,
     open: ctx.tasks.filter((t) => t.status !== "completed" && t.key !== "checkin_30").map((t) => t.name),
+  };
+}
+
+function presentImpact(ctx: Ctx): ImpactVM {
+  const completed = ctx.tasks.filter((t) => t.status === "completed");
+  const byYou = completed.filter((t) => t.ownerType === "employee").length;
+  const mine = ctx.state.followUps.filter((f) => f.employeeId === ctx.employee.personId);
+  const firstReminder = [...mine].sort((a, b) => a.sentAt.getTime() - b.sentAt.getTime())[0];
+  return {
+    tasksDone: completed.length,
+    tasksTotal: ctx.tasks.length,
+    byNavo: completed.length - byYou,
+    byYou,
+    riskCaughtDaysBefore: firstReminder ? calendarDaysUntil(firstReminder.sentAt, ctx.day1Start) : null,
+    followUpsSent: mine.length,
+    toolCalls: ctx.state.toolCallCount,
+    askedFirst: ctx.state.approvals.filter((a) => a.employeeId === ctx.employee.personId && a.requestedFrom === ctx.employee.personId).length,
+    joiners: ctx.state.employees.length,
   };
 }
 

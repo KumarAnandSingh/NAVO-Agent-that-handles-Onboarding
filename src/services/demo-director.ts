@@ -123,6 +123,7 @@ export async function jumpToDay30(db: Db, workspaceId: string): Promise<void> {
 }
 
 export const SKIP_TARGETS = {
+  risk_day: () => atIst(TIMELINE.riskDay, "09:00"),
   day1: () => atIst(TIMELINE.day1, "07:30"),
   pickup: () => atIst(TIMELINE.day1, "11:15"),
   day1_end: () => atIst(TIMELINE.day1, "17:30"),

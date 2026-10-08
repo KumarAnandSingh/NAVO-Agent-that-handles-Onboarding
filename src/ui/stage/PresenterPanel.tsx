@@ -5,6 +5,7 @@ import type { Chapter } from "@/services/view-model/types";
 import { NavoFace } from "@/ui/components/NavoFace";
 import { useNavo } from "@/ui/state/NavoStore";
 import { CHAPTERS, HR_NOTICE, chapterOfScreen } from "./chapters";
+import { useGuide } from "./Guide";
 import st from "./stage.module.css";
 
 const VM_CHAPTER: Record<Chapter, number> = { launch: 0, documents: 1, pre_joining: 2, ready: 3, day1: 4, week1: 5 };
@@ -12,7 +13,8 @@ const VM_CHAPTER: Record<Chapter, number> = { launch: 0, documents: 1, pre_joini
 /** Left panel: what to notice, chapter jumps, the HR scenario switch and the simulated clock. */
 export function PresenterPanel() {
   const { vm, screen, view, setView, go, demo, busy, replay } = useNavo();
-  const working = busy || Boolean(replay);
+  const guide = useGuide();
+  const working = busy || Boolean(replay) || guide.running;
   const current = screen === "home" && vm ? VM_CHAPTER[vm.chapter] : chapterOfScreen(screen);
   const scenario = vm?.workspace.scenario ?? "hr_responds";
   const hrCanAct = vm?.hr.queue.some((q) => q.action === "generate_id") && view === "emp";
@@ -40,6 +42,18 @@ export function PresenterPanel() {
             <span className={st.clock}>{vm?.clock.dayClock ?? "Loading…"}</span>
           </span>
         </div>
+
+        <div className={st.buttons}>
+          <button className={st.play} onClick={guide.toggle}>
+            {guide.auto ? "❚❚ Pause guided demo" : "▶ Play guided demo"}
+          </button>
+          <button className={st.ghost} onClick={() => guide.setOverlay("intro")} title="Show the brief (B)">
+            Brief
+          </button>
+        </div>
+        <span className={st.small} style={{ lineHeight: 1.5 }}>
+          Keys: → next · ← back · Space play/pause · H HR view · B brief · Esc close
+        </span>
 
         <div className={st.notice}>
           <span className={st.noticeKicker}>WHAT TO NOTICE</span>

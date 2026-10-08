@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import { FEATURED_EMPLOYEE_ID } from "@/content/company";
 import type { Queryable } from "@/lib/db/client";
 import {
@@ -92,6 +92,8 @@ export async function loadState(db: Queryable, workspaceId: string, employeeId =
     .orderBy(desc(pulseResponses.at))
     .limit(1);
 
+  const [toolCallCount] = await db.select({ n: count() }).from(toolCalls).where(eq(toolCalls.workspaceId, workspaceId));
+
   const upcoming = await upcomingEvents(db, workspaceId, 5);
 
   return {
@@ -114,6 +116,7 @@ export async function loadState(db: Queryable, workspaceId: string, employeeId =
     stateChanges: changes,
     upcoming,
     pulse: pulse ?? null,
+    toolCallCount: toolCallCount?.n ?? 0,
   };
 }
 

@@ -15,7 +15,7 @@ const body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("it_delay") }),
   z.object({ action: z.literal("chapter"), chapter: z.number().int().min(0).max(5) }),
   z.object({ action: z.literal("day30") }),
-  z.object({ action: z.literal("skip"), to: z.enum(["day1", "pickup", "day1_end", "week1"]) }),
+  z.object({ action: z.literal("skip"), to: z.enum(["risk_day", "day1", "pickup", "day1_end", "week1"]) }),
 ]);
 
 export async function POST(request: Request) {

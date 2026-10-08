@@ -92,6 +92,9 @@ interface NavoStore {
   setSheet: (sheet: Sheet) => void;
   setView: (view: View) => void;
   toggleWhy: () => void;
+  setWhy: (open: boolean) => void;
+  /** The newest view model, including one still waiting for its replay to finish. */
+  latest: () => ViewModel | null;
   say: (text: string) => void;
   demo: (body: Record<string, unknown>) => Promise<ViewModel | null>;
   employee: (body: Record<string, unknown>, toast?: ToastFor) => Promise<ViewModel | null>;
@@ -168,6 +171,8 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
   /** Show a new view model, replaying Navo's new tool calls first so judges can follow them. */
   const apply = useCallback((next: ViewModel) => {
     const calls = newToolCalls(vmRef.current, next);
+    // Readers of latest() (the guided demo) see the new state before React re-renders.
+    vmRef.current = next;
     if (calls.length === 0) {
       setVm(next);
       setPendingVm(null);
@@ -215,6 +220,7 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
       const json = (await response.json()) as { vm?: ViewModel; error?: string };
       if (json.vm) {
         if (vmRef.current === null) {
+          vmRef.current = json.vm;
           setVm(json.vm);
           if (initialScreen === "auto") setScreen(screenForChapter(json.vm.chapter));
         } else apply(json.vm);
@@ -292,6 +298,8 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
         setSheet(null);
       },
       toggleWhy: () => setWhy((w) => !w),
+      setWhy,
+      latest: () => vmRef.current,
       say,
       demo: (body) => run("/api/demo", body),
       employee: async (body, toastFor) => {

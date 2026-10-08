@@ -182,6 +182,20 @@ export interface Day30VM {
   open: string[];
 }
 
+/** Figures for the impact screen, all computed from this workspace's run. */
+export interface ImpactVM {
+  tasksDone: number;
+  tasksTotal: number;
+  byNavo: number;
+  byYou: number;
+  /** Calendar days before Day 1 that Navo first acted on a Day-1 risk, if it did. */
+  riskCaughtDaysBefore: number | null;
+  followUpsSent: number;
+  toolCalls: number;
+  askedFirst: number;
+  joiners: number;
+}
+
 export interface UpdateVM {
   id: number;
   group: string;
@@ -272,6 +286,7 @@ export interface ViewModel {
   week1: Week1VM;
   day30: Day30VM;
   updates: UpdateVM[];
+  impact: ImpactVM;
   hr: HrVM;
   runtime: RuntimeVM;
   pendingApproval: { id: string; title: string; detail: string } | null;
