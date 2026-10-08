@@ -20,7 +20,7 @@ import { listEvents } from "@/mock-systems/calendar";
 import { expectedReadyAt } from "@/mock-systems/it";
 import { enqueueEvent } from "@/services/events/queue";
 import { getTask, listPeople, updateTask } from "@/services/onboarding-state/repository";
-import { recordActivity, tick, type AgentContext } from "./context";
+import { narrate, recordActivity, tick, type AgentContext } from "./context";
 import type { PlannedAction } from "./playbooks";
 import { noteKey } from "./playbooks";
 import { TEMPLATES, type OnboardingSnapshot } from "./snapshot";
@@ -229,7 +229,7 @@ async function bookPickup(ctx: AgentContext, snapshot: OnboardingSnapshot, taskI
     headline: "Day 1 pickup booked",
     headlineDetail: `${weekdayName(startsAt)} ${formatTime(startsAt)} · Building B`,
   });
-  const narration = await ctx.narrator.employeeUpdate({
+  const narration = await narrate(ctx, {
     kind: "ready_for_day1",
     facts: { site: COMPANY.pickupSite, when: `${weekdayName(startsAt)} ${formatTime(startsAt)}` },
   });
@@ -291,7 +291,7 @@ async function remindOwner(ctx: AgentContext, snapshot: OnboardingSnapshot, task
     });
   }
   await recordActivity(ctx, { caseKey: caseFor(task.key), phase: "Planned", summary: plan.join(" "), taskId });
-  const narration = await ctx.narrator.employeeUpdate({
+  const narration = await narrate(ctx, {
     kind: "risk_detected",
     facts: {
       blocker: task.name,
@@ -338,7 +338,7 @@ async function escalate(ctx: AgentContext, snapshot: OnboardingSnapshot, taskId:
     headlineDetail: `No reply from ${team} in 24h`,
   });
   const loaner = snapshot.tickets.some((t) => t.type === "loaner");
-  const narration = await ctx.narrator.employeeUpdate({
+  const narration = await narrate(ctx, {
     kind: "escalated",
     facts: {
       owner: team,
@@ -367,7 +367,7 @@ async function proposeLoaner(ctx: AgentContext, snapshot: OnboardingSnapshot, ta
     payload: { taskId },
   });
   await recordActivity(ctx, { caseKey: "empid", phase: "Asked", summary: "Loaner laptop is an asset change. Asked Anand to approve.", taskId, action: "request_loaner" });
-  const narration = await ctx.narrator.employeeUpdate({
+  const narration = await narrate(ctx, {
     kind: "needs_approval",
     facts: { question: "Use a loaner laptop for Day 1?", detail },
   });
@@ -415,7 +415,7 @@ async function openRelevant(ctx: AgentContext, snapshot: OnboardingSnapshot, tas
   const days = calendarDaysUntil(ctx.clock, task.dueAt);
   await callTool(ctx, searchPolicyLibrary, { query: "health cover spouse children parents enrol" });
   await callTool(ctx, updateTaskTool, { taskId, status: "needs_user", note: `Closes in ${days} days`, reason: "Relevant now" });
-  const narration = await ctx.narrator.employeeUpdate({
+  const narration = await narrate(ctx, {
     kind: "relevant_now",
     facts: { headline: `Health cover enrolment closes in ${days} days.`, detail: "Your spouse and child are covered at no cost. Parents are optional." },
   });

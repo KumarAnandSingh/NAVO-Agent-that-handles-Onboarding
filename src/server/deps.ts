@@ -1,13 +1,20 @@
+import { claudeNarrator } from "@/agent/claude-narrator";
 import { templateNarrator } from "@/agent/narration";
+import { claudeReader } from "@/services/documents/claude-reader";
 import { fixtureReader } from "@/services/documents/reader";
 import type { ActionDeps } from "@/services/employee-actions";
+import { claudeCreate, liveAiEnabled, NAVO_MODEL } from "@/services/llm/claude";
 
-/** True when a Claude API key is configured on the server. */
-export function liveAiEnabled(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY);
+export { liveAiEnabled };
+
+/** The model shown in the runtime panel, or null in offline mode. */
+export function liveModel(): string | null {
+  return liveAiEnabled() ? NAVO_MODEL : null;
 }
 
-/** Dependencies for agent runs: Claude-backed when a key is configured, deterministic otherwise. */
+/** Dependencies for live agent runs: Claude-backed when a key is configured, deterministic otherwise. */
 export function agentDeps(): ActionDeps {
-  return { narrator: templateNarrator, reader: fixtureReader };
+  const create = claudeCreate();
+  if (!create) return { narrator: templateNarrator, reader: fixtureReader };
+  return { narrator: claudeNarrator(create), reader: claudeReader(create) };
 }

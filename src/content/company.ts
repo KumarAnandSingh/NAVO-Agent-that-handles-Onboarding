@@ -18,4 +18,4 @@ export const COMPANY = {
 export const FEATURED_EMPLOYEE_ID = "anand.mehta";
 
 /** Seed data version. Bump when seed content changes so stale workspaces are rebuilt. */
-export const SEED_VERSION = 1;
+export const SEED_VERSION = 2;

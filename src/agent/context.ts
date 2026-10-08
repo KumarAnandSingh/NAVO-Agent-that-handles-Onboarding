@@ -4,7 +4,7 @@ import { addMinutes } from "@/domain/time";
 import type { Queryable } from "@/lib/db/client";
 import { activities, agentRuns, notifications, stateChanges, workspaces } from "@/lib/db/schema";
 import type { Workspace } from "@/services/workspace";
-import type { Narrator } from "./narration";
+import type { Narration, Narrator, UpdateFacts } from "./narration";
 
 /**
  * Everything one agent run needs. Runs execute inside a database transaction, so a
@@ -117,4 +117,9 @@ export async function notify(
     push: kind === "needs_you",
     composedBy,
   });
+}
+
+/** Write an update for the joiner in Navo's voice, inside this run's transaction. */
+export function narrate(ctx: AgentContext, update: UpdateFacts): Promise<Narration> {
+  return ctx.narrator.employeeUpdate(update, { db: ctx.db, workspaceId: ctx.workspace.id });
 }

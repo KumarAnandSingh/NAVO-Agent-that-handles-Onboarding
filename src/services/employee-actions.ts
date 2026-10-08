@@ -74,7 +74,7 @@ export async function uploadSampleDocument(db: Db, workspaceId: string, employee
   const sample = SAMPLE_DOCUMENTS.find((s) => s.id === sampleId);
   if (!sample) throw new ActionError(`Unknown sample document ${sampleId}`);
   // Read outside the transaction: reading may call Claude and take a few seconds.
-  const reading = await deps.reader.read(sample);
+  const reading = await deps.reader.read(sample, { db, workspaceId });
   await act(db, workspaceId, deps, `Uploaded ${sample.label}`, async (tx, now) => {
     const employee = await getEmployee(tx, workspaceId, employeeId);
     const people = await listPeople(tx, workspaceId);

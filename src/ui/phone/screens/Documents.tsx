@@ -19,7 +19,7 @@ function uploadToast(vm: ViewModel): string {
 
 function SampleImage({ file, className }: { file: string; className: string | undefined }) {
   // Layered over the striped placeholder, so a missing sample image still reads as a document.
-  return <span className={className} style={{ backgroundImage: `url(${file}), ${"repeating-linear-gradient(0deg,#fff 0 6px,#eef1f5 6px 7px)"}`, backgroundSize: "cover" }} aria-hidden />;
+  return <span className={className} style={{ backgroundImage: `url(${file}), repeating-linear-gradient(0deg,#fff 0 6px,#eef1f5 6px 7px)` }} aria-hidden />;
 }
 
 export function DocumentsScreen({ vm }: { vm: ViewModel }) {
@@ -79,6 +79,7 @@ export function DocumentsScreen({ vm }: { vm: ViewModel }) {
                 <span className={p.rowTitle}>{doc.name}</span>
                 <span className={p.rowNote}>
                   {doc.note}
+                  {doc.readBy === "claude" ? " · read by Claude" : ""}
                   {doc.tappable ? " · tap" : ""}
                 </span>
               </span>
@@ -137,7 +138,10 @@ export function ClarifyScreen({ vm }: { vm: ViewModel }) {
         <p className={p.sub}>{clarify.documentName}, page 2. HR needs it to confirm there&apos;s no overlap with your start.</p>
       </div>
       <div className={s.docPreview}>
-        <SampleImage file="/samples/relieving-letter.png" className={s.docImage} />
+        <span className={s.docZoom}>
+          <SampleImage file="/samples/relieving-letter.png" className={s.docImage} />
+          <span className={s.docHighlight} aria-hidden />
+        </span>
         <span className={p.muted} style={{ color: "var(--text-2)" }}>
           I read: &ldquo;Last working day: <b>{clarify.raw}</b>&rdquo;
         </span>

@@ -529,11 +529,22 @@ export const counters = pgTable(
 );
 
 /** Global LLM usage ledger used by the daily budget guard on the hosted demo. */
-export const llmUsage = pgTable("llm_usage", {
-  id: serial("id").primaryKey(),
-  day: text("day").notNull(),
-  feature: text("feature").notNull(),
-  inputTokens: integer("input_tokens").notNull(),
-  outputTokens: integer("output_tokens").notNull(),
-  at: ts("at").notNull().defaultNow(),
-});
+/**
+ * One row per Claude call, written before the call so the daily budget holds even when
+ * calls fail. Not tied to a workspace row: usage outlives workspace resets.
+ */
+export const llmUsage = pgTable(
+  "llm_usage",
+  {
+    id: serial("id").primaryKey(),
+    /** Real UTC date (operational budget, not simulated time). */
+    day: text("day").notNull(),
+    workspaceId: text("workspace_id"),
+    feature: text("feature").$type<"ask" | "read_document" | "narrate">().notNull(),
+    status: text("status").$type<"reserved" | "ok" | "failed">().notNull().default("reserved"),
+    inputTokens: integer("input_tokens").notNull().default(0),
+    outputTokens: integer("output_tokens").notNull().default(0),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("llm_usage_day_idx").on(t.day, t.workspaceId)],
+);

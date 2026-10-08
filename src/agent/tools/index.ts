@@ -5,7 +5,7 @@ import { describeDecision, checkPermission } from "@/domain/permission-engine";
 import { hoursOpen, slaDueAt } from "@/domain/sla";
 import { atIst, formatDay, formatDayClock, formatShortDate, formatTime, weekdayName } from "@/domain/time";
 import { approvals, followUps, notifications } from "@/lib/db/schema";
-import { bookEvent } from "@/mock-systems/calendar";
+import { bookEvent, listEvents } from "@/mock-systems/calendar";
 import { createHrRequest, receiveEscalation, receiveReminder } from "@/mock-systems/hr";
 import { createItTicket, type ItTicketType } from "@/mock-systems/it";
 import { enrol } from "@/mock-systems/learning";
@@ -103,6 +103,39 @@ export const searchPolicyLibrary = defineTool({
       summary: hits.length ? hits.map((h) => `${h.ref} ${h.title}`).join(" · ") : "no relevant policy",
       data: hits,
     };
+  },
+});
+
+export const getCalendar = defineTool({
+  name: "get_calendar",
+  description: "Read the joiner's booked sessions: induction, pickup, 1:1s, trainings and check-ins.",
+  guard: "read",
+  input: z.object({ employeeId: z.string().min(1) }),
+  summarizeArgs: ({ employeeId }) => formatArgs({ employee: employeeId }),
+  async run(ctx, { employeeId }) {
+    const events = await listEvents(ctx.db, ctx.workspace.id, employeeId);
+    const upcoming = events.filter((e) => e.endsAt.getTime() >= ctx.clock.getTime());
+    return { summary: `${upcoming.length} upcoming · next ${upcoming[0] ? formatDayClock(upcoming[0].startsAt) : "none"}`, data: events };
+  },
+});
+
+export const getFollowUps = defineTool({
+  name: "get_follow_ups",
+  description: "Read Navo's reminders, escalations and approval requests for the joiner, with reply windows.",
+  guard: "read",
+  input: z.object({ employeeId: z.string().min(1) }),
+  summarizeArgs: ({ employeeId }) => formatArgs({ employee: employeeId }),
+  async run(ctx, { employeeId }) {
+    const sent = await ctx.db
+      .select()
+      .from(followUps)
+      .where(and(eq(followUps.workspaceId, ctx.workspace.id), eq(followUps.employeeId, employeeId)));
+    const asks = await ctx.db
+      .select()
+      .from(approvals)
+      .where(and(eq(approvals.workspaceId, ctx.workspace.id), eq(approvals.employeeId, employeeId), eq(approvals.requestedFrom, employeeId)));
+    const open = sent.filter((f) => f.status !== "resolved").length;
+    return { summary: `${sent.length} follow-ups (${open} open) · ${asks.length} approvals`, data: { followUps: sent, approvals: asks } };
   },
 });
 
@@ -499,4 +532,4 @@ export const onApproval = defineTool({
 });
 
 /** Read-only tools Claude may call from Ask Navo. */
-export const READ_TOOLS = [getEmployeeContext, getOnboardingState, getDependencies, calculateDay1Risk, searchPolicyLibrary];
+export const READ_TOOLS = [getEmployeeContext, getOnboardingState, getDependencies, calculateDay1Risk, searchPolicyLibrary, getCalendar, getFollowUps];

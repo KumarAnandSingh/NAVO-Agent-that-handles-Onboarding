@@ -19,7 +19,7 @@ import { cancelScheduled, enqueueEvent, type EventRow } from "@/services/events/
 import { getEmployee } from "@/services/onboarding-state/repository";
 import type { Workspace } from "@/services/workspace";
 import { caseFor, executeAction } from "./actions";
-import { finishRun, recordActivity, recordStateChange, startRun, tick, type AgentContext } from "./context";
+import { finishRun, narrate, recordActivity, recordStateChange, startRun, tick, type AgentContext } from "./context";
 import type { Narrator } from "./narration";
 import { planActions } from "./playbooks";
 import { loadSnapshot, type OnboardingSnapshot } from "./snapshot";
@@ -199,7 +199,7 @@ async function employeeIdIssued(db: Queryable, workspace: Workspace, event: Even
     if (hadRiskCase) {
       const requests = after.tickets.filter((t) => t.type === "laptop" || t.type === "email");
       const requestText = requests.some((t) => t.type === "laptop") ? "laptop request" : "IT requests";
-      const narration = await ctx.narrator.employeeUpdate({ kind: "blocker_cleared", facts: { blocker: "Employee ID", requests: requestText } });
+      const narration = await narrate(ctx, { kind: "blocker_cleared", facts: { blocker: "Employee ID", requests: requestText } });
       await callTool(ctx, notifyEmployee, { title: "Blocker cleared", body: narration.text, needsYou: false, composedBy: narration.composedBy });
       await recordActivity(ctx, { caseKey: "empid", phase: "Reported", summary: "Blocker cleared. Told Anand no action needed." });
     }

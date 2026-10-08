@@ -73,6 +73,7 @@ export interface DocumentVM {
   state: "Verified" | "Under review" | "Clarify" | "Needed" | "Re-upload";
   tone: Tone;
   tappable: boolean;
+  readBy: "claude" | "fixture" | "seed" | null;
 }
 
 export interface DocumentsVM {

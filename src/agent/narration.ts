@@ -1,3 +1,5 @@
+import type { Queryable } from "@/lib/db/client";
+
 /**
  * Navo's voice: plain, short sentences. Facts, owners, dates. No exclamation marks.
  * Templates are the source of truth; a Claude narrator may rephrase them (with the
@@ -23,8 +25,14 @@ export interface Narration {
   composedBy: "claude" | "template";
 }
 
+/** Where a narration is written: lets a Claude narrator charge its call to the budget. */
+export interface NarrationScope {
+  db: Queryable;
+  workspaceId: string;
+}
+
 export interface Narrator {
-  employeeUpdate(update: UpdateFacts): Promise<Narration>;
+  employeeUpdate(update: UpdateFacts, scope?: NarrationScope): Promise<Narration>;
 }
 
 export function templateUpdate({ kind, facts }: UpdateFacts): string {

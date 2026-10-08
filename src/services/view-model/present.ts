@@ -349,7 +349,7 @@ function presentDocuments(ctx: Ctx): DocumentsVM {
         return { state: "Needed", tone: "you" };
     }
   };
-  const items = docs.map((d) => ({ type: d.type, name: d.name, note: d.note, ...stateOf(d.status), tappable: d.status === "clarify" }));
+  const items = docs.map((d) => ({ type: d.type, name: d.name, note: d.note, ...stateOf(d.status), tappable: d.status === "clarify", readBy: d.readBy }));
   const address = docs.find((d) => d.type === "address_proof");
   const relieving = docs.find((d) => d.type === "relieving_letter");
   const allVerified = docs.every((d) => d.status === "verified" || d.status === "under_review");

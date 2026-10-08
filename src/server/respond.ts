@@ -6,11 +6,11 @@ import { loadState } from "@/services/view-model/load";
 import { present } from "@/services/view-model/present";
 import type { ViewModel } from "@/services/view-model/types";
 import type { Db } from "@/lib/db/client";
-import { liveAiEnabled } from "./deps";
+import { liveAiEnabled, liveModel } from "./deps";
 
 export async function buildViewModel(db: Db, workspaceId: string): Promise<ViewModel> {
   const state = await loadState(db, workspaceId);
-  return present(state, { liveAI: liveAiEnabled(), model: liveAiEnabled() ? (process.env.NAVO_MODEL ?? "claude-opus-5-5") : null });
+  return present(state, { liveAI: liveAiEnabled(), model: liveModel() });
 }
 
 /** Map domain errors to HTTP responses with a message safe to show in the UI. */

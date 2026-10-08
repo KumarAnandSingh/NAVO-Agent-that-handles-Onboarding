@@ -212,6 +212,15 @@ export function formatRelative(date: Date, now: Date, withTime = false): string 
   return formatShortDate(date);
 }
 
+/** How a person says a time near `now`: "09:17 today", "tomorrow at 09:17", else "Fri 16 Oct · 09:17". */
+export function spokenTime(date: Date, now: Date): string {
+  const days = calendarDaysUntil(now, date);
+  if (days === 0) return `${formatTime(date)} today`;
+  if (days === 1) return `tomorrow at ${formatTime(date)}`;
+  if (days === -1) return `yesterday at ${formatTime(date)}`;
+  return formatDayClock(date);
+}
+
 export function calendarDaysUntil(from: Date, to: Date): number {
   return Math.round((atIst(dateKeyOf(to)).getTime() - atIst(dateKeyOf(from)).getTime()) / DAY_MS);
 }

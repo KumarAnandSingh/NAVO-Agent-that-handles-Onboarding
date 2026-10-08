@@ -18,7 +18,7 @@ export const FEATURED_DOCUMENTS: readonly DocumentSeed[] = [
     type: "relieving_letter",
     name: "Relieving letter",
     status: "clarify",
-    note: "Date unclear on page 2 · tap",
+    note: "Date unclear on page 2",
     extracted: [
       { name: "employee_name", value: "Anand Mehta", confidence: 0.97 },
       { name: "employer", value: "Northwind Freight Pvt. Ltd.", confidence: 0.95 },

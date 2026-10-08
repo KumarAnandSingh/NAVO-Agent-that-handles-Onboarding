@@ -244,9 +244,15 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
     setMessages((m) => [...m, { id: id - 1, role: "user", text: q }, { id, role: "navo", text: "Checking your state and policy…", pending: true }]);
     try {
       const response = await fetch("/api/ask", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q }) });
-      const json = (await response.json()) as { answer?: { text: string; checked: string[]; composedBy: "claude" | "fallback"; showActivity: boolean }; error?: string };
+      const json = (await response.json()) as {
+        answer?: { text: string; checked: string[]; composedBy: "claude" | "fallback"; showActivity: boolean };
+        vm?: ViewModel;
+        error?: string;
+      };
       if (!response.ok || !json.answer) throw new Error(json.error ?? "No answer");
       const answer = json.answer;
+      // The runtime panel replays the tools Navo used to answer.
+      if (json.vm) apply(json.vm);
       setMessages((m) =>
         m.map((msg) =>
           msg.id === id
@@ -257,7 +263,7 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
     } catch (e) {
       setMessages((m) => m.map((msg) => (msg.id === id ? { id, role: "navo", text: e instanceof Error ? e.message : "Something went wrong." } : msg)));
     }
-  }, []);
+  }, [apply]);
 
   const currentTool = replay ? replay.tools[replay.index] : undefined;
   const value = useMemo<NavoStore>(

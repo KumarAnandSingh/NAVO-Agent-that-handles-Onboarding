@@ -46,7 +46,7 @@ export function verifyRelievingLetter(
   }
   const raw = lastDay.raw ?? lastDay.value;
   const suggestion = suggestDate(raw, window);
-  return { status: "clarify", note: "Date unclear on page 2 · tap", field: "last_working_day", raw, suggestion };
+  return { status: "clarify", note: "Date unclear on page 2", field: "last_working_day", raw, suggestion };
 }
 
 /** Parse "17 Oct 2026" / "2026-10-17" into YYYY-MM-DD. */
