@@ -10,8 +10,8 @@ Navo is built in eight phases. Each phase ends with passing quality gates and a 
 | 4 | Demo stage UI: presenter panel, phone (all 20 journey screens), agent runtime panel with tool replay, HR owner console, activity and Ask sheets, `/phone` and `/hr` pages | Done |
 | 5 | Claude features: Ask Navo with policy retrieval and citations, document reading and clarification, narration, offline fallbacks, synthetic sample images | Done |
 | 6 | Guided auto-play (25 beats on the live engine), intro brief, impact screen from real figures, keyboard shortcuts | Done |
-| 7 | End-to-end tests, coverage, accessibility | Next |
-| 8 | Vercel deployment, technical design document, README, demo video script | |
+| 7 | End-to-end tests (both golden paths, Ask Navo, guided demo), coverage floors, accessibility (axe WCAG A/AA, keyboard) | Done |
+| 8 | Vercel deployment, technical design document, README, demo video script | Next |
 
 ## Key decisions
 

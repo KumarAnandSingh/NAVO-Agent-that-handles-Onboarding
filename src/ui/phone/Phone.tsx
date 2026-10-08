@@ -94,11 +94,11 @@ export function Phone({ fullscreen = false }: { fullscreen?: boolean }) {
   );
 }
 
-function Sheet({ open, title, onClose, children, footer }: { open: boolean; title: ReactNode; onClose: () => void; children: ReactNode; footer?: ReactNode }) {
+function Sheet({ open, label, title, onClose, children, footer }: { open: boolean; label: string; title: ReactNode; onClose: () => void; children: ReactNode; footer?: ReactNode }) {
   return (
     <>
       <div className={p.scrim} style={{ opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none" }} onClick={onClose} aria-hidden />
-      <div className={p.sheet} style={{ transform: `translateY(${open ? "0%" : "105%"})`, visibility: open ? "visible" : "hidden", transition: open ? undefined : "transform .38s cubic-bezier(.2,.8,.2,1), visibility 0s .38s" }} role="dialog" aria-modal={open} aria-hidden={!open} inert={!open}>
+      <div className={p.sheet} style={{ transform: `translateY(${open ? "0%" : "105%"})`, visibility: open ? "visible" : "hidden", transition: open ? undefined : "transform .38s cubic-bezier(.2,.8,.2,1), visibility 0s .38s" }} role="dialog" aria-label={label} aria-modal={open} aria-hidden={!open} inert={!open}>
         <div className={p.sheetHeader}>
           <span className={p.sheetTitle}>{title}</span>
           <button className={p.sheetDone} onClick={onClose}>
@@ -117,6 +117,7 @@ function ActivitySheet({ vm }: { vm: ViewModel }) {
   return (
     <Sheet
       open={sheet === "activity"}
+      label="What Navo did"
       onClose={() => setSheet(null)}
       title={
         <>
@@ -175,6 +176,7 @@ function AskSheet() {
   return (
     <Sheet
       open={open}
+      label="Ask Navo"
       onClose={() => setSheet(null)}
       title="Ask Navo"
       footer={

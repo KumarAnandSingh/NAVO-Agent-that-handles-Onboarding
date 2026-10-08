@@ -126,7 +126,7 @@ export function HomeScreen({ vm }: { vm: ViewModel }) {
                   <span className={styles.didTitle}>{row.title}</span>
                   <span className={styles.didResult}>{row.result}</span>
                 </span>
-                <span className={styles.didWhen} style={{ color: row.fresh ? "#2F5BEA" : "#8A93A3" }}>
+                <span className={styles.didWhen} style={{ color: row.fresh ? "var(--accent)" : "var(--text-4)" }}>
                   {row.when}
                 </span>
               </button>
