@@ -228,7 +228,7 @@ async function ticketReady(db: Queryable, workspace: Workspace, event: EventRow,
     email: { note: "Ready · live Day 1", headline: "Email account ready", detail: "Live Monday 9:00", summary: `Email account created, ${ticket.id}.` },
     vpn: { note: "Configured", summary: `VPN set up on your laptop, ${ticket.id}.` },
     access: { note: "Live", headline: "Email and VPN switched on", detail: "Access live", summary: `IT switched on email, VPN and core tools, ${ticket.id}.` },
-    tool_access: { note: "Ready", headline: "Jira and Figma ready", detail: ticket.id, summary: `Jira and Figma access ready, ${ticket.id}.` },
+    tool_access: { note: "Ready", headline: "Project tools ready", detail: ticket.id, summary: `Project tool access ready, ${ticket.id}.` },
   };
   const entry = copy[ticket.type] ?? { note: "Ready", summary: `${ticket.id} done.` };
   await withRun(db, workspace, employeeId, `IT completed ${ticket.id}`, event, deps, async (ctx) => {

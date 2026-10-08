@@ -114,7 +114,7 @@ export const POLICIES: readonly PolicySeed[] = [
       {
         ref: "§5.4",
         title: "Tool access",
-        body: "Project tools such as Jira and Figma are requested by the manager or Navo after Day 1 and take up to 3 working days.",
+        body: "Project tools (the tracker and the design workspace) are requested by the manager or Navo after Day 1 and take up to 3 working days.",
       },
     ],
   },

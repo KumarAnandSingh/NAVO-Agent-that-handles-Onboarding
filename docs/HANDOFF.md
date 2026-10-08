@@ -37,7 +37,7 @@ For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/BUIL
 | 8. Technical design document, README, screenshots, demo video script, submission checklist | Done |
 | 8. Deploy to Vercel, record the video, submit | **Next** (needs the owner) |
 
-Numbers at handoff: 122 unit/integration tests and 9 end-to-end tests passing; ~92% line coverage.
+Numbers at handoff: 133 unit/integration tests and 9 end-to-end tests passing; ~92% line coverage.
 
 ## What's left
 
@@ -58,7 +58,9 @@ Numbers at handoff: 122 unit/integration tests and 9 end-to-end tests passing; ~
    done in the dashboard.
 2. **Merge PR #1 into `main`** and **make the repository public** (Settings → General →
    Change visibility). Reviewers must not need to request access.
-3. **Record the video** with `docs/DEMO_VIDEO_SCRIPT.md`; upload as Public or Unlisted.
+3. **Upload the video**: `npm run video` renders `video/out/navo-demo.mp4` from the real app
+   (see `video/README.md`); upload it as Public or Unlisted. A voice-over can be added on top
+   with `video/VOICEOVER.md`.
 4. Put the hosted link and the video link in the README table, then submit.
    `docs/SUBMISSION.md` maps every requirement in the brief to where it is met.
 

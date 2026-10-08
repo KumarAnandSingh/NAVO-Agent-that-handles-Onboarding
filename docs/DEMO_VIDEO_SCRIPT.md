@@ -1,5 +1,7 @@
 # Demo video script
 
+> **There is a ready-made video.** `npm run video` renders a voiceless pitch-and-demo video from the real app. It has word-highlighted subtitles, camera moves, clicks and sound effects. See [`video/README.md`](../video/README.md), and [`video/VOICEOVER.md`](../video/VOICEOVER.md) for its timed voice-over script. The script below is for recording a live, narrated walkthrough instead.
+
 **Target length:** 4 to 5 minutes. **Format:** screen recording at 1080p with voice-over, uploaded to YouTube.
 
 The video must show the key features and the user experience. Its most important proof is the agent loop: **Observe → Decide → Act → State change → Communicate.** Keep the UI moving, and let the runtime panel prove that the engine is real.
@@ -37,7 +39,7 @@ The video must show the key features and the user experience. Its most important
 | **3:10** | Stage, **HR silent** | Close the outro. Choose **HR silent**, jump to **Pre-joining**, press **Advance time ▸** twice. | "Now the harder case: HR never replies. At the last safe moment Navo doesn't just order hardware. A loaner is an asset change, so it **asks Anand first**." Press **Approve**. "Approved: IT has a loaner ready for the Day 1 pickup, and Navo escalates to the HR Ops lead after 24 hours." |
 | **3:40** | Ask Navo | Open **Ask Navo** and type *"What if HR doesn't respond?"* | "Ask Navo uses Claude with read-only tools over his live state and Halden's policies. It checked his follow-ups and the escalation policy, and it cites section 4.2. A citation is accepted only if that section was actually retrieved; otherwise Navo says it doesn't know." |
 | **4:00** | GitHub: [Technical design](TECHNICAL_DESIGN.md#2-system-architecture) | Scroll the architecture diagram. | "Under the hood: one agent with 22 tools, each one validated, permission-checked, timed out and audited. Deterministic code owns dates, dependencies, risk and permissions; Claude handles language, reading and answers, and code verifies what it returns. Every Claude feature has an offline fallback." |
-| **4:20** | Terminal or GitHub Actions | Show `npm test` passing, or the green CI run. | "122 unit and integration tests and 9 end-to-end tests, including both stories, failure cases and accessibility scans, at about 92% coverage." |
+| **4:20** | Terminal or GitHub Actions | Show `npm test` passing, or the green CI run. | "133 unit and integration tests and 9 end-to-end tests, including both stories, failure cases and accessibility scans, at about 92% coverage." |
 | **4:35** | Back to the stage | End on Navo's face. | "Navo does the coordinating. People make the decisions. **Navo: AI That Handles Onboarding.**" |
 
 ---

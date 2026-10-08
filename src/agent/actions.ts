@@ -118,7 +118,7 @@ async function startTask(ctx: AgentContext, snapshot: OnboardingSnapshot, taskId
         email: { summary: `Requested email account, ${ticket.id}.`, headline: "Email requested", detail: "Live Monday 9:00" },
         vpn: { summary: `Asked IT to set up VPN on your laptop, ${ticket.id}.` },
         access: { summary: `Asked IT to switch on email, VPN and core tools for ${formatDay(eta)} ${formatTime(eta)}.` },
-        tool_access: { summary: `Requested Jira and Figma access for your first project, ${ticket.id}.`, headline: "Requested Jira and Figma access", detail: `${ticket.id} · ready ${weekdayName(eta)}` },
+        tool_access: { summary: `Requested project tool access for your first project, ${ticket.id}.`, headline: "Requested project tool access", detail: `${ticket.id} · ready ${weekdayName(eta)}` },
       };
       const entry = copy[fulfilment.type] ?? { summary: `Raised ${ticket.id}.` };
       await recordActivity(ctx, { caseKey: caseFor(task.key), phase: "Acted", summary: entry.summary, taskId, headline: entry.headline, headlineDetail: entry.detail });

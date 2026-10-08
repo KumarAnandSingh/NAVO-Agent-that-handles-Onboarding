@@ -11,10 +11,10 @@ This page maps each submission requirement to where it is met in this repository
 | **2. Documentation (2).** System architecture diagrams (flow diagrams) | [Technical design §2–§7, §12](TECHNICAL_DESIGN.md#2-system-architecture): system, agent run sequence, task state machine, dependency chain, Ask Navo verification, event loop, data model, deployment | Done |
 | **2. Documentation (3).** Setup and deployment instructions | [Technical design §11 Setup](TECHNICAL_DESIGN.md#11-setup), [§12 Deployment](TECHNICAL_DESIGN.md#12-deployment), [README quick start](../README.md#quick-start) | Done |
 | **2. Documentation (4).** Code explanations and assumptions | [Technical design §13 Code walkthrough](TECHNICAL_DESIGN.md#13-code-walkthrough), [§14 Assumptions](TECHNICAL_DESIGN.md#14-assumptions), [§15 Limitations](TECHNICAL_DESIGN.md#15-limitations-and-future-work) | Done |
-| **3. Demo video.** YouTube link showing key features and the user experience | Script: [DEMO_VIDEO_SCRIPT.md](DEMO_VIDEO_SCRIPT.md). Link: _to be added_ | To record |
+| **3. Demo video.** YouTube link showing key features and the user experience | Rendered from the real app with `npm run video` ([video/README.md](../video/README.md)): about 4½ minutes, highlighted subtitles, sound effects, [voice-over script](../video/VOICEOVER.md). Link: _to be added after upload_ | Video ready; upload to YouTube |
 | **4. Submission platform.** Code on personal GitHub, shared with the documents and the video | This repository. It must be **public** so reviewers need no access requests. | To make public |
 | **Hosted link** (if hosted) | Vercel. Link: _to be added_ | To deploy |
-| **Comprehensive unit tests** | `tests/unit` (9 files), `tests/integration` (8 files), `tests/e2e` (5 specs). 122 + 9 tests, about 92% line coverage, floors enforced in CI. See [Technical design §10](TECHNICAL_DESIGN.md#10-testing-strategy) | Done |
+| **Comprehensive unit tests** | `tests/unit` (10 files), `tests/integration` (8 files), `tests/e2e` (5 specs). 133 + 9 tests, about 92% line coverage, floors enforced in CI. See [Technical design §10](TECHNICAL_DESIGN.md#10-testing-strategy) | Done |
 
 ## How the evaluation criteria are addressed
 
@@ -32,6 +32,6 @@ This page maps each submission requirement to where it is met in this repository
 - [ ] Merge the working branch into `main`, so the default branch shows Navo.
 - [ ] Make the repository **public** (Settings → General → Danger zone → Change visibility).
 - [ ] Deploy to Vercel with `ANTHROPIC_API_KEY` and Neon Postgres. Open the production URL in a private window to confirm it loads without a login.
-- [ ] Record and upload the demo video (Public or Unlisted) using the [script](DEMO_VIDEO_SCRIPT.md).
+- [ ] Upload `video/out/navo-demo.mp4` to YouTube (Public or Unlisted), optionally with `navo-demo.srt` as captions. To add a voice, see [video/README.md](../video/README.md).
 - [ ] Add the hosted link and the video link to the README table and to the submission email.
 - [ ] Send the GitHub link, the hosted link and the video link before 12 October 2026.

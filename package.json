@@ -21,6 +21,9 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "samples:render": "tsx scripts/render-samples.ts",
     "screenshots": "tsx scripts/capture-screenshots.ts",
+    "video:capture": "tsx scripts/video/capture.ts",
+    "video:render": "tsx scripts/video/render.ts",
+    "video": "npm run video:capture && npm run video:render",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
@@ -42,6 +45,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitest/coverage-v8": "^5.0.3",
     "drizzle-kit": "^0.31.11",
+    "esbuild": "^0.28.2",
     "eslint": "9.39.5",
     "eslint-config-next": "^16.4.0",
     "tsx": "^4.23.15",

@@ -473,12 +473,12 @@ The design follows the HTML prototype in `docs/design/Navo_Prototype.dc.html`.
 
 | Layer | Tool | What it covers | Count |
 |---|---|---|---|
-| Unit | Vitest | Working-day calendar, state machine, dependency graph, risk engine, permission engine, SLA, policy retrieval (BM25, versioning), document verification, free-slot finder | 9 files |
+| Unit | Vitest | Working-day calendar, state machine, dependency graph, risk engine, permission engine, SLA, policy retrieval (BM25, versioning), document verification, free-slot finder, product-video timeline | 10 files |
 | Integration | Vitest + in-memory PGlite | Both golden paths (HR responds / HR silent) through the real engine; reliability cases (invalid input, tool timeout, denied action, conflicting update, duplicate event, failing event, missing policy); Day-1 risk after Day 1; partial pickup; walkthrough booking; event cancellation; view model; Ask Navo with a scripted fake Claude (tool loop, unverified citation, timeout, API error, prompt injection, budget); narration fact checks; Claude document reading | 8 files |
 | End-to-end | Playwright (production build, offline mode) | First launch to blocker cleared; HR silent with loaner approval; Ask Navo with citations; full guided demo to the impact screen | 4 specs |
 | Accessibility | Playwright + axe-core | WCAG 2.1 A/AA scans of the intro, stage, HR console and phone; keyboard shortcuts | 5 tests |
 
-- **122** unit and integration tests and **9** end-to-end tests pass.
+- **133** unit and integration tests and **9** end-to-end tests pass.
 - Coverage: about **92%** of lines overall and **99%** in the domain rules. CI fails if it drops below the floors in `vitest.config.ts` (85% overall, 95% for `src/domain`).
 - **CI** (GitHub Actions): lint, typecheck, tests with coverage, build, and the Playwright suite in its own job.
 
@@ -585,6 +585,8 @@ tests/
 ├── unit/              Domain rules and services
 ├── integration/       Agent, scenarios, reliability, Ask Navo, Claude edges (in-memory Postgres)
 └── e2e/               Playwright journeys and accessibility
+video/                 The product video: storyboard (story.ts), timeline, browser composer,
+                       voice-over script; rendered by scripts/video/ (npm run video)
 docs/
 ├── TECHNICAL_DESIGN.md   This document
 ├── DEMO_VIDEO_SCRIPT.md  Script for the demo video
@@ -649,7 +651,7 @@ docs/
 
 **Next steps**
 
-1. Connectors for real systems (Workday/SAP SuccessFactors-style HRIS, ServiceNow/Jira-style ITSM, Microsoft/Google calendars) behind the same tool interfaces.
+1. Connectors for real systems (HRIS, IT service management, calendar and learning platforms) behind the same tool interfaces.
 2. SSO and role-based access for joiners, HR, IT and managers.
 3. Multi-joiner orchestration and HR-level analytics (where onboarding slips, by team and system).
 4. Policy ingestion from real documents with embeddings alongside BM25.

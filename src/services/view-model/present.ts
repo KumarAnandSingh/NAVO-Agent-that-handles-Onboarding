@@ -625,7 +625,7 @@ function presentDay1(ctx: Ctx): Day1VM {
     collected: done(collectTask),
     wrapUp,
     tomorrow: nextDay
-      ? `${nextDay.title} at ${formatTime(nextDay.startsAt)}.${toolAccess && toolAccess.status !== "pending" && toolAccess.status !== "blocked" ? " I've requested your Jira and Figma access." : ""}`
+      ? `${nextDay.title} at ${formatTime(nextDay.startsAt)}.${toolAccess && toolAccess.status !== "pending" && toolAccess.status !== "blocked" ? " I've requested your project tool access." : ""}`
       : null,
     loaner,
     travelTip: `${COMPANY.office.split(",").slice(0, 2).join(",")} is about 40 min from ${ctx.employee.homeArea ?? "home"}. Leave by 8:30.`,
@@ -644,7 +644,7 @@ function presentWeek1(ctx: Ctx): Week1VM {
   const items = rows.map(([key, name, day]) => {
     const task = ctx.byKey.get(key);
     const isDone = done(task);
-    return { name, day, done: isDone, sub: isDone ? "" : key === "tool_access" ? "Navo requesting Jira and Figma access" : (task?.statusNote ?? "") };
+    return { name, day, done: isDone, sub: isDone ? "" : key === "tool_access" ? "Navo requesting project tool access" : (task?.statusNote ?? "") };
   });
   const benefitsTask = ctx.byKey.get("benefits_enrolment");
   const family = ctx.employee.family;

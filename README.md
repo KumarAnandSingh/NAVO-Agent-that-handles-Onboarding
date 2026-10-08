@@ -129,7 +129,7 @@ npm run build
 npm run test:e2e        # Playwright against the production build, plus axe accessibility scans
 ```
 
-- **122 unit and integration tests** and **9 end-to-end tests**. Coverage is about **92% of lines**, and about **99%** for the domain rules.
+- **133 unit and integration tests** and **9 end-to-end tests**. Coverage is about **92% of lines**, and about **99%** for the domain rules.
 - Coverage floors are enforced in CI: 85% overall, 95% for `src/domain`.
 - The integration suite plays both stories (HR responds, HR silent) through the real engine.
 - It also covers the reliability cases: invalid input, tool timeouts, denied actions, conflicting updates, duplicate and failing events, and a missing policy.
@@ -157,7 +157,8 @@ src/
   app/            Routes and API handlers
 tests/            unit/ · integration/ · e2e/
 docs/             Technical design, demo video script, specs, design prototypes
-scripts/          Migrations, sample documents and screenshots
+video/            The product video: storyboard, composer and voice-over script
+scripts/          Migrations, sample documents, screenshots and the video pipeline
 ```
 
 ## Documentation
@@ -165,7 +166,8 @@ scripts/          Migrations, sample documents and screenshots
 | Document | What's in it |
 |---|---|
 | [Technical design](docs/TECHNICAL_DESIGN.md) | Overview and track, architecture and flow diagrams, setup and deployment, code walkthrough, assumptions |
-| [Demo video script](docs/DEMO_VIDEO_SCRIPT.md) | Shot list and narration for the demo video |
+| [Product video](video/README.md) | The voiceless pitch-and-demo video rendered from the real app (`npm run video`), with its [voice-over script](video/VOICEOVER.md) |
+| [Demo video script](docs/DEMO_VIDEO_SCRIPT.md) | Shot list and narration for recording a live walkthrough |
 | [Submission checklist](docs/SUBMISSION.md) | Each submission requirement and where it is met |
 | [Specs](docs/specs/) | Product, agent, architecture, data model, testing, demo scenario |
 | [Design prototypes](docs/design/) | The HTML prototypes the UI implements |

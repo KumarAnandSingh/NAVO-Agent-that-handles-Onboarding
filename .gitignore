@@ -24,3 +24,7 @@ blob-report/
 .DS_Store
 *.log
 .vercel
+
+# product video (regenerate with npm run video)
+video/.capture/
+video/out/
