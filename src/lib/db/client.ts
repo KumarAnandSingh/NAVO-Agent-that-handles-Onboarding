@@ -1,4 +1,5 @@
 import { mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
@@ -42,19 +43,24 @@ async function createDb(): Promise<Db> {
 }
 
 /**
- * Where embedded Postgres keeps its files locally. On a read-only filesystem (a serverless
- * host without DATABASE_URL) it falls back to memory: the demo still works, but workspaces
- * last only as long as the server instance.
+ * Where embedded Postgres keeps its files. Locally that's .data/pglite in the project. On a
+ * serverless host without DATABASE_URL the project directory is read-only, so it uses the
+ * instance's temp directory: the demo works, but workspaces last only as long as the
+ * instance (a visitor on a fresh instance simply gets a fresh workspace). Set DATABASE_URL
+ * for durable, shared storage. As a last resort it runs in memory.
  */
 function localDataDir(): string | undefined {
-  const dataDir = path.join(process.cwd(), ".data", "pglite");
-  try {
-    mkdirSync(dataDir, { recursive: true });
-    return dataDir;
-  } catch (error) {
-    console.warn(`Can't write ${dataDir} (${error instanceof Error ? error.message : String(error)}); using an in-memory database.`);
-    return undefined;
+  const candidates = process.env.VERCEL ? [path.join(tmpdir(), "navo-pglite")] : [path.join(process.cwd(), ".data", "pglite"), path.join(tmpdir(), "navo-pglite")];
+  for (const dataDir of candidates) {
+    try {
+      mkdirSync(dataDir, { recursive: true });
+      return dataDir;
+    } catch (error) {
+      console.warn(`Can't write ${dataDir} (${error instanceof Error ? error.message : String(error)}).`);
+    }
   }
+  console.warn("Using an in-memory database.");
+  return undefined;
 }
 
 declare global {
