@@ -34,7 +34,8 @@ For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/BUIL
 | 5. Claude: Ask Navo with verified citations, document reading, narration, budget, fallbacks | Done |
 | 6. Guided demo (25 beats), intro brief, impact screen, keyboard shortcuts | Done |
 | 7. Playwright end-to-end, accessibility (axe), coverage floors | Done |
-| 8. Deploy, technical design document, README, demo video script | **In progress** |
+| 8. Technical design document, README, screenshots, demo video script, submission checklist | Done |
+| 8. Deploy to Vercel, record the video, submit | **Next** (needs the owner) |
 
 Numbers at handoff: 122 unit/integration tests and 9 end-to-end tests passing; ~92% line coverage.
 
@@ -55,21 +56,26 @@ Numbers at handoff: 122 unit/integration tests and 9 end-to-end tests passing; ~
       instance keeps its own temporary database (a cold start gives a fresh demo).
    The coding session's Vercel connection can't manage this project (403), so these steps are
    done in the dashboard.
-2. **Technical design document**: `docs/TECHNICAL_DESIGN.md` (architecture and flow
-   diagrams, setup and deployment, code walkthrough, assumptions).
-3. **README** final pass with the hosted link, and a **demo video script**
-   (`docs/DEMO_VIDEO_SCRIPT.md`) for the YouTube recording.
-4. Record the video, merge PR #1, submit.
+2. **Merge PR #1 into `main`** and **make the repository public** (Settings → General →
+   Change visibility). Reviewers must not need to request access.
+3. **Record the video** with `docs/DEMO_VIDEO_SCRIPT.md`; upload as Public or Unlisted.
+4. Put the hosted link and the video link in the README table, then submit.
+   `docs/SUBMISSION.md` maps every requirement in the brief to where it is met.
+
+Done in this phase: `docs/TECHNICAL_DESIGN.md` (overview and track, Mermaid architecture and
+flow diagrams, setup, deployment, code walkthrough, assumptions), the README with screenshots
+(`docs/images/`, regenerate with `npm run screenshots` against a running build),
+`docs/DEMO_VIDEO_SCRIPT.md` and `docs/SUBMISSION.md`.
 
 ## Decisions to keep
 
 - Company **Halden** (fictional), product **Navo**, tagline **"AI That Handles Onboarding"**.
-  Nothing related to Reliance or Jio anywhere: code, data, docs, images.
+  No real company, employer or brand names anywhere: code, data, docs, images.
 - Track: **Business Case #2, Employee Onboarding Companion**.
 - Primary design: `docs/design/Navo_Prototype.dc.html` (+ `NavoFace.dc.html`). Specs in `docs/specs/`.
 - AI model: Claude (`claude-opus-5-5` default, `NAVO_MODEL` to change). Every Claude
   feature has a deterministic fallback; the app and all tests run without a key.
-- Hosting: Vercel (the account on as567687@gmail.com); database Neon when `DATABASE_URL` is set, embedded PGlite otherwise.
+- Hosting: Vercel (the repo owner's account); database Neon when `DATABASE_URL` is set, embedded PGlite otherwise.
 - Synthetic data only. Never paste API keys into chat; set them as environment variables.
 - Don't commit the business-cases document, the email screenshots or any branded images.
 

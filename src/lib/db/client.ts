@@ -32,7 +32,7 @@ async function createDb(): Promise<Db> {
   if (url) {
     const pool = new Pool({ connectionString: url, max: 5 });
     const db = drizzleNodePg(pool, { schema });
-    // Hosted deployments migrate at build time; this is a cheap no-op safety net.
+    // Applied on first connection (a no-op once up to date); `npm run db:migrate` can run it ahead of time.
     await migrateNodePg(db, { migrationsFolder: MIGRATIONS_FOLDER });
     return db as unknown as Db;
   }
