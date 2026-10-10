@@ -9,8 +9,8 @@ import path from "node:path";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod/v4";
 import type { SampleDocument } from "@/content/seed/documents";
-import { recordLlmResult, reserveLlmCall } from "@/services/llm/budget";
-import { NAVO_MODEL, textOf, type CreateMessage } from "@/services/llm/claude";
+import { textOf } from "@/services/llm/claude";
+import type { Llm } from "@/services/llm/gateway";
 import { fixtureReader, type DocumentReader } from "./reader";
 
 export const READ_TIMEOUT_MS = 20_000;
@@ -35,21 +35,20 @@ const SYSTEM = [
   "The image is a synthetic sample made for a demo; read it like a real document.",
 ].join("\n");
 
-export function claudeReader(create: CreateMessage): DocumentReader {
+export function claudeReader(llm: Llm): DocumentReader {
   return {
     async read(sample: SampleDocument, scope) {
       if (!scope) return fixtureReader.read(sample);
-      const reservation = await reserveLlmCall(scope.db, scope.workspaceId, "read_document");
-      if (reservation === null) return fixtureReader.read(sample);
       try {
         const image = await readFile(path.join(process.cwd(), "public", sample.file));
         const fieldNames = sample.expected.map((f) => f.name);
-        const response = await create(
+        const response = await llm.call(
+          "read_document",
+          scope,
           {
-            model: NAVO_MODEL,
             max_tokens: 4000,
             system: SYSTEM,
-            output_config: { effort: "low", format: zodOutputFormat(Reading) },
+            output_config: { format: zodOutputFormat(Reading) },
             messages: [
               {
                 role: "user",
@@ -60,9 +59,8 @@ export function claudeReader(create: CreateMessage): DocumentReader {
               },
             ],
           },
-          { timeout: READ_TIMEOUT_MS, maxRetries: 0 },
+          { timeoutMs: READ_TIMEOUT_MS },
         );
-        await recordLlmResult(scope.db, reservation, response.usage);
         const parsed = Reading.safeParse(JSON.parse(textOf(response)));
         if (!parsed.success) return fixtureReader.read(sample);
         const fields = fieldNames.map((name) => {
@@ -74,7 +72,6 @@ export function claudeReader(create: CreateMessage): DocumentReader {
         });
         return { fields, readBy: "claude" };
       } catch {
-        await recordLlmResult(scope.db, reservation, null);
         return fixtureReader.read(sample);
       }
     },

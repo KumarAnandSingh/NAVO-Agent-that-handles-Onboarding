@@ -365,7 +365,7 @@ sequenceDiagram
     Verify-->>Anand: answer + "Checked Onboarding standards and escalation §4.2 · Navo's follow-ups"
   else unverified, timeout, error or over budget
     API->>Tools: scripted, grounded fallback answer
-    API-->>Anand: answer + "Offline answer from Navo's rules"
+    API-->>Anand: answer + "Answered from Navo's rules"
   end
 ```
 

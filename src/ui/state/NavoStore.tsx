@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { modelName } from "@/services/llm/models";
 import type { FaceState, ToolCallVM, ViewModel } from "@/services/view-model/types";
+import { keyHeaders } from "./claude-key";
 
 export type Screen =
   | "launch"
@@ -66,7 +68,14 @@ export interface ChatMessage {
   pending?: boolean;
   checked?: string[];
   composedBy?: "claude" | "fallback";
+  /** Who wrote the answer, shown under it ("Answered by Claude Sonnet 5.5 with Navo's tools"). */
+  answeredBy?: string;
   actions?: { label: string; run: "activity" }[];
+}
+
+export function answeredBy(answer: { composedBy: "claude" | "fallback"; model?: string; fallbackReason?: string }): string {
+  if (answer.composedBy === "claude") return `Answered by Claude${answer.model ? ` ${modelName(answer.model)}` : ""} with Navo's tools`;
+  return answer.fallbackReason === "offline" ? "Answered from Navo's rules (no AI key connected)" : "Answered from Navo's rules (Claude was unavailable)";
 }
 
 interface Replay {
@@ -108,7 +117,7 @@ const Context = createContext<NavoStore | null>(null);
 export const REPLAY_STEP_MS = 600;
 
 async function post(url: string, body: unknown): Promise<{ vm: ViewModel }> {
-  const response = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const response = await fetch(url, { method: "POST", headers: { "content-type": "application/json", ...keyHeaders() }, body: JSON.stringify(body) });
   const json = (await response.json()) as { vm?: ViewModel; error?: string };
   if (!response.ok || !json.vm) throw new Error(json.error ?? `Request failed (${response.status})`);
   return { vm: json.vm };
@@ -216,7 +225,7 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
 
   const refresh = useCallback(async () => {
     try {
-      const response = await fetch("/api/state", { cache: "no-store" });
+      const response = await fetch("/api/state", { cache: "no-store", headers: keyHeaders() });
       const json = (await response.json()) as { vm?: ViewModel; error?: string };
       if (json.vm) {
         if (vmRef.current === null) {
@@ -249,9 +258,9 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
     setSheet("ask");
     setMessages((m) => [...m, { id: id - 1, role: "user", text: q }, { id, role: "navo", text: "Checking your state and policy…", pending: true }]);
     try {
-      const response = await fetch("/api/ask", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q }) });
+      const response = await fetch("/api/ask", { method: "POST", headers: { "content-type": "application/json", ...keyHeaders() }, body: JSON.stringify({ question: q }) });
       const json = (await response.json()) as {
-        answer?: { text: string; checked: string[]; composedBy: "claude" | "fallback"; showActivity: boolean };
+        answer?: { text: string; checked: string[]; composedBy: "claude" | "fallback"; model?: string; fallbackReason?: string; showActivity: boolean };
         vm?: ViewModel;
         error?: string;
       };
@@ -262,7 +271,15 @@ export function NavoProvider({ children, initialScreen = "launch", pollMs }: { c
       setMessages((m) =>
         m.map((msg) =>
           msg.id === id
-            ? { id, role: "navo", text: answer.text, checked: answer.checked, composedBy: answer.composedBy, actions: answer.showActivity ? [{ label: "Show me", run: "activity" }] : undefined }
+            ? {
+                id,
+                role: "navo",
+                text: answer.text,
+                checked: answer.checked,
+                composedBy: answer.composedBy,
+                answeredBy: answeredBy(answer),
+                actions: answer.showActivity ? [{ label: "Show me", run: "activity" }] : undefined,
+              }
             : msg,
         ),
       );

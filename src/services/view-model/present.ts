@@ -25,6 +25,7 @@ import { displayDate, verifyRelievingLetter } from "@/services/documents/verify"
 import type { LoadedState } from "./load";
 import type {
   ActivityCaseVM,
+  AiStatusVM,
   Chapter,
   Day1VM,
   DidVM,
@@ -60,8 +61,7 @@ const PHASE_TONE: Record<ActivityPhase, Tone> = {
 const CASE_TITLE: Record<string, string> = { empid: "Employee ID delay", setup: "Day 1 setup", docs: "Documents", benefits: "Benefits", week1: "First weeks" };
 
 export interface PresentOptions {
-  liveAI: boolean;
-  model: string | null;
+  ai: AiStatusVM;
 }
 
 export function present(state: LoadedState, options: PresentOptions): ViewModel {
@@ -871,7 +871,6 @@ function presentRuntime(ctx: Ctx, options: PresentOptions): RuntimeVM {
     runs,
     latestRunId: runs[0]?.id ?? null,
     upcoming: state.upcoming.map((e) => ({ label: e.label, when: formatDayClock(e.dueAt) })),
-    liveAI: options.liveAI,
-    model: options.model,
+    ai: options.ai,
   };
 }

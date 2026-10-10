@@ -476,10 +476,10 @@ async function askStory(browser: Browser) {
     async () => {
       await sheet.getByRole("button", { name: "Ask", exact: true }).click();
       await page.mouse.move(2, 2);
-      await expect(sheet.getByText(/Offline answer from Navo's rules|Answered by Claude/)).toBeVisible({ timeout: 60_000 });
+      await expect(sheet.getByText(/Answered from Navo's rules|Answered by Claude/)).toBeVisible({ timeout: 60_000 });
     },
     {
-      answer: [sheet.getByText(/Offline answer from Navo's rules|Answered by Claude/), 1],
+      answer: [sheet.getByText(/Answered from Navo's rules|Answered by Claude/), 1],
       checked: sheet.getByText(/^Checked /),
       sheet,
     },

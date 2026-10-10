@@ -7,6 +7,7 @@ import { calendarEvents, employees, notifications } from "@/lib/db/schema";
 import { advanceStory, jumpToChapter } from "@/services/demo-director";
 import { bookWalkthrough, confirmPickup } from "@/services/employee-actions";
 import { buildViewModel } from "@/server/respond";
+import { OFFLINE } from "@/services/llm/gateway";
 import { createWorkspace } from "@/services/workspace";
 import { ANAND, activityLog, deps, failedEvents, taskByKey, toolLog } from "./helpers";
 
@@ -56,7 +57,7 @@ describe("a partial Day 1 pickup", () => {
     expect(calls.map((c) => c.argsSummary)).toEqual([expect.stringContaining("priya.nair"), expect.stringContaining("it.desk"), expect.stringContaining("facilities.desk")]);
     const last = (await activityLog(db2, ws2)).at(-1);
     expect(last?.summary).toBe("Closed what you collected. Asked the team to hold your onboarding kit.");
-    const vm = await buildViewModel(db2, ws2);
+    const vm = await buildViewModel(db2, ws2, OFFLINE);
     expect(vm.day1.wrapUp.find((r) => r.name === "Onboarding kit")?.status).toBe("Navo arranging a new pickup");
     expect(vm.day1.wrapUp.find((r) => r.name === "ID card collected")?.status).toBe("✓ Done");
   });
@@ -67,14 +68,14 @@ describe("week 1", () => {
     const db3 = await createMemoryDb();
     const ws3 = (await createWorkspace(db3, "hr_responds")).id;
     await jumpToChapter(db3, ws3, 5);
-    const before = await buildViewModel(db3, ws3);
+    const before = await buildViewModel(db3, ws3, OFFLINE);
     expect(before.week1.suggestion?.booked).toBe(false);
     await bookWalkthrough(db3, ws3, ANAND, deps);
     await bookWalkthrough(db3, ws3, ANAND, deps);
     const booked = await db3.select().from(calendarEvents).where(and(eq(calendarEvents.workspaceId, ws3), eq(calendarEvents.kind, "walkthrough")));
     expect(booked).toHaveLength(1);
     expect((await toolLog(db3, ws3)).filter((c) => c.tool === "schedule_meeting" && c.argsSummary.includes("Roadmap walkthrough"))).toHaveLength(1);
-    const after = await buildViewModel(db3, ws3);
+    const after = await buildViewModel(db3, ws3, OFFLINE);
     expect(after.week1.suggestion).toMatchObject({ booked: true });
     expect(await failedEvents(db3, ws3)).toHaveLength(0);
   });

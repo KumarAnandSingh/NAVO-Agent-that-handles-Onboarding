@@ -11,7 +11,7 @@ test("Ask Navo answers from live state and cites the policy it retrieved", async
   await expect(sheet.getByText(/I reminded Priya Nair at 09:17 today/)).toBeVisible();
   await expect(sheet.getByText(/\(§4\.2\)/)).toBeVisible();
   await expect(sheet.getByText(/Checked Onboarding standards and escalation §4\.2/)).toBeVisible();
-  await expect(sheet.getByText("Offline answer from Navo's rules")).toBeVisible();
+  await expect(sheet.getByText("Answered from Navo's rules (no AI key connected)")).toBeVisible();
   await settled(page);
   await expect(page.getByRole("complementary", { name: "Agent runtime" }).getByText("search_policies")).toBeVisible();
 

@@ -541,9 +541,18 @@ export const llmUsage = pgTable(
     day: text("day").notNull(),
     workspaceId: text("workspace_id"),
     feature: text("feature").$type<"ask" | "read_document" | "narrate">().notNull(),
-    status: text("status").$type<"reserved" | "ok" | "failed">().notNull().default("reserved"),
+    /** Whose key paid: the deployment's own, or a visitor's (bring your own key). */
+    keySource: text("key_source").$type<"server" | "visitor">().notNull().default("server"),
+    model: text("model"),
+    /** `refused` is a model declining; the gateway then tries the next model in the route. */
+    status: text("status").$type<"reserved" | "ok" | "refused" | "failed">().notNull().default("reserved"),
     inputTokens: integer("input_tokens").notNull().default(0),
     outputTokens: integer("output_tokens").notNull().default(0),
+    cacheReadTokens: integer("cache_read_tokens").notNull().default(0),
+    cacheWriteTokens: integer("cache_write_tokens").notNull().default(0),
+    latencyMs: integer("latency_ms"),
+    /** Personal numbers masked before sending, counted by kind (never the values). */
+    masked: jsonb("masked").$type<Record<string, number>>(),
     at: ts("at").notNull().defaultNow(),
   },
   (t) => [index("llm_usage_day_idx").on(t.day, t.workspaceId)],

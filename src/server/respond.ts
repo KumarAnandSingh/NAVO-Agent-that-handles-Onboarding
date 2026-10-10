@@ -6,11 +6,13 @@ import { loadState } from "@/services/view-model/load";
 import { present } from "@/services/view-model/present";
 import type { ViewModel } from "@/services/view-model/types";
 import type { Db } from "@/lib/db/client";
-import { liveAiEnabled, liveModel } from "./deps";
+import type { AiAccess } from "@/services/llm/gateway";
+import { aiStatus } from "@/services/llm/usage";
+import { byokEnabled } from "./deps";
 
-export async function buildViewModel(db: Db, workspaceId: string): Promise<ViewModel> {
+export async function buildViewModel(db: Db, workspaceId: string, access: AiAccess): Promise<ViewModel> {
   const state = await loadState(db, workspaceId);
-  return present(state, { liveAI: liveAiEnabled(), model: liveModel() });
+  return present(state, { ai: await aiStatus(db, workspaceId, access, byokEnabled()) });
 }
 
 /** Map domain errors to HTTP responses with a message safe to show in the UI. */

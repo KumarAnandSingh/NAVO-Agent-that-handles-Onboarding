@@ -226,7 +226,7 @@ function AskSheet() {
             <div key={m.id} style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
               {m.checked && m.checked.length > 0 && <span style={{ fontSize: 11, color: "var(--accent)" }}>Checked {m.checked.join(" · ")}</span>}
               <span style={{ fontSize: 14, lineHeight: 1.5, maxWidth: "92%", color: m.pending ? "var(--text-3)" : "var(--ink)", textWrap: "pretty" }}>{m.text}</span>
-              {m.composedBy && <span style={{ fontSize: 10, color: "var(--text-4)" }}>{m.composedBy === "claude" ? "Answered by Claude with Navo's tools" : "Offline answer from Navo's rules"}</span>}
+              {m.answeredBy && <span style={{ fontSize: 10, color: "var(--text-4)" }}>{m.answeredBy}</span>}
               {m.actions?.map((a) => (
                 <button key={a.label} onClick={() => setSheet(a.run)} style={{ background: "var(--accent-soft-2)", color: "var(--accent)", border: "none", borderRadius: 10, padding: "8px 12px", fontSize: 13, fontWeight: 600 }}>
                   {a.label}

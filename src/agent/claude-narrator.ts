@@ -2,10 +2,11 @@
  * Claude rewrites Navo's template updates so they read naturally, without changing what
  * they say. The template stays the source of truth: a rewrite is used only if it keeps
  * every name, number, date and ticket from the facts and adds no number of its own.
- * Anything else (offline, over budget, slow, a dropped fact) sends the template.
+ * Anything else (offline, over budget, slow, a dropped fact) sends the template. The
+ * gateway picks the model (a small, fast one) and masks personal numbers first.
  */
-import { recordLlmResult, reserveLlmCall } from "@/services/llm/budget";
-import { NAVO_MODEL, textOf, type CreateMessage } from "@/services/llm/claude";
+import { textOf } from "@/services/llm/claude";
+import type { Llm } from "@/services/llm/gateway";
 import { templateUpdate, type Narrator, type UpdateFacts } from "./narration";
 
 export const NARRATION_TIMEOUT_MS = 8_000;
@@ -37,30 +38,26 @@ export function keepsFacts(update: UpdateFacts, rewrite: string): boolean {
   return kept && !invented;
 }
 
-export function claudeNarrator(create: CreateMessage): Narrator {
+export function claudeNarrator(llm: Llm): Narrator {
   return {
     async employeeUpdate(update: UpdateFacts, scope) {
       const draft = templateUpdate(update);
       const fallback = { text: draft, composedBy: "template" as const };
       if (!scope) return fallback;
-      const reservation = await reserveLlmCall(scope.db, scope.workspaceId, "narrate");
-      if (reservation === null) return fallback;
       try {
-        const response = await create(
+        const response = await llm.call(
+          "narrate",
+          scope,
           {
-            model: NAVO_MODEL,
             max_tokens: 1500,
             system: SYSTEM,
             messages: [{ role: "user", content: `Facts: ${JSON.stringify(update.facts)}\n\nDraft: ${draft}` }],
-            output_config: { effort: "low" },
           },
-          { timeout: NARRATION_TIMEOUT_MS, maxRetries: 0 },
+          { timeoutMs: NARRATION_TIMEOUT_MS },
         );
-        await recordLlmResult(scope.db, reservation, response.usage);
         const text = textOf(response);
         return keepsFacts(update, text) ? { text, composedBy: "claude" } : fallback;
       } catch {
-        await recordLlmResult(scope.db, reservation, null);
         return fallback;
       }
     },

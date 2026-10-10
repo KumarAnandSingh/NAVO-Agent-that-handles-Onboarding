@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { FEATURED_EMPLOYEE_ID } from "@/content/company";
 import { hrGenerateEmployeeId } from "@/services/employee-actions";
-import { agentDeps } from "@/server/deps";
+import { agentDeps, aiAccess } from "@/server/deps";
 import { buildViewModel, errorResponse } from "@/server/respond";
 import { currentWorkspace } from "@/server/session";
 
@@ -14,8 +14,9 @@ export async function POST(request: Request) {
   try {
     body.parse(await request.json());
     const { db, workspace } = await currentWorkspace();
-    await hrGenerateEmployeeId(db, workspace.id, FEATURED_EMPLOYEE_ID, agentDeps());
-    return NextResponse.json({ vm: await buildViewModel(db, workspace.id) });
+    const access = aiAccess(request);
+    await hrGenerateEmployeeId(db, workspace.id, FEATURED_EMPLOYEE_ID, agentDeps(access));
+    return NextResponse.json({ vm: await buildViewModel(db, workspace.id, access) });
   } catch (error) {
     return errorResponse(error);
   }

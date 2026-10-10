@@ -1,6 +1,7 @@
 "use client";
 
 import type { ToolCallVM } from "@/services/view-model/types";
+import { AiPanel } from "@/ui/ai/AiPanel";
 import { NavoFace } from "@/ui/components/NavoFace";
 import { TOOL_HUMAN, faceForTool, useNavo } from "@/ui/state/NavoStore";
 import { GUARD } from "@/ui/tones";
@@ -27,7 +28,7 @@ function ToolCard({ tool, running }: { tool: ToolCallVM; running: boolean }) {
 
 /** Right panel: Navo's real tool calls (replayed one by one), state changes and guardrails. */
 export function RuntimePanel() {
-  const { vm, replay } = useNavo();
+  const { vm, replay, refresh } = useNavo();
   const runs = vm?.runtime.runs ?? [];
   const latest = runs[0];
   const current = replay ? replay.tools[replay.index] : undefined;
@@ -93,12 +94,7 @@ export function RuntimePanel() {
             <span style={{ color: "var(--ink)", fontWeight: 600 }}>Never</span> · issue Employee IDs or change start dates (HR only)
           </span>
         </div>
-        {vm && (
-          <span className={st.model}>
-            <span className={st.modelDot} style={{ background: vm.runtime.liveAI ? "var(--done)" : "var(--text-4)" }} />
-            {vm.runtime.liveAI ? `Claude live · ${vm.runtime.model}` : "Offline mode · deterministic fallbacks"}
-          </span>
-        )}
+        {vm && <AiPanel ai={vm.runtime.ai} onChange={() => void refresh()} />}
       </div>
     </aside>
   );

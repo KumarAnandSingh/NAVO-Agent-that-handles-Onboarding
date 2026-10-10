@@ -1,6 +1,6 @@
 /**
  * Ask Navo: the joiner's questions, answered from their live onboarding state and
- * Halden's policies. With a key, Claude plans which read-only tools to call and writes
+ * Halden's policies. With a key, Claude (routed by the gateway) plans which read-only tools to call and writes
  * the answer; the server then checks every policy ref it cites was actually retrieved.
  * Any failure (no key, budget, timeout, API error, an unverified citation) falls back to
  * the scripted, still-grounded answer. Every tool call is audited as an agent run.
@@ -11,8 +11,8 @@ import { templateNarrator } from "@/agent/narration";
 import { COMPANY, FEATURED_EMPLOYEE_ID } from "@/content/company";
 import { atIst, formatDayClock, formatLongDate } from "@/domain/time";
 import type { Db } from "@/lib/db/client";
-import { recordLlmResult, reserveLlmCall } from "@/services/llm/budget";
-import { NAVO_MODEL, textOf, type CreateMessage } from "@/services/llm/claude";
+import { textOf } from "@/services/llm/claude";
+import { LlmUnavailable, type Llm } from "@/services/llm/gateway";
 import { getEmployee, listPeople } from "@/services/onboarding-state/repository";
 import type { PolicyHit } from "@/services/policy-retrieval";
 import { requireWorkspace } from "@/services/workspace";
@@ -25,6 +25,8 @@ export interface AskAnswer {
   checked: string[];
   citations: { ref: string; title: string; document: string }[];
   composedBy: "claude" | "fallback";
+  /** The Claude model that wrote the answer, when Claude did. */
+  model?: string;
   /** Offer "Show me" (the Activity sheet) when the answer is about a case Navo is working. */
   showActivity: boolean;
   /** Why the fallback answered, for logs and tests. */
@@ -32,8 +34,8 @@ export interface AskAnswer {
 }
 
 export interface AskOptions {
-  /** Claude, or null for offline mode. */
-  create: CreateMessage | null;
+  /** The Claude gateway, or null for offline mode. */
+  llm: Llm | null;
   /** Whole-answer deadline; past it, Navo answers from the fallback. */
   timeoutMs?: number;
 }
@@ -57,11 +59,11 @@ export async function askNavo(db: Db, workspaceId: string, question: string, opt
 
   let answer: AskAnswer;
   try {
-    if (!options.create) throw new AskFailure("offline");
+    if (!options.llm) throw new AskFailure("offline");
     const timeoutMs = options.timeoutMs ?? ASK_TIMEOUT_MS;
     const controller = new AbortController();
-    const draft = await withDeadline(claudeAnswer(ctx, q, options.create, timeoutMs, controller.signal), timeoutMs, () => controller.abort());
-    answer = toAnswer(draft, "claude");
+    const draft = await withDeadline(claudeAnswer(ctx, q, options.llm, timeoutMs, controller.signal), timeoutMs, () => controller.abort());
+    answer = { ...toAnswer(draft, "claude"), model: draft.model };
   } catch (error) {
     const reason = error instanceof AskFailure ? error.reason : error instanceof Error ? error.message : String(error);
     if (reason !== "offline") console.warn(`Ask Navo fell back: ${reason}`);
@@ -115,7 +117,7 @@ async function systemPrompt(ctx: AgentContext): Promise<string> {
   ].join("\n");
 }
 
-async function claudeAnswer(ctx: AgentContext, question: string, create: CreateMessage, timeoutMs: number, signal: AbortSignal): Promise<DraftAnswer> {
+async function claudeAnswer(ctx: AgentContext, question: string, llm: Llm, timeoutMs: number, signal: AbortSignal): Promise<DraftAnswer & { model: string }> {
   const startedAt = Date.now();
   const system = await systemPrompt(ctx);
   const messages: Anthropic.MessageParam[] = [{ role: "user", content: question }];
@@ -125,22 +127,21 @@ async function claudeAnswer(ctx: AgentContext, question: string, create: CreateM
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
     // Past the deadline the fallback is already answering: stop calling Claude or tools.
     if (signal.aborted) throw new AskFailure("aborted");
-    const reservation = await reserveLlmCall(ctx.db, ctx.workspace.id, "ask");
-    if (reservation === null) throw new AskFailure("daily Claude budget reached");
     let response: Anthropic.Message;
     try {
-      response = await create(
-        { model: NAVO_MODEL, max_tokens: 4000, system, tools: ASK_TOOL_SPECS, messages, output_config: { effort: "low" } },
-        { timeout: Math.max(1_000, timeoutMs - (Date.now() - startedAt)), maxRetries: 0, signal },
+      response = await llm.call(
+        "ask",
+        { db: ctx.db, workspaceId: ctx.workspace.id },
+        { max_tokens: 4000, system, tools: ASK_TOOL_SPECS, messages },
+        { timeoutMs: Math.max(1_000, timeoutMs - (Date.now() - startedAt)), signal },
       );
     } catch (error) {
-      await recordLlmResult(ctx.db, reservation, null);
+      if (error instanceof LlmUnavailable) throw new AskFailure(error.message);
       throw error;
     }
-    await recordLlmResult(ctx.db, reservation, response.usage);
 
     if (response.stop_reason === "end_turn") {
-      return verify(textOf(response), checked, retrieved);
+      return { ...verify(textOf(response), checked, retrieved), model: response.model };
     }
     if (response.stop_reason !== "tool_use") throw new AskFailure(`stopped: ${response.stop_reason}`);
 

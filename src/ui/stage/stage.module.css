@@ -320,20 +320,6 @@
   color: var(--text-2);
 }
 
-.model {
-  font-size: 11px;
-  color: var(--text-3);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.modelDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-
 @media (max-width: 760px) {
   .stage {
     padding: 0;

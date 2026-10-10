@@ -2,6 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { advance } from "@/agent/runtime";
 import { createMemoryDb, type Db } from "@/lib/db/client";
 import { jumpToChapter, jumpToDay30 } from "@/services/demo-director";
+import { OFFLINE } from "@/services/llm/gateway";
+import { aiStatus } from "@/services/llm/usage";
 import { loadState } from "@/services/view-model/load";
 import { present } from "@/services/view-model/present";
 import { createWorkspace } from "@/services/workspace";
@@ -9,7 +11,7 @@ import { deps, failedEvents } from "./helpers";
 
 let db: Db;
 let ws: string;
-const view = async () => present(await loadState(db, ws), { liveAI: false, model: null });
+const view = async () => present(await loadState(db, ws), { ai: await aiStatus(db, ws, OFFLINE, true) });
 
 beforeAll(async () => {
   db = await createMemoryDb();

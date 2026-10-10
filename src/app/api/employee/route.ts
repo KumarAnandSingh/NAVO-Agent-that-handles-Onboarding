@@ -13,7 +13,7 @@ import {
   submitForms,
   uploadSampleDocument,
 } from "@/services/employee-actions";
-import { agentDeps } from "@/server/deps";
+import { agentDeps, aiAccess } from "@/server/deps";
 import { buildViewModel, errorResponse } from "@/server/respond";
 import { currentWorkspace } from "@/server/session";
 
@@ -36,7 +36,8 @@ export async function POST(request: Request) {
   try {
     const input = body.parse(await request.json());
     const { db, workspace } = await currentWorkspace();
-    const deps = agentDeps();
+    const access = aiAccess(request);
+    const deps = agentDeps(access);
     const id = FEATURED_EMPLOYEE_ID;
     switch (input.action) {
       case "upload_sample":
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
         await bookWalkthrough(db, workspace.id, id, deps);
         break;
     }
-    return NextResponse.json({ vm: await buildViewModel(db, workspace.id) });
+    return NextResponse.json({ vm: await buildViewModel(db, workspace.id, access) });
   } catch (error) {
     return errorResponse(error);
   }
