@@ -6,9 +6,18 @@
 |---|---|
 | Track | **Business Case #2: Employee Onboarding Companion** |
 | Product | Navo, an onboarding agent for the joiner and the HR team |
-| AI | Claude (Anthropic API), `claude-opus-5-5` by default |
+| AI | Claude (Anthropic API) through one gateway: Haiku 5.5 for status updates, Sonnet 5.5 for Ask Navo, Opus 5.5 for documents, each with a fallback. Offline by default; visitors can bring their own key. |
 | Stack | Next.js 16, React 19, TypeScript (strict), Postgres via Drizzle ORM, Vitest, Playwright |
 | Data | Synthetic only. Halden, its people, policies, documents and systems are fictional. |
+
+Related documents:
+- [Enterprise architecture: built vs planned](ENTERPRISE_ARCHITECTURE.md)
+- [Security and privacy (DPDP)](SECURITY_PRIVACY.md)
+- [Cost model](COST_MODEL.md)
+- [API reference](API.md)
+- [AI quality benchmark](AI_QUALITY.md)
+- [Load test](LOAD_TEST.md)
+- [Architecture decision records](adr/README.md)
 
 ---
 
@@ -69,7 +78,7 @@ Everything above runs on the **real engine**: a presenter can play it as a 3-min
 | Persona | What Navo does for them |
 |---|---|
 | **Joiner** (Anand) | One place that knows what's next, only asks for what genuinely needs them, and explains itself. |
-| **HR owner** (Priya Nair) | A queue of exceptions instead of a spreadsheet of checklists; Navo has already chased what it can. |
+| **HR owner** (Priya Nair) | A queue of exceptions instead of a spreadsheet of checklists; Navo has already chased what it can. A cohort radar shows every joiner's Day-1 risk and where it would break if a team slowed down. HR publishes policies that Navo cites straight away. |
 | **IT, Facilities, managers** | Requests that arrive on time with the deadline and what depends on them. |
 
 ---
@@ -85,11 +94,18 @@ flowchart LR
   end
 
   subgraph Server["Next.js server (route handlers)"]
-    API["/api/state · /api/employee · /api/hr · /api/demo · /api/ask"]
-    VM["View-model presenter<br/>(pure: state → screen data)"]
-    Actions["Employee & HR actions"]
-    Ask["Ask Navo"]
+    API["/api/state · /api/employee · /api/hr · /api/demo · /api/ask · /api/ai"]
+    VM["View-model presenters<br/>(pure: state → screen data)"]
+    Actions["Employee & HR actions<br/>(incl. policy upload)"]
+    Ask["Ask Navo<br/>(English, Hindi)"]
     Director["Demo director<br/>(chapters, skip, advance)"]
+    Radar["Cohort radar<br/>(risk for every joiner, what-ifs)"]
+  end
+
+  subgraph Gateway["AI gateway"]
+    Route["Per-task routing + fallback chain<br/>Haiku · Sonnet · Opus"]
+    Guard["Personal-data guard"]
+    Usage["Budget, usage and cost log"]
   end
 
   subgraph Agent["Navo agent"]
@@ -117,6 +133,7 @@ flowchart LR
 
   Stage & Phone & HR --> API
   API --> VM & Actions & Ask & Director
+  VM --> Radar --> Domain
   Actions --> Runtime
   Director --> Runtime
   Runtime --> Orch --> Play
@@ -127,9 +144,10 @@ flowchart LR
   Mocks -- "scheduled events" --> DB
   Runtime <--> DB
   VM --> DB
-  Ask -. "plans tool calls, writes answer" .-> Claude
-  Orch -. "rewrites updates (facts checked)" .-> Claude
-  Actions -. "reads documents (vision)" .-> Claude
+  Ask -. "plans tool calls, writes answer" .-> Route
+  Orch -. "rewrites updates (facts checked)" .-> Route
+  Actions -. "reads documents (vision)" .-> Route
+  Route --> Guard --> Usage -. "server key or visitor's own key" .-> Claude
 ```
 
 ### Design principles
@@ -138,7 +156,8 @@ flowchart LR
 - **Deterministic core, LLM at the edges.** State transitions, dependencies, working-day maths, risk thresholds and permissions are plain, unit-tested code. Claude understands and writes language, reads documents and plans read-only lookups. It never decides a state transition or a permission.
 - **Event-driven world.** HR, IT, the vendor and Facilities are simulated systems that respond through scheduled events on a simulated IST clock. "Advance time" processes real events through the real engine, so the demo is reproducible and nothing is scripted UI.
 - **Isolated workspaces.** Each visitor gets their own seeded copy of the Halden dataset (cookie-scoped), so judges exploring at the same time never see each other's changes.
-- **Offline-first.** Every Claude feature has a deterministic fallback. The app, the demo and the whole test suite run without an API key.
+- **Offline-first.** Every Claude feature has a deterministic fallback. The app, the demo and the whole test suite run without an API key. The hosted demo runs offline; a visitor can connect their own Claude key to see it live.
+- **One door to the models.** Every Claude call goes through the AI gateway, which routes each task to the right-sized model, falls back on errors and refusals, masks personal numbers, enforces the budget and logs usage and cost.
 
 ### Request lifecycle (an employee action)
 
@@ -334,11 +353,30 @@ Reminders carry a 24-hour reply window. `sla.check` events fire at the deadline;
 
 Claude is used where language understanding genuinely helps. Each use has a **verification step** in code and a **deterministic fallback**.
 
-| Feature | What Claude does | What code verifies | Fallback |
+| Feature | Model (fallback) | What Claude does | What code verifies | Fallback |
 |---|---|---|---|
-| **Ask Navo** | Plans which read-only tools to call, then writes the answer in Navo's voice. | Every policy ref it cites (e.g. §4.2) must have been returned by `search_policies` in this conversation; answer length and format. | Intent-matched answer built from live state and retrieved policy, through the same tools. |
-| **Document reading** | Reads the uploaded image (vision) into named fields with a confidence each; unreadable characters come back as raw text with `?`. | Structured output parsed with Zod; deterministic rules decide verified / clarify / re-upload (name match, date window, confidence ≥ 0.8). | The recorded reading for the synthetic sample. |
-| **Update writing** | Rewrites Navo's template update so it reads naturally. | Every name, number, date and ticket from the facts must survive; no new numbers; no exclamation marks. | The template text. |
+| **Ask Navo** | Sonnet 5.5 (Opus 5.5) | Plans which read-only tools to call, then writes the answer in Navo's voice, in English or Hindi. | Every policy ref it cites (e.g. §4.2) must have been returned by `search_policies` in this conversation; answer length and format. | Intent-matched answer built from live state and retrieved policy, through the same tools. |
+| **Document reading** | Opus 5.5 (Sonnet 5.5) | Reads the uploaded image (vision) into named fields with a confidence each; unreadable characters come back as raw text with `?`. | Structured output parsed with Zod; deterministic rules decide verified / clarify / re-upload (name match, date window, confidence ≥ 0.8). | The recorded reading for the synthetic sample. |
+| **Update writing** | Haiku 5.5 (Sonnet 5.5) | Rewrites Navo's template update so it reads naturally. | Every name, number, date and ticket from the facts must survive; no new numbers; no exclamation marks. | The template text. |
+
+### The AI gateway
+
+Every call goes through `src/services/llm/gateway.ts` ([ADR 0005](adr/0005-per-task-model-routing.md)):
+
+1. **Route.** Each task has a model chain and an explicit effort level (`src/services/llm/models.ts`). Environment variables can pin a model per task (`NAVO_MODEL_ASK`, `NAVO_MODEL_NARRATE`, `NAVO_MODEL_DOCUMENTS`) or for all tasks (`NAVO_MODEL`).
+2. **Guard.** For chat and narration, personal numbers are swapped for placeholders before the text leaves Navo, then swapped back in the reply. Covered: Aadhaar, PAN, phone, bank account, IFSC and email ([ADR 0007](adr/0007-personal-data-guard-scope.md)).
+3. **Budget.** The call is reserved against the daily caps. The global cap applies to the deployment's key; the per-workspace cap applies to any key.
+4. **Call and fall back.** The gateway moves to the next model in the chain on any of these: overload, a 5xx error, rate limiting, a model the key can't use, a dropped connection, or a refusal (`stop_reason: "refusal"`). It does not fall back on a timeout, a rejected key or a bad request. A fallback needs at least a second of the deadline left.
+5. **Cache.** Ask Navo sets top-level prompt caching, so each round of the tool loop reads the previous round's prefix from cache.
+6. **Record.** Each attempt is written to `llm_usage`: model, status, latency, input, output and cache tokens, key source, and masked counts by kind. The runtime panel shows it as calls, fallbacks, latency and estimated cost per task.
+
+**Bring your own key.** The hosted demo runs with no server key ([ADR 0004](adr/0004-offline-first-bring-your-own-key.md)).
+- A visitor can connect their own Anthropic key in the runtime panel. It is tested for free against the Models API and kept in the browser tab.
+- The key is sent in the `x-navo-claude-key` header with Navo's own API calls. The server builds a client for that request only, and never stores or logs the key.
+
+Measured cost: about **$0.07 per onboarding** at list price, half of what running every task on Opus would cost ([cost model](COST_MODEL.md)).
+
+**Quality.** A benchmark of 17 Ask questions (3 in Hindi), the 3 documents and 6 status updates is graded by code. It runs offline in CI and live nightly when a key secret exists ([AI quality](AI_QUALITY.md)).
 
 ### Ask Navo flow
 
@@ -375,7 +413,8 @@ sequenceDiagram
 - **Prompt-injection resistance.** The system prompt tells Claude to ignore instructions in the question; unknown tool names return an error to Claude and nothing runs; tests cover an injection attempt.
 - **Budget.** Every Claude call is reserved in `llm_usage` before it is made (global daily cap and per-workspace cap). Over budget → fallback.
 - **Deadlines.** Ask has a whole-answer deadline (25s); in-flight work is aborted when it passes. Document reading and narration have their own timeouts.
-- **Model choice.** `claude-opus-5-5` by default (`NAVO_MODEL` to change). Ask, reading and narration use low effort for latency; tool choice stays automatic.
+- **Model choice.** Per task through the gateway (above). Ask, reading and narration use low effort for latency; tool choice stays automatic.
+- **Languages.** A question in Hindi (Devanagari) gets a Hindi answer: the rule-based fallback has Hindi versions of every answer, and retrieval maps common Hindi words to the English policies. Claude is told to answer in the question's language.
 
 ---
 
@@ -431,11 +470,16 @@ erDiagram
 | Workspace and people | `workspaces`, `people`, `employees` |
 | Onboarding state | `tasks`, `dependencies`, `task_events`, `documents`, `form_fields`, `approvals`, `follow_ups` |
 | Agent audit trail | `events`, `agent_runs`, `tool_calls`, `state_changes`, `activities`, `notifications` |
-| Knowledge | `policy_documents`, `policy_sections` (versioned; superseded versions are filtered out) |
+| Knowledge | `policy_documents`, `policy_sections` (versioned; superseded versions are filtered out; HR uploads are scoped to a workspace and can replace a library policy with a newer version) |
 | Simulated systems | `hr_requests`, `it_tickets`, `calendar_events`, `training_enrollments`, `vendor_checks`, `facilities_items`, `benefit_enrollments`, `pulse_responses`, `counters` |
-| Operations | `llm_usage` (Claude call budget) |
+| Operations | `llm_usage`: one row per Claude attempt, with model, status, latency, tokens, cache tokens, key source and masked counts |
 
 **Policy retrieval** (`src/services/policy-retrieval/`) is BM25 with stemming, stop words and synonyms over the current version of each policy section, with a minimum relevance score: below it, Navo says it doesn't know instead of guessing. A superseded hybrid-work policy (v2.0, "no remote Fridays") is seeded deliberately; answers use v2.1.
+
+**Policy upload** (`src/services/policy-retrieval/upload.ts`). HR pastes text or uploads a `.md` or `.txt` file.
+- **Splitting:** Navo splits it by Markdown headings, numbered headings or paragraphs, and cuts long sections at sentence boundaries.
+- **Refs:** a new policy gets the next free number (`§9.1`…); a newer version keeps its policy's number, so refs never collide.
+- **Publishing:** HR previews the sections first. Published sections are searchable at once, and a future effective date keeps them out until then.
 
 ---
 
@@ -446,10 +490,15 @@ The design follows the HTML prototype in `docs/design/Navo_Prototype.dc.html`.
 - **Demo stage (`/`)**: presenter panel (chapters, HR scenario switch, Advance time, Reset, IT delay, "Up next" from the real event queue), the joiner's phone, and the **agent runtime panel**, which replays Navo's actual tool calls with guard badges, then the state changes they caused.
 - **Joiner app**: 20 screens: launch, sign-in, meet Navo, documents (sample upload), privacy, clarify, forms, home, culture, Employee ID tracker, journey, updates, ID card, pickup, Day 1 plan, pickup confirmation, Day 1 wrap-up, week 1, benefits, Day 30. Plus the Activity sheet ("What Navo did", with reasons) and the Ask Navo sheet.
 - **Navo's face** has nine states (watching, thinking, acting, concerned, needs you, celebrating…) and follows the tool running during a replay.
-- **HR owner console (`/hr`)**: a queue of exceptions only (with what Navo already did), upcoming joiners with their Day-1 status, and Navo's live activity on the featured joiner. "Generate ID" is the one HR action in the story.
+- **HR owner console (`/hr`)** has three pages, with Navo's live activity on the featured joiner beside them:
+  - **Needs HR:** exceptions only, with what Navo already did. "Generate ID" is the one HR action in the story.
+  - **All joiners:** the cohort radar. Every joiner's Day-1 risk from the real risk engine, the teams whose tasks break a Day 1, and what-ifs such as "IT takes a week longer" that mark the joiners who would change.
+  - **Policies and rules:** the library with versions and status, and adding or updating a policy.
+- **AI panel** (in the runtime panel): which model handles each task and its fallback, live usage and estimated cost, personal numbers masked, and the "Try it with your own Claude key" dialog.
 - **Guided demo**: 25 beats that drive the real API end to end in about 3 minutes, with captions computed from the resulting state; keyboard: → next, ← back, Space play/pause, H HR view, B brief, Esc close.
 - **Impact screen**: figures computed from the run (tasks closed, days before Day 1 the risk was acted on, follow-ups sent, things that needed the joiner, audited tool calls).
-- **Accessibility**: WCAG 2.1 AA colour contrast, labelled regions and dialogs, keyboard operation, focus rings, `prefers-reduced-motion` respected.
+- **Hindi**: Ask Navo answers questions asked in Hindi, and offers a Hindi suggestion.
+- **Accessibility**: WCAG 2.1 AA colour contrast, labelled regions and dialogs, keyboard operation, focus rings, `prefers-reduced-motion` respected. Axe scans cover every HR page and the key dialog.
 
 ---
 
@@ -463,9 +512,11 @@ The design follows the HTML prototype in `docs/design/Navo_Prototype.dc.html`.
 | Invalid tool input | Zod validation; the failure is audited and surfaced, not swallowed. |
 | Slow tools | Per-tool timeout (5s default), audited as `timeout`. |
 | Unsafe actions | Permission engine: asset changes and personal data need the joiner's approval; Employee IDs and start dates are HR-only; unknown actions are denied. |
-| LLM errors, slowness, cost | Deadlines, aborts, a daily call budget and deterministic fallbacks for every Claude feature. |
+| LLM errors, slowness, cost | A fallback model on overload, rate limits and refusals; deadlines and aborts; a daily call budget; deterministic fallbacks for every Claude feature. Even when the fallback itself can't read the state (for example a tool timeout under load), Ask answers honestly instead of failing. |
+| Personal data and AI | Personal numbers are masked before chat and narration reach the model; visitor keys stay in the browser tab and are never stored or logged (tested). See [security and privacy](SECURITY_PRIVACY.md). |
+| A pushy agent | Navo asks about a loaner once; a "no" stands. HR can't issue an Employee ID that is still blocked. |
 | Hallucinated policy | Citations must match retrieved sections; low-relevance questions get "I don't know". |
-| Privacy | Synthetic data only. Documents are used only for onboarding (policy §8). The demo's sample images are rendered locally and watermarked "SYNTHETIC SAMPLE". API keys live in environment variables, never in code. |
+| Privacy | Synthetic data only. Documents are used only for onboarding (policy §8). The demo's sample images are rendered locally and watermarked "SYNTHETIC SAMPLE". API keys live in environment variables or, for visitors, in their own browser tab; never in code. |
 
 ---
 
@@ -473,14 +524,42 @@ The design follows the HTML prototype in `docs/design/Navo_Prototype.dc.html`.
 
 | Layer | Tool | What it covers | Count |
 |---|---|---|---|
-| Unit | Vitest | Working-day calendar, state machine, dependency graph, risk engine, permission engine, SLA, policy retrieval (BM25, versioning), document verification, free-slot finder, product-video timeline | 10 files |
-| Integration | Vitest + in-memory PGlite | Both golden paths (HR responds / HR silent) through the real engine; reliability cases (invalid input, tool timeout, denied action, conflicting update, duplicate event, failing event, missing policy); Day-1 risk after Day 1; partial pickup; walkthrough booking; event cancellation; view model; Ask Navo with a scripted fake Claude (tool loop, unverified citation, timeout, API error, prompt injection, budget); narration fact checks; Claude document reading | 8 files |
-| End-to-end | Playwright (production build, offline mode) | First launch to blocker cleared; HR silent with loaner approval; Ask Navo with citations; full guided demo to the impact screen | 4 specs |
-| Accessibility | Playwright + axe-core | WCAG 2.1 A/AA scans of the intro, stage, HR console and phone; keyboard shortcuts | 5 tests |
+| Unit | Vitest | Working-day calendar, state machine, dependency graph, risk engine, cohort radar, permission engine, SLA, policy retrieval, document verification, free-slot finder, model routing and pricing, the personal-data guard, IT lead times, radar copy, product-video timeline | 15 files |
+| Property-based | fast-check (in the unit suite) | Hundreds of random cases per rule. **Working days:** adding n working days lands on a working day. **Dependency graphs:** random graphs are always ordered, projections never run ahead of a prerequisite, and loops are rejected. **What-ifs:** slowing a team never lowers anyone's risk. **Guard:** text round-trips exactly with no personal number sent. | 8 properties |
+| Integration | Vitest + in-memory PGlite | **Agent:** both golden paths through the real engine; a journey sweep checking every screen at every step for broken copy and backwards chapters. **Reliability:** invalid input, timeouts, denials, conflicts, duplicate and failing events. **Ask Navo:** the Claude tool loop, unverified citations, refusals, injection, the budget, every fallback state in English and Hindi. **AI gateway:** routing, fallback chain, caching, guard, budgets. **Visitor keys:** the key is never stored or logged. **Also:** policy upload and versioning, the cohort radar, API error mapping, the AI benchmark. | 18 files |
+| Component | Testing Library + jsdom | Every phone screen in 7 real engine states (built before the run), the HR console's three pages, the runtime and presenter panels, the client store (replay, Ask, errors, the visitor key header), the AI panel and key dialog, the policy page and the radar | 6 files |
+| End-to-end | Playwright (production build, offline mode) | **Journeys:** first launch to blocker cleared, HR silent with the loaner, the full guided demo to the impact screen. **Features:** Ask Navo (English and Hindi), connecting a visitor key, publishing a policy and asking about it, the cohort radar what-if. | 8 specs |
+| Accessibility | Playwright + axe-core | WCAG 2.1 A/AA scans of the intro, stage, phone, every HR page and the key dialog; keyboard shortcuts | 6 tests |
+| AI quality | `npm run eval` | 17 Ask questions (3 in Hindi), 3 documents, 6 status updates, graded by code; offline in CI, live nightly with a key | [AI_QUALITY.md](AI_QUALITY.md) |
+| Load | `npm run load-test` | 50 visitors running a full journey at once; fails on any error or cross-visitor leak | [LOAD_TEST.md](LOAD_TEST.md) |
 
-- **133** unit and integration tests and **9** end-to-end tests pass.
-- Coverage: about **92%** of lines overall and **99%** in the domain rules. CI fails if it drops below the floors in `vitest.config.ts` (85% overall, 95% for `src/domain`).
-- **CI** (GitHub Actions): lint, typecheck, tests with coverage, build, and the Playwright suite in its own job.
+**Results:**
+- **264** unit, integration and component tests pass.
+- **13** end-to-end tests pass, both on embedded PGlite and on real Postgres 16.
+- The load test made 350 requests on Postgres with 0 errors.
+
+**Coverage** (UI included), with floors in `vitest.config.ts` that CI enforces:
+
+| Scope | Lines | Branches |
+|---|---|---|
+| Overall | 90.8% | 79.8% |
+| Server code | — | 85.1% |
+| Domain rules | — | over 90% |
+
+**CI** (GitHub Actions) runs these jobs:
+- **Checks:** lint, typecheck, tests with coverage, the offline AI benchmark, build.
+- **Dependency audit:** fails on high or critical advisories in production dependencies.
+- **End-to-end:** on PGlite.
+- **Real Postgres 16:** migrations, the end-to-end suite and the 50-visitor load test.
+- **Nightly:** the live AI benchmark, which runs only when a key secret is set.
+
+Writing these tests found and fixed real bugs:
+- Navo re-asked about a declined loaner at every event.
+- The SDK rejected a fractional request timeout.
+- Ask returned a 500 when a tool timed out under load.
+- HR could issue an Employee ID that was still blocked.
+- Two weak offline answers.
+- A label that swallowed its hint.
 
 ---
 
@@ -506,11 +585,14 @@ npm run dev                    # http://localhost:3000
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | (empty) | Enables live Claude features. Without it Navo runs in offline mode. |
-| `NAVO_MODEL` | `claude-opus-5-5` | Claude model. |
+| `ANTHROPIC_API_KEY` | (empty) | The deployment's own key. Without it Navo runs offline, and visitors can bring their own key. |
+| `NAVO_MODEL` | (routed) | Pins every task to one model; the default chain still backs it up. |
+| `NAVO_MODEL_ASK`, `NAVO_MODEL_NARRATE`, `NAVO_MODEL_DOCUMENTS` | (routed) | Pins one task's model. |
+| `NAVO_BYOK` | (on) | `off` stops visitors connecting their own key. |
+| `NAVO_DB_POOL_MAX` | `10` | Postgres connections per server instance. |
 | `DATABASE_URL` | (empty) | Postgres connection string (e.g. Neon). Empty → embedded PGlite. |
-| `NAVO_DAILY_LLM_CALL_LIMIT` | `400` | Daily cap on Claude calls per deployment. |
-| `NAVO_WORKSPACE_DAILY_LLM_CALL_LIMIT` | `80` | Daily cap per visitor workspace. |
+| `NAVO_DAILY_LLM_CALL_LIMIT` | `400` | Daily cap on calls made with the deployment's own key. |
+| `NAVO_WORKSPACE_DAILY_LLM_CALL_LIMIT` | `80` | Daily cap per visitor workspace, on any key. |
 | `NAVO_LIVE_AI` | (empty) | Set to `off` to force offline mode even with a key. |
 | `NAVO_ASK_TIMEOUT_MS` | `25000` | Ask Navo deadline before the scripted answer is used. |
 
@@ -519,10 +601,13 @@ npm run dev                    # http://localhost:3000
 ```bash
 npm run lint        # ESLint (Next.js + TypeScript rules)
 npm run typecheck   # tsc --noEmit (strict)
-npm test            # unit + integration
+npm test            # unit, integration, property and component tests
 npm run test:coverage
+npm run eval        # AI quality benchmark (offline); add -- --live with a key
 npm run build
 npm run test:e2e    # Playwright, against the production build
+npm run load-test -- --base http://localhost:3000 --visitors 50
+npm run cost-model  # estimated Claude cost per onboarding
 ```
 
 ---
@@ -536,11 +621,11 @@ flowchart LR
   VC --> CDN[Static pages & samples]
   FN -->|DATABASE_URL| NEON[(Neon Postgres)]
   FN -.->|no DATABASE_URL| TMP[(PGlite in /tmp<br/>per instance)]
-  FN -->|ANTHROPIC_API_KEY| CL[[Claude API]]
+  FN -.->|"visitor's own key, per request"| CL[[Claude API]]
 ```
 
 1. Import the GitHub repository into Vercel (framework: Next.js, no build settings to change).
-2. Add environment variables: `ANTHROPIC_API_KEY` (and optionally `NAVO_MODEL`).
+2. No API key is needed: the demo runs offline, and visitors can connect their own key. To run live for everyone, set `ANTHROPIC_API_KEY` (the daily caps protect it).
 3. Recommended: add **Neon Postgres** from Vercel Storage and connect it to the project; it sets `DATABASE_URL`. Migrations in `drizzle/` are applied automatically on first connection (or ahead of time with `DATABASE_URL=… npm run db:migrate`).
 4. Deploy. Production URLs are public; preview URLs may require a Vercel login.
 
@@ -553,42 +638,51 @@ Without `DATABASE_URL` the hosted demo still works: each serverless instance kee
 ```
 src/
 ├── domain/            Pure business rules (no I/O): time, state machine, dependency graph,
-│                      risk, permissions, SLA, scheduling
+│                      risk, cohort what-ifs, permissions, SLA, scheduling
+├── eval/              AI quality benchmark: golden cases, graders, runner
 ├── agent/             The onboarding agent
-│   ├── orchestrator.ts    Event handlers and the reconcile loop (one agent run per trigger)
+│   ├── orchestrator.ts    Routes each event to its handler
+│   ├── handlers.ts        One handler per event type
+│   ├── reconcile.ts       The reconcile loop (one agent run per trigger) and run helpers
 │   ├── playbooks.ts       Pure next-best-action planner
-│   ├── actions.ts         Executes planned actions (remind, escalate, propose loaner, book…)
+│   ├── actions/           Executes planned actions (start a task, remind, escalate, propose loaner, nudges)
 │   ├── snapshot.ts        Loads everything the planner needs, with ETAs from owning systems
 │   ├── runtime.ts         Event loop: process due events, advance the simulated clock
 │   ├── context.ts         Agent run context: runs, activities, state changes, notifications
 │   ├── narration.ts       Template updates in Navo's voice
 │   ├── claude-narrator.ts Claude rewrite with fact checks
-│   └── tools/             Tool registry (validate, permission, timeout, audit) and 22 tools
+│   └── tools/             Registry (validate, permission, timeout, audit) and 22 tools: read, act, schedule, state
 ├── services/
 │   ├── ask/               Ask Navo: Claude tool loop, citation verification, scripted fallback
 │   ├── documents/         Document verification rules, fixture reader, Claude vision reader
-│   ├── llm/               Claude client wrapper and daily call budget
-│   ├── policy-retrieval/  BM25 search over versioned policy sections
+│   ├── llm/               AI gateway: routing, fallback chain, guard, budget, usage, key check
+│   ├── policy-retrieval/  BM25 search over versioned policy sections, and HR policy upload
+│   ├── cohort/            Loads every joiner's graph for the cohort radar
 │   ├── events/            Event queue (idempotent enqueue, cancel, upcoming)
 │   ├── onboarding-state/  Task repository with optimistic locking
 │   ├── workspace/         Seeding, reset, isolated workspaces
-│   ├── view-model/        Loads state and presents it (pure) for every screen
+│   ├── view-model/        Loads state; presenters/ turns it into every screen's data (pure)
 │   ├── employee-actions.ts  What the joiner and HR do in the app
 │   └── demo-director.ts   Chapters, skip-ahead, "Advance time" for presenters
 ├── mock-systems/      Simulated HR, IT, calendar, learning, vendor, facilities
 ├── content/           Synthetic Halden data: people, 27-task template, policies, documents, timeline
 ├── lib/db/            Drizzle schema and database client (Neon or PGlite)
 ├── server/            Session cookie, dependency wiring, response helpers
-├── ui/                React components: phone screens, demo stage, HR console, NavoFace, store
+├── ui/                React components: phone screens, demo stage, HR console (queue, radar,
+│                      policies), AI panel and key dialog, NavoFace, client store
 └── app/               Next.js routes and API route handlers
 tests/
 ├── unit/              Domain rules and services
-├── integration/       Agent, scenarios, reliability, Ask Navo, Claude edges (in-memory Postgres)
-└── e2e/               Playwright journeys and accessibility
+├── integration/       Agent, scenarios, journey sweep, reliability, Ask Navo, gateway (in-memory Postgres)
+├── components/        Screens and panels rendered from real engine state (jsdom)
+└── e2e/               Playwright journeys, features and accessibility
 video/                 The product video: storyboard (story.ts), timeline, browser composer,
                        voice-over script; rendered by scripts/video/ (npm run video)
 docs/
 ├── TECHNICAL_DESIGN.md   This document
+├── ENTERPRISE_ARCHITECTURE.md, SECURITY_PRIVACY.md, COST_MODEL.md, API.md
+├── AI_QUALITY.md, LOAD_TEST.md
+├── adr/                  Architecture decision records
 ├── DEMO_VIDEO_SCRIPT.md  Script for the demo video
 ├── specs/                Product, agent, architecture, data, testing and demo specs
 └── design/               The HTML prototypes the UI implements
@@ -598,7 +692,8 @@ docs/
 
 | File | Why |
 |---|---|
-| `src/agent/orchestrator.ts` | How every trigger becomes an agent run. |
+| `src/agent/reconcile.ts` | How every trigger becomes an agent run. |
+| `src/services/llm/gateway.ts` | The one door to Claude: routing, fallbacks, guard, budget, usage. |
 | `src/agent/playbooks.ts` | The decision logic, as a pure function. |
 | `src/agent/tools/registry.ts` | The guardrail every action passes through. |
 | `src/domain/risk-engine.ts` | The Day-1 risk rules. |
@@ -645,14 +740,17 @@ docs/
 **Limitations (disclosed)**
 
 - No real HRIS, ITSM, calendar or learning integrations; no production identity or access management.
-- One featured joiner is fully simulated; the other 13 joiners are seeded for the HR view.
+- One featured joiner is fully simulated. The other 13 are seeded with realistic task states; the cohort radar runs the real risk engine on them, but the agent doesn't run their stories.
 - Hosted without `DATABASE_URL`, workspaces last only as long as a serverless instance.
-- Prototype-level observability and scale. Figures on the impact screen come from the simulated run, not production measurement.
+- Prototype-level observability. Figures on the impact screen come from the simulated run, not production measurement.
+- No live AI numbers are published: this project spends no money on the API. The benchmark and cost model are ready to run with a key.
+- Under a burst of 50 simultaneous visitors one Node process queues requests (see the [load test](LOAD_TEST.md)); a production deployment scales out.
 
 **Next steps**
 
 1. Connectors for real systems (HRIS, IT service management, calendar and learning platforms) behind the same tool interfaces.
 2. SSO and role-based access for joiners, HR, IT and managers.
-3. Multi-joiner orchestration and HR-level analytics (where onboarding slips, by team and system).
-4. Policy ingestion from real documents with embeddings alongside BM25.
-5. Notification channels (email, chat) with the same fact-checked narration.
+3. Run the agent for every joiner, not just the featured one, and trend the cohort radar over time.
+4. PDF and DOCX policy ingestion, and a hybrid vector index alongside BM25 at larger scale.
+5. Notification channels (email, chat) with the same fact-checked narration, in Hindi and more Indian languages.
+6. SSO, role-based access and the DPDP controls listed in [security and privacy](SECURITY_PRIVACY.md).
