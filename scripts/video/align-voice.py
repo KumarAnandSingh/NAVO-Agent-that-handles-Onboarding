@@ -114,9 +114,10 @@ def main(parts: list[str]) -> None:
         last, first = words[i][-1], words[i + 1][0]
         near = [(s, e) for s, e in gaps if s >= last[0] + 0.05 and e <= first[1] - 0.05 and max(0, s - first[0], last[1] - e) <= 0.35]
         if near:
+            # The pause lies between the two words, so its edges are where one line stops and the next starts.
             s, e = max(near, key=lambda g: g[1] - g[0])
-            last[1] = max(last[0] + 0.05, min(last[1], s))
-            first[0] = min(first[1] - 0.05, max(first[0], e))
+            last[1] = max(last[0] + 0.05, s)
+            first[0] = min(first[1] - 0.05, e)
 
     timings = {
         "audio": wav.name,
