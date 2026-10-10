@@ -82,6 +82,13 @@ npm run video:render -- --voice video/voice/timings.json                    # â†
 
 `video/voice/` is ignored by git, so recordings stay on your machine.
 
+To publish a shorter cut, speed picture and voice up together; `atempo` keeps the voice's pitch. Divide the caption timecodes by the same factor. The 1.5Ã— cut is the one in the repository (`docs/media/navo-demo.mp4`, 2 min 31 s):
+
+```bash
+ffmpeg -i video/out/navo-demo-voiced.mp4 -filter_complex "[0:v]setpts=PTS/1.5[v];[0:a]atempo=1.5[a]" \
+  -map "[v]" -map "[a]" -r 30 -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a aac -b:a 160k video/out/navo-demo-voiced-1.5x.mp4
+```
+
 To mix a single take recorded to the unvoiced cut's timecodes instead, put it under the sound effects with ffmpeg:
 
 ```bash

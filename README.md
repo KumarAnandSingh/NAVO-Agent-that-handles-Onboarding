@@ -10,11 +10,15 @@ Navo is an AI onboarding agent. Instead of handing a new joiner another checklis
 |---|---|
 | **Track** | Business Case #2: Employee Onboarding Companion |
 | **Live demo** | _Link added after deployment_ |
-| **Demo video** | _YouTube link added after recording_ |
+| **Demo video** | [Narrated demo, 2 min 31 s](docs/media/navo-demo.mp4) (YouTube link added after upload) |
 | **Technical design** | [`docs/TECHNICAL_DESIGN.md`](docs/TECHNICAL_DESIGN.md) |
 | **AI** | Claude through one gateway: the right-sized model per task, with fallbacks. Offline by default; [bring your own key](#try-it-with-live-claude) to see it live |
 
 > **Halden is a fictional company.** Every person, document, policy and system in this prototype is synthetic or simulated.
+
+[![Watch the narrated demo (2 min 31 s)](docs/media/navo-demo-poster.jpg)](docs/media/navo-demo.mp4)
+
+<sub>The narrated demo, recorded from the running app: the problem, Navo at work, HR's view, Ask Navo in English and Hindi, policy upload, the cohort radar and the architecture. Select the image to open the video (MP4, 28 MB); captions are in [`navo-demo.srt`](docs/media/navo-demo.srt).</sub>
 
 ![The demo stage: presenter controls, Anand's phone and Navo's live tool calls](docs/images/stage-day1-risk.png)
 

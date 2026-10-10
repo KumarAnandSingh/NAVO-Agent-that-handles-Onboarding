@@ -131,6 +131,7 @@ async function setup(manifest: Manifest, base: string, voice?: VoiceTrack): Prom
   note = h("div", { class: "note", text: manifest.live ? "Recorded from the working prototype, with live Claude and synthetic data" : "Recorded from the working prototype, with synthetic data" });
   subLine = h("div", { class: "sub-line" });
   subs = h("div", { class: "subs" }, subLine);
+  if (window.navoVideo.noSubtitles) subs.style.display = "none";
   bar = h("div", { class: "bar" });
   stage.append(chip, note, subs, h("div", { class: "bar-track" }, bar));
   await document.fonts.ready;
