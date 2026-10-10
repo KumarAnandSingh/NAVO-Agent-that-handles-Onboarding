@@ -34,6 +34,24 @@ jobs:
           path: coverage/
           if-no-files-found: ignore
 
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # What ships must have no high or critical advisories.
+      - name: Production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      # Dev tooling (linters, migration CLI) never ships; report it without failing the build.
+      - name: All dependencies (report only)
+        run: npm audit || true
+
   e2e:
     name: End-to-end (Playwright, offline mode)
     runs-on: ubuntu-latest

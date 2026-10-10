@@ -24,7 +24,7 @@ export async function createMemoryDb(): Promise<Db> {
   const client = new PGlite();
   const db = drizzlePglite(client, { schema });
   await migratePglite(db, { migrationsFolder: MIGRATIONS_FOLDER });
-  return db as unknown as Db;
+  return db;
 }
 
 async function createDb(): Promise<Db> {
@@ -34,12 +34,12 @@ async function createDb(): Promise<Db> {
     const db = drizzleNodePg(pool, { schema });
     // Applied on first connection (a no-op once up to date); `npm run db:migrate` can run it ahead of time.
     await migrateNodePg(db, { migrationsFolder: MIGRATIONS_FOLDER });
-    return db as unknown as Db;
+    return db;
   }
   const client = new PGlite(localDataDir());
   const db = drizzlePglite(client, { schema });
   await migratePglite(db, { migrationsFolder: MIGRATIONS_FOLDER });
-  return db as unknown as Db;
+  return db;
 }
 
 /**

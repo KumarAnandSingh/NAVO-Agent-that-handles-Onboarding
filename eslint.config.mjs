@@ -23,5 +23,7 @@ export default defineConfig([
     // Exported design prototypes kept for reference; not part of the app.
     "docs/**",
     "next-env.d.ts",
+    // Agent tooling (temporary worktrees and settings), not app code.
+    ".claude/**",
   ]),
 ]);

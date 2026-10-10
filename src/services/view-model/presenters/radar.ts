@@ -5,7 +5,7 @@
 import type { CohortReport, JoinerRisk } from "@/domain/cohort";
 import { atIst, formatDay } from "@/domain/time";
 import type { RiskLevel } from "@/domain/types";
-import type { RadarVM, Tone } from "./types";
+import type { RadarVM, Tone } from "../types";
 
 const LEVEL: Record<RiskLevel, { label: string; tone: Tone }> = {
   critical: { label: "Will miss Day 1", tone: "you" },

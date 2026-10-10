@@ -29,3 +29,4 @@ blob-report/
 video/.capture/
 video/out/
 evals/
+.claude/worktrees/
