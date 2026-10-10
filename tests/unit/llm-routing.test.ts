@@ -83,6 +83,24 @@ describe("personal-data guard", () => {
     ]);
   });
 
+  it("leaves empty and non-text tool results untouched", () => {
+    const image = { type: "image", source: { type: "base64", media_type: "image/png", data: "AAAA" } } as const;
+    const { params } = maskRequest({
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "tool_result", tool_use_id: "t1" },
+            { type: "tool_result", tool_use_id: "t2", content: [image, { type: "text", text: "call 9876543210" }] },
+          ],
+        },
+      ],
+    });
+    const [empty, mixed] = params.messages[0]!.content as Anthropic.ToolResultBlockParam[];
+    expect(empty).toEqual({ type: "tool_result", tool_use_id: "t1" });
+    expect(mixed!.content).toEqual([image, { type: "text", text: "call [PHONE_1]" }]);
+  });
+
   it("puts the joiner's own values back into Claude's reply", () => {
     const { vault } = maskRequest({ messages: [{ role: "user", content: "Text me on 9876543210" }] });
     const reply = {

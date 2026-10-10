@@ -56,6 +56,20 @@ describe("AI quality benchmark", () => {
     expect(gradeReading(expected, [])[0]).toMatchObject({ pass: false, detail: "missing" });
   });
 
+  it("reports an empty suite and an unpriced model without dividing by zero", () => {
+    const md = toMarkdown({
+      mode: "live",
+      results: [],
+      usage: {
+        usage: [{ feature: "ask", label: "Ask Navo", model: "custom-model", calls: 1, failed: 0, avgLatencyMs: null, tokensIn: 10, tokensOut: 5, cachedTokens: 0, costUsd: null }],
+        totalCostUsd: 0,
+        masked: 0,
+      },
+    });
+    expect(md).toContain("| ask | 0 | 0 (n/a) | 0 | 0 ms |");
+    expect(md).toContain("- Ask Navo on custom-model: 1 calls, 0 fell back, avg ? ms, $0.0000");
+  });
+
   it("runs through the real gateway with Claude, and reports who wrote each output and what it cost", async () => {
     const claude = fakeClaude([
       (params) => {

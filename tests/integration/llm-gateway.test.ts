@@ -1,4 +1,4 @@
-import { APIConnectionError, APIConnectionTimeoutError, APIError, AuthenticationError, InternalServerError, RateLimitError } from "@anthropic-ai/sdk";
+import { APIConnectionError, APIConnectionTimeoutError, APIError, AuthenticationError, InternalServerError, PermissionDeniedError, RateLimitError } from "@anthropic-ai/sdk";
 import { asc, eq } from "drizzle-orm";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { claudeNarrator } from "@/agent/claude-narrator";
@@ -211,6 +211,14 @@ describe("bring your own key", () => {
       throw APIError.generate(404, undefined, "not found", new Headers());
     });
     expect(none).toEqual({ ok: false, error: expect.stringContaining("(404)") });
+    const forbidden = await checkKey(key, async () => {
+      throw new PermissionDeniedError(403, undefined, "forbidden", new Headers());
+    });
+    expect(forbidden).toEqual({ ok: false, error: "This key isn't allowed to use the Claude API." });
+    const odd = await checkKey(key, async () => {
+      throw new Error("socket hang up");
+    });
+    expect(odd).toEqual({ ok: false, error: "Couldn't check this key. Try again." });
   });
 });
 

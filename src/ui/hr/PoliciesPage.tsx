@@ -157,11 +157,13 @@ export function PoliciesPage({ policies }: { policies: HrVM["policies"] }) {
             <input id={ids.date} className={s.input} type="date" value={effectiveDate} onChange={(e) => edit(setEffectiveDate)(e.target.value)} />
           </label>
         </div>
-        <label className={s.field} htmlFor={ids.text}>
-          Policy text
-          <span className={s.hint}>Paste text or Markdown. Headings become sections, each with a ref Navo can cite.</span>
-          <textarea id={ids.text} className={s.textarea} value={text} onChange={(e) => edit(setText)(e.target.value)} spellCheck={false} />
-        </label>
+        <div className={s.field}>
+          <label htmlFor={ids.text}>Policy text</label>
+          <span id={`${ids.text}-hint`} className={s.hint}>
+            Paste text or Markdown. Headings become sections, each with a ref Navo can cite.
+          </span>
+          <textarea id={ids.text} className={s.textarea} value={text} onChange={(e) => edit(setText)(e.target.value)} spellCheck={false} aria-describedby={`${ids.text}-hint`} />
+        </div>
         <div className={s.actions}>
           <button className={s.secondary} onClick={loadSample} type="button">
             Load a sample policy
