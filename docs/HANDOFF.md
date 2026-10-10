@@ -43,7 +43,7 @@ For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/adr/
 | Code quality: large modules split, no casts through `unknown`, static styles in CSS modules, 8 decision records, dependency audit | Done |
 | Tests: 264 unit, integration, property and component tests; 13 end-to-end on PGlite and Postgres; load test | Done |
 | Docs: technical design, enterprise architecture, security and privacy (DPDP), cost model, API reference, AI quality, load test | Done |
-| Product video (3 min 13 s): policy upload, cohort radar, Hindi and bring-your-own-key scenes added | Done |
+| Product video with voice-over (3 min 43 s, retimed to the narration): policy upload, cohort radar, Hindi and bring-your-own-key scenes | Done |
 | Deploy, make the repository public, upload the video, submit | **Needs the owner** |
 
 ## What's left (needs you)
@@ -55,7 +55,7 @@ For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/adr/
    4. **Don't** add `ANTHROPIC_API_KEY`: the demo runs offline, and visitors can bring their own key.
    5. Redeploy, then open the production URL in a private window.
 2. **Make the repository public** (Settings → General → Change visibility).
-3. **Upload the video** (`video/out/navo-demo.mp4`) to YouTube as Public or Unlisted, with the SRT captions. Add a voice-over if you like (`video/VOICEOVER.md`).
+3. **Upload the video** (`video/out/navo-demo-voiced.mp4`) to YouTube as Public or Unlisted, with its captions (`navo-demo-voiced.srt`). To re-record the voice, see `video/README.md` → Add a voice-over.
 4. Put the hosted link and the video link in the README table, then submit. `docs/SUBMISSION.md` maps every requirement to where it is met.
 
 ## Decisions to keep
