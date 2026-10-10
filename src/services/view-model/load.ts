@@ -20,6 +20,7 @@ import {
 } from "@/lib/db/schema";
 import { upcomingEvents } from "@/services/events/queue";
 import { listPeople } from "@/services/onboarding-state/repository";
+import { cohortRadar } from "@/services/cohort";
 import { listPolicies } from "@/services/policy-retrieval/upload";
 import { requireWorkspace } from "@/services/workspace";
 
@@ -97,6 +98,7 @@ export async function loadState(db: Queryable, workspaceId: string, employeeId =
 
   const upcoming = await upcomingEvents(db, workspaceId, 5);
   const policies = await listPolicies(db, workspaceId, workspace.simNow);
+  const cohort = await cohortRadar(db, workspaceId, workspace.simNow);
 
   return {
     workspace,
@@ -120,6 +122,7 @@ export async function loadState(db: Queryable, workspaceId: string, employeeId =
     pulse: pulse ?? null,
     toolCallCount: toolCallCount?.n ?? 0,
     policies,
+    cohort,
   };
 }
 

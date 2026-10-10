@@ -156,7 +156,7 @@ function ActivitySheet({ vm }: { vm: ViewModel }) {
   );
 }
 
-export const ASK_CHIPS = ["What if HR doesn't respond?", "What should I bring Monday?", "Can I add my parents to insurance?"];
+export const ASK_CHIPS = ["What if HR doesn't respond?", "What should I bring Monday?", "Can I add my parents to insurance?", "अगर HR जवाब न दे तो क्या होगा?"];
 
 function AskSheet() {
   const { sheet, setSheet, messages, ask } = useNavo();

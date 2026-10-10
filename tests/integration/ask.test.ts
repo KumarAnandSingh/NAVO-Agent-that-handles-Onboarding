@@ -58,6 +58,26 @@ describe("Ask Navo offline", () => {
     expect(answer.text).toContain("(§2.1)");
   });
 
+  it("answers a question asked in Hindi in Hindi, with the same facts and citation", async () => {
+    const answer = await askNavo(db, ws, "अगर HR जवाब न दे तो क्या होगा?", { llm: null });
+    expect(answer.text).toBe(
+      "मैंने आज 09:17 बजे Priya Nair को याद दिलाया है। अगर कल 09:17 बजे तक जवाब नहीं आता, तो मैं HR Ops lead को escalate करूँगा (§4.2)। अगर आज 12:00 बजे तक ID नहीं आती, तो मैं आपसे loaner laptop के बारे में पूछूँगा ताकि Day 1 पर असर न पड़े। आपको किसी के पीछे नहीं पड़ना है।",
+    );
+    expect(answer.citations.map((c) => c.ref)).toEqual(["§4.2"]);
+    const leave = await askNavo(db, ws, "मुझे कितनी छुट्टी मिलती है?", { llm: null });
+    expect(leave.text).toMatch(/^Benefits के अनुसार: .*\(§3\.3\)$/);
+    const unknown = await askNavo(db, ws, "एयरपोर्ट शटल कब चलती है?", { llm: null });
+    expect(unknown.text).toContain("यह मुझे वहाँ नहीं मिला");
+    expect(unknown.citations).toEqual([]);
+  });
+
+  it("tells Claude to answer in the language of the question", async () => {
+    const claude = fakeClaude([[text("मैंने Priya Nair को याद दिलाया है।")]]);
+    const answer = await askNavo(db, ws, "अगर HR जवाब न दे तो क्या होगा?", { llm: claude.llm });
+    expect(answer.composedBy).toBe("claude");
+    expect(String(claude.calls[0]!.system)).toContain("Hindi in Devanagari");
+  });
+
   it("says it doesn't know rather than inventing an answer", async () => {
     const answer = await askNavo(db, ws, "What is the airport shuttle schedule?", { llm: null });
     expect(answer.text).toMatch(/I don't see that there/);

@@ -278,6 +278,7 @@ export interface HrVM {
   queue: HrQueueItemVM[];
   joiners: { name: string; role: string; start: string; open: string; status: string; tone: Tone }[];
   featured: { status: string; note: string; tone: Tone; feed: { time: string; phase: string; text: string; tone: Tone }[] };
+  radar: RadarVM;
   policies: {
     items: PolicyItemVM[];
     /** The simulated date, the default effective date for a new policy. */
@@ -285,6 +286,18 @@ export interface HrVM {
     /** Policies in force that HR can publish a newer version of. */
     replaceable: { family: string; title: string; version: string }[];
   };
+}
+
+/** The cohort radar: every joiner's Day-1 risk, under today's facts and each what-if. */
+export interface RadarVM {
+  scenarios: {
+    id: string;
+    label: string;
+    summary: string;
+    levels: { level: string; label: string; count: number; tone: Tone }[];
+    bottlenecks: { team: string; joiners: number; worst: string; tone: Tone }[];
+    joiners: { id: string; name: string; role: string; start: string; level: string; label: string; tone: Tone; driver: string; changed: boolean }[];
+  }[];
 }
 
 export interface PolicyItemVM {

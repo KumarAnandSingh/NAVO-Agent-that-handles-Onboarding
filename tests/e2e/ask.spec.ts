@@ -19,4 +19,8 @@ test("Ask Navo answers from live state and cites the policy it retrieved", async
   await sheet.getByRole("textbox", { name: "Question for Navo" }).fill("What is the airport shuttle schedule?");
   await sheet.getByRole("button", { name: "Ask", exact: true }).click();
   await expect(sheet.getByText(/I don't see that there/)).toBeVisible();
+
+  // The same facts in Hindi.
+  await sheet.getByRole("button", { name: "अगर HR जवाब न दे तो क्या होगा?" }).click();
+  await expect(sheet.getByText(/Priya Nair को याद दिलाया है/)).toBeVisible();
 });

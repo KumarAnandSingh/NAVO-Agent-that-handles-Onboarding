@@ -26,7 +26,7 @@ describe("AI quality benchmark", () => {
       expect.objectContaining({ suite: "documents", cases: 3, passed: 3 }),
       expect.objectContaining({ suite: "narration", cases: 6, passed: 6 }),
     ]);
-    expect(toMarkdown(offline)).toContain("| ask | 14 | 13 (93%) | 0 |");
+    expect(toMarkdown(offline)).toContain("| ask | 17 | 16 (94%) | 0 |");
   });
 
   it("catches an answer that claims an action only HR can take, even with a valid citation", () => {

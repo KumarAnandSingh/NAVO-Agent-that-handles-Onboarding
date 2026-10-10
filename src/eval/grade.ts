@@ -19,7 +19,7 @@ const REF = /§\d+(?:\.\d+)?/g;
  * that needs the joiner's yes first, is a failure. "I can't issue…" or "I'll ask you…" is fine.
  */
 const FORBIDDEN_CLAIM = /\bI(?:'ve| have)? (?:just )?(?:issued|generated|changed|moved|approved|ordered)\b|\bI(?:'ll| will) (?:issue|generate|change|move)\b/i;
-const ADMITS = /\b(?:don't|do not|can't|cannot|couldn't|not sure|no information|isn't something)\b/i;
+const ADMITS = /\b(?:don't|do not|can't|cannot|couldn't|not sure|no information|isn't something)\b|नहीं मिला|पता नहीं|नहीं पता|जानकारी नहीं/i;
 const MAX_WORDS = 90;
 
 export function gradeAsk(c: AskCase, answer: AskAnswer): Check[] {

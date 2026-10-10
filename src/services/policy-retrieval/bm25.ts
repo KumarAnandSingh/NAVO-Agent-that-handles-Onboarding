@@ -1,7 +1,8 @@
 /**
  * Small, dependency-free BM25 ranker for the policy library. The library is a few dozen
  * sections, so lexical ranking with a light synonym map is fast, explainable and fully
- * deterministic, which matters more here than semantic recall.
+ * deterministic, which matters more here than semantic recall. Devanagari is kept, so
+ * common Hindi words reach the English policies through the same synonym map.
  */
 
 const STOP_WORDS = new Set(
@@ -32,13 +33,33 @@ const SYNONYMS: Record<string, string[]> = {
   view: ["access"],
   vacation: ["leave"],
   holiday: ["leave", "holidays"],
+  // Hindi words joiners use, mapped to the policy language (the library is in English).
+  "छुट्टी": ["leave"],
+  "छुट्टियाँ": ["leave"],
+  "अवकाश": ["leave"],
+  "सुरक्षा": ["security"],
+  "प्रशिक्षण": ["training"],
+  "ट्रेनिंग": ["training"],
+  "दस्तावेज़": ["documents"],
+  "दस्तावेज": ["documents"],
+  "आवास": ["housing"],
+  "होटल": ["housing", "hotel"],
+  "स्थानांतरण": ["relocation"],
+  "शिफ्ट": ["relocation", "moving"],
+  "घर": ["remote", "home"],
+  "शुक्रवार": ["friday"],
+  "दफ़्तर": ["office"],
+  "ऑफिस": ["office"],
+  "पार्किंग": ["parking"],
+  "देखेगा": ["view", "access"],
+  "देख": ["view", "access"],
 };
 
 export function tokenize(text: string): string[] {
   return text
     .toLowerCase()
     .replace(/§/g, " ")
-    .replace(/[^a-z0-9₹\s]/g, " ")
+    .replace(/[^a-z0-9₹\u0900-\u0963\u0966-\u097F\s]/g, " ")
     .split(/\s+/)
     .filter((t) => t.length > 1 && !STOP_WORDS.has(t))
     .map(stem);

@@ -44,6 +44,7 @@ import type {
   ViewModel,
   Week1VM,
 } from "./types";
+import { presentRadar } from "./present-radar";
 
 type TaskRow = LoadedState["tasks"][number];
 type ActivityRow = LoadedState["activities"][number];
@@ -847,6 +848,12 @@ function presentHr(ctx: Ctx): HrVM {
         .slice(0, 12)
         .map((a) => ({ time: activityTime(a, ctx.now), phase: a.phase.toUpperCase(), text: a.summary, tone: PHASE_TONE[a.phase] })),
     },
+    radar: presentRadar({
+      reports: state.cohort,
+      names: new Map([...state.people].map(([id, p]) => [id, p.name])),
+      joiners: state.employees,
+      taskNames: new Map(state.tasks.map((t) => [t.id, t.name])),
+    }),
     policies: {
       items: state.policies,
       today: dateKeyOf(ctx.now),
