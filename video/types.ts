@@ -51,6 +51,8 @@ export interface Cue {
   text: string;
   /** Seconds from scene start when the line leaves the screen (default: next line or scene end). */
   until?: number;
+  /** When each word is spoken, [start, end] in seconds from scene start: set from a recorded voice-over. */
+  words?: [number, number][];
 }
 
 /** A camera target: a box name (resolved on the shot on screen) or "full". */

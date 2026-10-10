@@ -6,7 +6,7 @@ A pitch-and-demo video built from the **real, running app**, with no voice. It e
 - word-by-word highlighted subtitles,
 - camera moves, clicks, highlights and sound effects.
 
-A voice-over can be added later, on top, without re-editing.
+A recorded voice-over can be added later: the video retimes itself to it (see [Add a voice-over](#add-a-voice-over)).
 
 | Output (in `video/out/`) | What it is |
 |---|---|
@@ -61,18 +61,34 @@ The current capture runs in offline mode (Navo's deterministic fallbacks). To sh
 
 Ask Navo's answer will then read "Answered by Claude with Navo's tools", and the corner note will say "Claude live".
 
-## Add a voice-over later
+## Add a voice-over
 
-1. Record the lines in [`VOICEOVER.md`](VOICEOVER.md) at their timecodes, as one WAV file the length of the video. Each line starts when its subtitle appears, and the highlighted word shows the pace.
-2. Mix your voice with the sound effects onto the silent picture:
+Record the lines of [`VOICEOVER.md`](VOICEOVER.md) in order, at your own pace, in as many files as you like (a line can even span two files). The video is then **retimed to your voice**: each scene stretches or shrinks so its subtitles, highlights, clicks and camera moves land on the words you say.
+
+```bash
+python3 -m venv .venv-voice && .venv-voice/bin/pip install pocketsphinx    # once
+.venv-voice/bin/python scripts/video/align-voice.py part1.mp3 part2.mp3 …   # → video/voice/timings.json
+npm run video:render -- --voice video/voice/timings.json                    # → video/out/navo-demo-voiced.mp4
+```
+
+- **Align** (`scripts/video/align-voice.py`). This joins the files into `video/voice/voice.wav`, then aligns every word to the script offline with PocketSphinx. It snaps each line's edges to the pauses around it. If the aligner doesn't know a name, it says which one; add its pronunciation to `PRONOUNCE` in the script.
+- **Render with the voice** (`video/voice.ts`). Each line starts where you say it, and each subtitle word highlights as you speak it. Events in between move in proportion. The voice is levelled to -16 LUFS for streaming, and the sound effects sit under it.
+
+| Voiced output (in `video/out/`) | What it is |
+|---|---|
+| `navo-demo-voiced.mp4` | The video retimed to the voice-over, with voice and sound effects |
+| `navo-demo-voiced.srt`, `navo-demo-voiced.vtt` | Subtitles timed to the voice |
+| `navo-demo-voiced-voice.wav` | The voice laid out on the video's timeline, on its own |
+
+`video/voice/` is ignored by git, so recordings stay on your machine.
+
+To mix a single take recorded to the unvoiced cut's timecodes instead, put it under the sound effects with ffmpeg:
 
 ```bash
 ffmpeg -i video/out/navo-demo-silent.mp4 -i voice.wav -i video/out/navo-demo-sfx.wav \
   -filter_complex "[1:a]volume=1.0[v];[2:a]volume=0.45[s];[v][s]amix=inputs=2:duration=first:normalize=0[a]" \
   -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 192k video/out/navo-demo-voiced.mp4
 ```
-
-Or drop `navo-demo-silent.mp4`, `navo-demo-sfx.wav` and your voice track into any video editor on separate tracks. To time the voice differently, change the cue times in `video/story.ts` and render again. The subtitles, sound and voice-over script all move together.
 
 ## Story (about 3¼ minutes)
 
