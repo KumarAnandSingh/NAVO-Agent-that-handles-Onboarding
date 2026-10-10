@@ -67,10 +67,16 @@ export async function askNavo(db: Db, workspaceId: string, question: string, opt
   } catch (error) {
     const reason = error instanceof AskFailure ? error.reason : error instanceof Error ? error.message : String(error);
     if (reason !== "offline") console.warn(`Ask Navo fell back: ${reason}`);
-    answer = { ...toAnswer(await fallbackAnswer(ctx, q), "fallback"), fallbackReason: reason };
+    answer = { ...toAnswer(await fallbackAnswer(ctx, q).catch(unavailable), "fallback"), fallbackReason: reason };
   }
   await finishRun(ctx, answer.composedBy === "claude" ? "Answered with Claude" : "Answered from Navo's rules");
   return answer;
+}
+
+/** Last resort when even the rule-based answer can't read the state (for example under heavy load). */
+function unavailable(error: unknown): DraftAnswer {
+  console.warn(`Ask Navo couldn't check the state: ${error instanceof Error ? error.message : String(error)}`);
+  return { text: `I couldn't check your onboarding just now. Try again in a moment, or ask ${COMPANY.name} HR.`, checked: [], sections: [], showActivity: false };
 }
 
 function toAnswer(draft: DraftAnswer, composedBy: AskAnswer["composedBy"]): AskAnswer {

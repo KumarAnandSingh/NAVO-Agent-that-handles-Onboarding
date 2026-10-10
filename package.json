@@ -25,7 +25,8 @@
     "video:render": "tsx scripts/video/render.ts",
     "video": "npm run video:capture && npm run video:render",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "load-test": "tsx scripts/load-test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.132.1",

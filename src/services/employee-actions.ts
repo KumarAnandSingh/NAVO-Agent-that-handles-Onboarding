@@ -56,7 +56,7 @@ async function act(
     }
     return workspace.simNow;
   });
-  await processDue(db, workspaceId, now, deps);
+  if (now) await processDue(db, workspaceId, now, deps);
 }
 
 async function completeEmployeeTask(tx: Queryable, workspaceId: string, employeeId: string, key: Parameters<typeof buildTaskId>[1], at: Date, note: string) {
@@ -244,6 +244,10 @@ export async function hrGenerateEmployeeId(db: Db, workspaceId: string, employee
   const now = await db.transaction(async (tx) => {
     await lockWorkspace(tx, workspaceId);
     const workspace = await requireWorkspace(tx, workspaceId);
+    const task = await getTask(tx, workspaceId, buildTaskId(employeeId, "employee_id"));
+    // HR can only issue the ID once its prerequisites are met; issuing it twice changes nothing.
+    if (task.status === "blocked") throw new ActionError("The Employee ID can't be issued until the joiner's forms are in.");
+    if (task.status === "completed") return null;
     await enqueueEvent(tx, workspaceId, {
       type: "hr.employee_id_issued",
       source: "hr",
@@ -254,5 +258,5 @@ export async function hrGenerateEmployeeId(db: Db, workspaceId: string, employee
     });
     return workspace.simNow;
   });
-  await processDue(db, workspaceId, now, deps);
+  if (now) await processDue(db, workspaceId, now, deps);
 }

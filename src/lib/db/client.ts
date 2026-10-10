@@ -30,7 +30,8 @@ export async function createMemoryDb(): Promise<Db> {
 async function createDb(): Promise<Db> {
   const url = process.env.DATABASE_URL;
   if (url) {
-    const pool = new Pool({ connectionString: url, max: 5 });
+    // Enough connections for a burst of visitors; Neon's pooled endpoint takes many more.
+    const pool = new Pool({ connectionString: url, max: Number(process.env.NAVO_DB_POOL_MAX) || 10 });
     const db = drizzleNodePg(pool, { schema });
     // Applied on first connection (a no-op once up to date); `npm run db:migrate` can run it ahead of time.
     await migrateNodePg(db, { migrationsFolder: MIGRATIONS_FOLDER });
