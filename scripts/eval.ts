@@ -19,7 +19,7 @@ async function main() {
   const llm = live ? gateway(serverAccess()) : null;
   if (live && !llm) throw new Error("A live run needs ANTHROPIC_API_KEY (and NAVO_LIVE_AI not set to off).");
   const report = await runEval(await createMemoryDb(), llm);
-  console.log(toMarkdown(report));
+  process.stdout.write(`${toMarkdown(report)}\n`);
   if (process.argv.includes("--json")) {
     const dir = path.join(process.cwd(), "evals");
     await mkdir(dir, { recursive: true });

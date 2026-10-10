@@ -278,6 +278,25 @@ export interface HrVM {
   queue: HrQueueItemVM[];
   joiners: { name: string; role: string; start: string; open: string; status: string; tone: Tone }[];
   featured: { status: string; note: string; tone: Tone; feed: { time: string; phase: string; text: string; tone: Tone }[] };
+  policies: {
+    items: PolicyItemVM[];
+    /** The simulated date, the default effective date for a new policy. */
+    today: string;
+    /** Policies in force that HR can publish a newer version of. */
+    replaceable: { family: string; title: string; version: string }[];
+  };
+}
+
+export interface PolicyItemVM {
+  documentId: string;
+  family: string;
+  title: string;
+  version: string;
+  effectiveDate: string;
+  refs: string;
+  sections: number;
+  source: "library" | "hr";
+  status: "in force" | "scheduled" | "superseded";
 }
 
 export type Chapter = "launch" | "documents" | "pre_joining" | "ready" | "day1" | "week1";

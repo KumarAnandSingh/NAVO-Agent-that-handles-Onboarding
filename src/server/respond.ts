@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { ActionError } from "@/services/employee-actions";
 import { ConflictError, NotFoundError } from "@/services/onboarding-state/repository";
+import { PolicyUploadError } from "@/services/policy-retrieval/upload";
 import { loadState } from "@/services/view-model/load";
 import { present } from "@/services/view-model/present";
 import type { ViewModel } from "@/services/view-model/types";
@@ -17,7 +18,8 @@ export async function buildViewModel(db: Db, workspaceId: string, access: AiAcce
 
 /** Map domain errors to HTTP responses with a message safe to show in the UI. */
 export function errorResponse(error: unknown): NextResponse {
-  if (error instanceof ZodError) return NextResponse.json({ error: "Invalid request", issues: error.issues }, { status: 400 });
+  if (error instanceof ZodError) return NextResponse.json({ error: error.issues[0]?.message ?? "Invalid request", issues: error.issues }, { status: 400 });
+  if (error instanceof PolicyUploadError) return NextResponse.json({ error: error.message }, { status: 400 });
   if (error instanceof ActionError) return NextResponse.json({ error: error.message }, { status: 400 });
   if (error instanceof NotFoundError) return NextResponse.json({ error: error.message }, { status: 404 });
   if (error instanceof ConflictError) return NextResponse.json({ error: "Someone else changed this. Refresh and try again." }, { status: 409 });

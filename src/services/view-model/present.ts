@@ -847,6 +847,11 @@ function presentHr(ctx: Ctx): HrVM {
         .slice(0, 12)
         .map((a) => ({ time: activityTime(a, ctx.now), phase: a.phase.toUpperCase(), text: a.summary, tone: PHASE_TONE[a.phase] })),
     },
+    policies: {
+      items: state.policies,
+      today: dateKeyOf(ctx.now),
+      replaceable: state.policies.filter((p) => p.status === "in force").map((p) => ({ family: p.family, title: p.title, version: p.version })),
+    },
   };
 }
 

@@ -98,7 +98,7 @@ export const searchPolicyLibrary = defineTool({
   input: z.object({ query: z.string().min(2), limit: z.number().int().min(1).max(5).optional() }),
   summarizeArgs: ({ query }) => formatArgs({ query }),
   async run(ctx, { query, limit }) {
-    const hits = await searchPolicies(ctx.db, query, { asOf: ctx.clock, limit: limit ?? 3 });
+    const hits = await searchPolicies(ctx.db, query, { asOf: ctx.clock, workspaceId: ctx.workspace.id, limit: limit ?? 3 });
     return {
       summary: hits.length ? hits.map((h) => `${h.ref} ${h.title}`).join(" · ") : "no relevant policy",
       data: hits,

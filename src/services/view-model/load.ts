@@ -20,6 +20,7 @@ import {
 } from "@/lib/db/schema";
 import { upcomingEvents } from "@/services/events/queue";
 import { listPeople } from "@/services/onboarding-state/repository";
+import { listPolicies } from "@/services/policy-retrieval/upload";
 import { requireWorkspace } from "@/services/workspace";
 
 const RECENT_RUNS = 4;
@@ -95,6 +96,7 @@ export async function loadState(db: Queryable, workspaceId: string, employeeId =
   const [toolCallCount] = await db.select({ n: count() }).from(toolCalls).where(eq(toolCalls.workspaceId, workspaceId));
 
   const upcoming = await upcomingEvents(db, workspaceId, 5);
+  const policies = await listPolicies(db, workspaceId, workspace.simNow);
 
   return {
     workspace,
@@ -117,6 +119,7 @@ export async function loadState(db: Queryable, workspaceId: string, employeeId =
     upcoming,
     pulse: pulse ?? null,
     toolCallCount: toolCallCount?.n ?? 0,
+    policies,
   };
 }
 
