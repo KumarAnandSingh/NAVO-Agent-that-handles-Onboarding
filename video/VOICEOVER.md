@@ -4,58 +4,51 @@ Generated from `video/story.ts` by `npm run video:render`. Each line is the on-s
 is timed for a natural reading pace (about 2.6 words a second). Read each line as its words
 highlight; the sound effects are on a separate track (`video/out/navo-demo-sfx.wav`).
 
-Length: 04:40.8
+Length: 03:13.2
 
 | Start | End | Chapter | Line |
 |---|---|---|---|
-| 00:00.4 | 00:03.4 | Day 1 | It's Day 1 at a new job. |
-| 00:03.5 | 00:08.6 | Day 1 | The laptop isn't ready. Email doesn't work. The ID card isn't printed. |
-| 00:08.7 | 00:12.4 | Day 1 | Nobody knows why. Least of all, the new joiner. |
-| 00:13.0 | 00:18.8 | The problem | Onboarding runs across HR, IT, Facilities, a background-check vendor and the manager. |
-| 00:18.9 | 00:24.0 | The problem | Each team tracks its own piece. Nobody owns the whole chain. |
-| 00:24.5 | 00:30.7 | The problem | So one late item upstream quietly breaks everything downstream. |
-| 00:30.8 | 00:34.6 | The problem | And the joiner finds out last: on Day 1. |
-| 00:35.2 | 00:39.9 | The solution | Meet Navo: an AI agent that owns onboarding, end to end. |
-| 00:40.0 | 00:47.1 | The solution | It tracks every dependency, acts before Day 1 breaks, asks before anything sensitive, and explains itself. |
-| 00:47.2 | 00:49.8 | The solution | Here's the real product, running. |
-| 00:50.3 | 00:55.0 | Demo · Meet the people | Anand joins Halden as a Product Manager on Monday, 19 October. |
-| 00:55.1 | 00:59.6 | Demo · Meet the people | Priya runs onboarding in HR. Navo works for both of them. |
-| 01:00.1 | 01:04.9 | Demo · First launch | Twelve days before Day 1, Anand opens Navo for the first time. |
-| 01:05.0 | 01:11.2 | Demo · First launch | Navo sets its rules up front: what it does alone, and what it always asks first. |
-| 01:11.7 | 01:17.1 | Demo · Documents | Navo has already read his documents. Only one is missing: an address proof. |
-| 01:17.2 | 01:22.6 | Demo · Documents | He uploads a utility bill. Navo reads it and matches it against his ID. |
-| 01:22.7 | 01:29.7 | Demo · Documents | One date on his relieving letter is unreadable, so Navo asks about that one field only. |
-| 01:29.8 | 01:33.6 | Demo · Documents | One tap, and every document is verified. |
-| 01:34.1 | 01:40.0 | Demo · Forms | Forms arrive pre-filled from his documents. Only the emergency contact needs him. |
-| 01:40.1 | 01:46.0 | Demo · Forms | He submits. Navo sends everything to HR and books his Day 1 essentials. |
-| 01:46.5 | 01:51.4 | Demo · Pre-joining | Eight days later. Four days before Day 1. |
-| 01:51.9 | 01:58.0 | Demo · Navo at work | Navo's daily check wakes up. On the right: every tool it calls, live. |
-| 01:58.1 | 02:03.1 | Demo · Navo at work | It finds the Employee ID two days late, and traces what depends on it. |
-| 02:03.2 | 02:09.1 | Demo · Navo at work | The laptop needs the ID plus two working days. Risk: high. Zero days of slack. |
-| 02:09.2 | 02:13.6 | Demo · Navo at work | It checks its permissions, then reminds HR on its own. |
-| 02:13.7 | 02:18.2 | Demo · Navo at work | Anand gets one calm update. He doesn't have to chase anyone. |
-| 02:18.3 | 02:23.8 | Demo · Navo at work | And every action comes with its reason, and the policy behind it. |
-| 02:24.3 | 02:29.6 | Demo · HR's view | Meanwhile, Priya in HR sees only the exceptions, not fourteen checklists. |
-| 02:29.7 | 02:34.4 | Demo · HR's view | Navo has already reminded her, and says exactly what happens next. |
-| 02:34.5 | 02:41.1 | Demo · HR's view | She issues the ID. Within a minute, Navo raises the laptop, email and ID-card requests. |
-| 02:41.2 | 02:45.6 | Demo · HR's view | Back on Anand's phone: the blocker is cleared. |
-| 02:46.1 | 02:50.4 | Demo · If HR stays silent | But what if HR never replies? |
-| 02:50.9 | 02:56.5 | Demo · Asks before acting | At the last safe moment, Navo has a fallback: a loaner laptop for Day 1. |
-| 02:56.6 | 03:01.3 | Demo · Asks before acting | A loaner is an asset change, so Navo asks Anand first. |
-| 03:01.4 | 03:07.2 | Demo · Asks before acting | Approved. Day 1 is covered, and HR Ops is escalated after 24 hours. |
-| 03:07.7 | 03:13.5 | Demo · Ask Navo | Anand can ask anything. Navo answers from his live state and Halden's policies. |
-| 03:13.6 | 03:19.5 | Demo · Ask Navo | It cites the exact policy section, and only sections it actually retrieved. |
-| 03:19.6 | 03:23.6 | Demo · Ask Navo | If it can't find it, it says so. |
-| 03:24.0 | 03:30.0 | Demo · Day 1 to Day 30 | Friday: everything is ready. One pickup for ID card, laptop and kit. |
-| 03:30.1 | 03:36.6 | Demo · Day 1 to Day 30 | Day 1 runs to plan. Anand confirms what he collected, and Navo closes every request. |
-| 03:36.7 | 03:40.6 | Demo · Day 1 to Day 30 | Week 1: a health-cover deadline surfaces just in time. |
-| 03:40.7 | 03:44.4 | Demo · Day 1 to Day 30 | Day 30: his check-in is booked and prepared. |
-| 03:44.9 | 03:50.3 | Impact | In his first month, Navo and the teams it coordinated closed 20 of 26 tasks. |
-| 03:50.4 | 03:56.0 | Impact | Only 6 things needed Anand. All 148 tool calls are logged with a reason. |
-| 03:56.5 | 04:02.0 | How it works | Under the hood: Claude understands, and code decides. |
-| 04:02.1 | 04:06.9 | How it works | Dates, dependencies, risk and permissions are plain, tested rules. |
-| 04:07.0 | 04:12.8 | How it works | Every action goes through one audited tool registry, and every AI answer is verified. |
-| 04:13.3 | 04:22.0 | Built to be trusted | 142 automated tests run on every push. And it keeps working even when the AI is offline. |
-| 04:22.5 | 04:27.9 | What's next | Next: connect real HR, IT and calendar systems behind the same tools. |
-| 04:28.0 | 04:33.0 | What's next | So every new joiner walks in on Day 1, ready. |
-| 04:33.8 | 04:40.6 | Navo | Navo. AI that handles onboarding. |
+| 00:00.2 | 00:02.3 | Day 1 | It's Day 1 at a new job. |
+| 00:02.4 | 00:07.7 | Day 1 | The laptop isn't ready. Email doesn't work. The ID card isn't printed. |
+| 00:07.8 | 00:11.0 | Day 1 | Nobody knows why, not even the joiner. |
+| 00:11.5 | 00:15.5 | The problem | Five teams run onboarding. Nobody owns the whole chain. |
+| 00:15.6 | 00:19.3 | The problem | So one late item quietly breaks everything after it. |
+| 00:19.4 | 00:22.6 | The problem | The joiner finds out last: on Day 1. |
+| 00:23.2 | 00:27.3 | The solution | Meet Navo: an AI agent that owns onboarding end to end. |
+| 00:27.4 | 00:33.4 | The solution | It tracks every dependency, acts before Day 1 breaks, and asks before anything sensitive. |
+| 00:33.9 | 00:39.3 | Demo · Documents | Anand joins Halden on Monday. Navo has read his documents; one is missing. |
+| 00:39.4 | 00:44.0 | Demo · Documents | He uploads a bill; Navo reads it and checks it against his ID. |
+| 00:44.1 | 00:48.4 | Demo · Documents | One unreadable date? It asks about that field only. |
+| 00:48.9 | 00:54.5 | Demo · Navo at work | Four days before Day 1, Navo's daily check runs. Every tool call shows live. |
+| 00:54.6 | 00:59.1 | Demo · Navo at work | The Employee ID is two days late. The laptop depends on it. |
+| 00:59.2 | 01:02.1 | Demo · Navo at work | Risk: high. Zero days of slack. |
+| 01:02.2 | 01:06.1 | Demo · Navo at work | It checks its permissions, then reminds HR on its own. |
+| 01:06.2 | 01:09.7 | Demo · Navo at work | Anand gets one calm update. He chases no one. |
+| 01:09.8 | 01:13.0 | Demo · Navo at work | And every action shows its reason and policy. |
+| 01:13.5 | 01:18.1 | Demo · HR's view | Priya in HR sees only exceptions, and what Navo already did. |
+| 01:18.2 | 01:22.9 | Demo · HR's view | She issues the ID. Within a minute, Navo raises IT requests. |
+| 01:23.0 | 01:26.2 | Demo · HR's view | On Anand's phone, the blocker is cleared. |
+| 01:26.7 | 01:31.9 | Demo · Asks before acting | If HR never replies, Navo offers a loaner laptop at the last safe moment. |
+| 01:32.0 | 01:35.1 | Demo · Asks before acting | That's an asset change, so Anand decides. |
+| 01:35.2 | 01:39.2 | Demo · Asks before acting | Approved. Day 1 is covered, and HR Ops is escalated. |
+| 01:39.7 | 01:45.1 | Demo · Ask Navo | Anand can ask anything. Navo answers from his live state and Halden's policies. |
+| 01:45.2 | 01:48.3 | Demo · Ask Navo | It cites only the sections it retrieved. |
+| 01:48.4 | 01:52.0 | Demo · Ask Navo | Ask in Hindi, and Navo answers in Hindi. |
+| 01:52.5 | 01:57.3 | Demo · HR adds a policy | HR adds a policy, and Navo splits it into sections it can cite. |
+| 01:57.4 | 02:02.5 | Demo · HR adds a policy | Once published, Ask Navo answers from it at once, citing the section. |
+| 02:02.6 | 02:05.0 | Demo · HR adds a policy | No retraining. No deploy. |
+| 02:05.5 | 02:10.3 | Demo · Every joiner | Priya also sees every joiner's Day 1, from the same rules Navo uses. |
+| 02:10.4 | 02:13.3 | Demo · Every joiner | What if IT takes a week longer? |
+| 02:13.4 | 02:18.4 | Demo · Every joiner | 3 joiners at risk of a broken Day 1; IT drives all of them. |
+| 02:18.8 | 02:23.5 | Demo · Day 1 to Day 30 | Friday: everything's ready in one pickup. Day 1 runs to plan. |
+| 02:23.6 | 02:27.8 | Demo · Day 1 to Day 30 | Week 1 and Day 30 arrive with what he needs, on time. |
+| 02:28.3 | 02:32.9 | Impact | 20 of 26 tasks closed in his first month. Only 6 needed Anand. |
+| 02:33.0 | 02:36.2 | Impact | Every one of its 148 tool calls is logged. |
+| 02:36.7 | 02:42.7 | How it works | Under the hood: Claude understands, and code decides: dates, risk and permissions. |
+| 02:42.8 | 02:47.8 | How it works | Each task gets the right-sized Claude model, and personal data is masked. |
+| 02:48.3 | 02:52.0 | Try it live | The public demo runs offline, so it's free to try. |
+| 02:52.1 | 02:56.8 | Try it live | Bring your own Claude key to watch it live. Navo never stores it. |
+| 02:57.3 | 03:02.2 | Built to be trusted | 264 tests, a load test and an AI benchmark run on every push. |
+| 03:02.3 | 03:05.2 | Built to be trusted | About seven cents of Claude per joiner. |
+| 03:06.0 | 03:10.3 | Navo | Next: real HR and IT systems, behind the same tools. |
+| 03:10.4 | 03:13.0 | Navo | Navo. AI that handles onboarding. |
