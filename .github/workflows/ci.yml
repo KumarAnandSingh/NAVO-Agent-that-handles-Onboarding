@@ -23,6 +23,8 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:coverage
+      - name: AI quality benchmark (offline)
+        run: npm run eval
       - run: npm run build
       - name: Upload coverage report
         if: always()

@@ -1,0 +1,39 @@
+name: AI quality (live Claude)
+
+# Runs the benchmark against real Claude every night, only when the repository has an
+# ANTHROPIC_API_KEY secret. Without the secret the job is skipped and costs nothing.
+on:
+  schedule:
+    - cron: "17 21 * * *" # 02:47 IST
+  workflow_dispatch:
+
+jobs:
+  live:
+    name: Benchmark with live Claude
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - name: Skip without a key
+        if: env.ANTHROPIC_API_KEY == ''
+        run: echo "No ANTHROPIC_API_KEY secret; skipping the live benchmark."
+      - uses: actions/checkout@v4
+        if: env.ANTHROPIC_API_KEY != ''
+      - uses: actions/setup-node@v4
+        if: env.ANTHROPIC_API_KEY != ''
+        with:
+          node-version: 22
+          cache: npm
+      - if: env.ANTHROPIC_API_KEY != ''
+        run: npm ci
+      - name: Run the benchmark
+        if: env.ANTHROPIC_API_KEY != ''
+        run: npm run eval -- --live --json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Upload the report
+        if: always() && env.ANTHROPIC_API_KEY != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-quality-live
+          path: evals/live.json
+          if-no-files-found: ignore

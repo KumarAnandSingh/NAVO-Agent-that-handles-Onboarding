@@ -79,7 +79,7 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
       const start = induction ? ` Induction is ${formatDayClock(induction.startsAt)}, ${induction.location}.` : "";
       const collect = pickup
         ? ` Your ID card, laptop and kit are waiting at ${pickup.location}, ${formatDayClock(pickup.startsAt)}, all in one trip${cite("§6.2")}.`
-        : ` I'll book one pickup slot for your ID card, laptop and kit once they're ready${cite("§6.2")}.`;
+        : ` Your ID card, laptop and kit are collected together at ${COMPANY.pickupSite}, and I'll book one pickup slot once they're ready${cite("§6.2")}.`;
       text = `Bring your PAN card and one photo ID for building access${cite("§6.1")}.${start}${collect}`;
       break;
     }

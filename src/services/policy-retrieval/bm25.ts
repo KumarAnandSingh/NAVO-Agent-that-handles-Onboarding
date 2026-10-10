@@ -28,6 +28,8 @@ const SYNONYMS: Record<string, string[]> = {
   loaner: ["loaner"],
   documents: ["document", "documents"],
   privacy: ["documents", "access", "encrypted"],
+  see: ["view", "access"],
+  view: ["access"],
   vacation: ["leave"],
   holiday: ["leave", "holidays"],
 };
