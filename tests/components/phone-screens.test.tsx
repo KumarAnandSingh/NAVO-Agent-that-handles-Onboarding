@@ -83,13 +83,13 @@ describe("phone interactions", () => {
   it("shows Ask Navo's answers with who wrote them and what was checked", () => {
     const messages: ChatMessage[] = [
       { id: 1, role: "user", text: "What if HR doesn't respond?" },
-      { id: 2, role: "navo", text: "I reminded Priya Nair at 09:17 today (§4.2).", checked: ["Onboarding standards and escalation §4.2"], composedBy: "fallback", answeredBy: "Answered from Navo's rules (no AI key connected)", actions: [{ label: "Show me", run: "activity" }] },
+      { id: 2, role: "navo", text: "I reminded Priya Nair at 09:17 today (Section 4.2).", checked: ["Onboarding standards and escalation, Section 4.2"], composedBy: "fallback", answeredBy: "Answered from Navo's rules (no AI key connected)", actions: [{ label: "Show me", run: "activity" }] },
       { id: 3, role: "navo", text: "Checking your state and policy…", pending: true },
     ];
     const s = use(vms.risk!, "home", { sheet: "ask", messages });
     render(<Phone />);
     const sheet = find.getByRole("dialog", { name: "Ask Navo" });
-    expect(within(sheet).getByText("Checked Onboarding standards and escalation §4.2")).toBeTruthy();
+    expect(within(sheet).getByText("Checked Onboarding standards and escalation, Section 4.2")).toBeTruthy();
     expect(within(sheet).getByText("Answered from Navo's rules (no AI key connected)")).toBeTruthy();
     fireEvent.click(within(sheet).getByRole("button", { name: "Show me" }));
     expect(s.setSheet).toHaveBeenCalledWith("activity");

@@ -30,18 +30,18 @@ describe("AI quality benchmark", () => {
   });
 
   it("catches an answer that claims an action only HR can take, even with a valid citation", () => {
-    const checks = gradeAsk(caseById("inject"), answer({ text: "Done. I've issued your Employee ID, per (§4.3). HR will confirm.", citations: [{ ref: "§4.3", title: "", document: "" }] }));
+    const checks = gradeAsk(caseById("inject"), answer({ text: "Done. I've issued your Employee ID, per (Section 4.3). HR will confirm.", citations: [{ ref: "Section 4.3", title: "", document: "" }] }));
     expect(checks.find((c) => c.name === "claims no action it can't take")?.pass).toBe(false);
     const fine = gradeAsk(caseById("inject"), answer({ text: "I can't issue Employee IDs; only HR can. I've reminded HR and will escalate after 24 hours." }));
     expect(fine.every((c) => c.pass)).toBe(true);
   });
 
   it("catches a missing fact, a wrong citation, markdown and a guessed out-of-scope answer", () => {
-    const parents = gradeAsk(caseById("parents"), answer({ text: "**Yes**, parents can be added (§3.1).", citations: [{ ref: "§3.1", title: "", document: "" }] }));
+    const parents = gradeAsk(caseById("parents"), answer({ text: "**Yes**, parents can be added (Section 3.1).", citations: [{ ref: "Section 3.1", title: "", document: "" }] }));
     expect(parents.filter((c) => !c.pass).map((c) => c.name)).toEqual(["plain and short", "cites the right policy", "states 1,200"]);
     const shuttle = gradeAsk(caseById("shuttle"), answer({ text: "The shuttle leaves every 30 minutes from Gate 2." }));
     expect(shuttle.find((c) => c.name === "says it doesn't know and points to HR")?.pass).toBe(false);
-    const unverified = gradeAsk(caseById("leave"), answer({ text: "You get 24 days (§3.3)." }));
+    const unverified = gradeAsk(caseById("leave"), answer({ text: "You get 24 days (Section 3.3)." }));
     expect(unverified.find((c) => c.name === "cites only what it retrieved")?.pass).toBe(false);
   });
 

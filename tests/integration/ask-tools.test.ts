@@ -64,7 +64,7 @@ describe("Ask Navo's read-only tools", () => {
     expect(risk.content).toContain("driver: laptop (high)");
     expect(risk.content).toMatch(/last safe start: Thu 15 Oct/);
     const policy = await run(ctx, "search_policies", { query: "escalation reminder 24 hours" });
-    expect(policy.sections?.map((s) => s.ref)).toContain("§4.2");
+    expect(policy.sections?.map((s) => s.ref)).toContain("Section 4.2");
   });
 
   it("reads the booked calendar once the pickup is arranged", async () => {

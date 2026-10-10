@@ -95,7 +95,7 @@ What HR does in the console.
     "documentId": "hr-1a2b3c4d~ws_…",
     "version": "1.0",
     "effectiveDate": "2026-10-07",
-    "sections": [{ "ref": "§9.1", "title": "Who is eligible", "body": "…" }]
+    "sections": [{ "ref": "Section 9.1", "title": "Who is eligible", "body": "…" }]
   },
   "vm": { … }
 }
@@ -112,9 +112,9 @@ Ask Navo a question, in English or Hindi.
 ```json
 {
   "answer": {
-    "text": "I reminded Priya Nair at 09:17 today. If there's no reply by tomorrow at 09:17, I escalate to the HR Ops lead (§4.2). …",
-    "checked": ["Onboarding standards and escalation §4.2", "Navo's follow-ups", "Day 1 risk"],
-    "citations": [{ "ref": "§4.2", "title": "Escalation", "document": "Onboarding standards and escalation" }],
+    "text": "I reminded Priya Nair at 09:17 today. If there's no reply by tomorrow at 09:17, I escalate to the HR Ops lead (Section 4.2). …",
+    "checked": ["Onboarding standards and escalation Section 4.2", "Navo's follow-ups", "Day 1 risk"],
+    "citations": [{ "ref": "Section 4.2", "title": "Escalation", "document": "Onboarding standards and escalation" }],
     "composedBy": "fallback",
     "fallbackReason": "offline",
     "showActivity": true

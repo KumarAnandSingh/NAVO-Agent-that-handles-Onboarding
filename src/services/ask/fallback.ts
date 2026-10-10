@@ -56,7 +56,7 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
     for (const hit of result.data) if (!sections.some((s) => s.ref === hit.ref)) sections.push(hit);
     return result.data;
   };
-  /** " (§4.2)" when that section was retrieved, else nothing: never cite what wasn't read. */
+  /** " (Section 4.2)" when that section was retrieved, else nothing: never cite what wasn't read. */
   const cite = (ref: string) => (sections.some((s) => s.ref === ref) ? ` (${ref})` : "");
   const when = (date: Date) => (hi ? hindiTime(date, ctx.clock) : spokenTime(date, ctx.clock));
   const end = hi ? "।" : ".";
@@ -80,8 +80,8 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
       if (escalation && escalation.status !== "resolved") {
         const lead = nameOf(escalation.toPersonId);
         text = hi
-          ? `HR ने 24 घंटे में जवाब नहीं दिया, इसलिए मैंने ${when(escalation.sentAt)} HR Ops lead ${lead} को escalate किया${cite("§4.2")}।${noChase}`
-          : `HR didn't reply within 24 hours, so I escalated to ${lead}, the HR Ops lead, at ${when(escalation.sentAt)}${cite("§4.2")}.${noChase}`;
+          ? `HR ने 24 घंटे में जवाब नहीं दिया, इसलिए मैंने ${when(escalation.sentAt)} HR Ops lead ${lead} को escalate किया${cite("Section 4.2")}।${noChase}`
+          : `HR didn't reply within 24 hours, so I escalated to ${lead}, the HR Ops lead, at ${when(escalation.sentAt)}${cite("Section 4.2")}.${noChase}`;
       } else if (reminder && reminder.status !== "resolved") {
         const owner = nameOf(reminder.toPersonId);
         const loanerDue = safe && safe.getTime() > ctx.clock.getTime() ? safe : null;
@@ -91,16 +91,16 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
             : ` If the ID still isn't there by ${when(loanerDue)}, I'll ask you about a loaner laptop so Day 1 isn't affected.`
           : "";
         text = hi
-          ? `मैंने ${when(reminder.sentAt)} ${owner} को याद दिलाया है। अगर ${when(reminder.slaDueAt)} तक जवाब नहीं आता, तो मैं HR Ops lead को escalate करूँगा${cite("§4.2")}।${loaner}${noChase}`
-          : `I reminded ${owner} at ${when(reminder.sentAt)}. If there's no reply by ${when(reminder.slaDueAt)}, I escalate to the HR Ops lead${cite("§4.2")}.${loaner}${noChase}`;
+          ? `मैंने ${when(reminder.sentAt)} ${owner} को याद दिलाया है। अगर ${when(reminder.slaDueAt)} तक जवाब नहीं आता, तो मैं HR Ops lead को escalate करूँगा${cite("Section 4.2")}।${loaner}${noChase}`
+          : `I reminded ${owner} at ${when(reminder.sentAt)}. If there's no reply by ${when(reminder.slaDueAt)}, I escalate to the HR Ops lead${cite("Section 4.2")}.${loaner}${noChase}`;
       } else if (reminder || escalation) {
         text = hi
-          ? `HR जवाब दे चुका है, इसलिए उन पर कुछ बाकी नहीं है। अगर कभी किसी reminder का 24 घंटे में जवाब नहीं आता, तो मैं HR Ops lead को escalate करता हूँ${cite("§4.2")}।`
-          : `HR has already answered, so nothing is waiting on them. If a reminder ever goes unanswered for 24 hours, I escalate to the HR Ops lead${cite("§4.2")}.`;
+          ? `HR जवाब दे चुका है, इसलिए उन पर कुछ बाकी नहीं है। अगर कभी किसी reminder का 24 घंटे में जवाब नहीं आता, तो मैं HR Ops lead को escalate करता हूँ${cite("Section 4.2")}।`
+          : `HR has already answered, so nothing is waiting on them. If a reminder ever goes unanswered for 24 hours, I escalate to the HR Ops lead${cite("Section 4.2")}.`;
       } else {
         text = hi
-          ? `अगर HR किसी चीज़ में देर करता है, तो मैं उन्हें अपने आप याद दिलाता हूँ। 24 घंटे में जवाब न आए तो मैं HR Ops lead को escalate करता हूँ${cite("§4.2")}।${noChase}`
-          : `If HR is late with anything, I remind them automatically. If a reminder isn't answered within 24 hours, I escalate to the HR Ops lead${cite("§4.2")}.${noChase}`;
+          ? `अगर HR किसी चीज़ में देर करता है, तो मैं उन्हें अपने आप याद दिलाता हूँ। 24 घंटे में जवाब न आए तो मैं HR Ops lead को escalate करता हूँ${cite("Section 4.2")}।${noChase}`
+          : `If HR is late with anything, I remind them automatically. If a reminder isn't answered within 24 hours, I escalate to the HR Ops lead${cite("Section 4.2")}.${noChase}`;
       }
       break;
     }
@@ -114,15 +114,15 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
       if (hi) {
         const start = induction ? ` Induction ${formatDayClock(induction.startsAt)} को है, ${induction.location}।` : "";
         const collect = pickup
-          ? ` आपका ID card, laptop और kit ${pickup.location} पर ${formatDayClock(pickup.startsAt)} को एक ही बार में मिलेंगे${cite("§6.2")}।`
-          : ` आपका ID card, laptop और kit ${COMPANY.pickupSite} पर एक साथ मिलते हैं; तैयार होते ही मैं एक pickup slot book करूँगा${cite("§6.2")}।`;
-        text = `Building access के लिए अपना PAN card और एक photo ID लाएँ${cite("§6.1")}।${start}${collect}`;
+          ? ` आपका ID card, laptop और kit ${pickup.location} पर ${formatDayClock(pickup.startsAt)} को एक ही बार में मिलेंगे${cite("Section 6.2")}।`
+          : ` आपका ID card, laptop और kit ${COMPANY.pickupSite} पर एक साथ मिलते हैं; तैयार होते ही मैं एक pickup slot book करूँगा${cite("Section 6.2")}।`;
+        text = `Building access के लिए अपना PAN card और एक photo ID लाएँ${cite("Section 6.1")}।${start}${collect}`;
       } else {
         const start = induction ? ` Induction is ${formatDayClock(induction.startsAt)}, ${induction.location}.` : "";
         const collect = pickup
-          ? ` Your ID card, laptop and kit are waiting at ${pickup.location}, ${formatDayClock(pickup.startsAt)}, all in one trip${cite("§6.2")}.`
-          : ` Your ID card, laptop and kit are collected together at ${COMPANY.pickupSite}, and I'll book one pickup slot once they're ready${cite("§6.2")}.`;
-        text = `Bring your PAN card and one photo ID for building access${cite("§6.1")}.${start}${collect}`;
+          ? ` Your ID card, laptop and kit are waiting at ${pickup.location}, ${formatDayClock(pickup.startsAt)}, all in one trip${cite("Section 6.2")}.`
+          : ` Your ID card, laptop and kit are collected together at ${COMPANY.pickupSite}, and I'll book one pickup slot once they're ready${cite("Section 6.2")}.`;
+        text = `Bring your PAN card and one photo ID for building access${cite("Section 6.1")}.${start}${collect}`;
       }
       break;
     }
@@ -144,17 +144,17 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
             : "You and your spouse"
           : "You";
       const askedParents = /parents?|माता|पिता/i.test(question);
-      if (!sections.some((s) => s.ref === "§3.2")) {
+      if (!sections.some((s) => s.ref === "Section 3.2")) {
         text = hi ? `अभी मुझे health cover policy नहीं मिली। ${COMPANY.name} HR इसकी जानकारी दे सकता है।` : `I couldn't find the health cover policy just now. ${COMPANY.name} HR can confirm the details.`;
       } else if (hi) {
         const enrol = " Joining के 7 दिनों के अंदर enrol करें; enrolment खुलते ही मैं याद दिलाऊँगा।";
         text = askedParents
-          ? `हाँ। माता-पिता को ₹1,200 प्रति माह में जोड़ा जा सकता है, जो salary से कटता है${cite("§3.2")}। ${covered} ₹5,00,000 के sum insured के साथ covered हैं।${enrol}`
-          : `${covered} ₹5,00,000 के sum insured के साथ covered हैं${cite("§3.2")}। माता-पिता optional हैं, ₹1,200 प्रति माह।${enrol}`;
+          ? `हाँ। माता-पिता को ₹1,200 प्रति माह में जोड़ा जा सकता है, जो salary से कटता है${cite("Section 3.2")}। ${covered} ₹5,00,000 के sum insured के साथ covered हैं।${enrol}`
+          : `${covered} ₹5,00,000 के sum insured के साथ covered हैं${cite("Section 3.2")}। माता-पिता optional हैं, ₹1,200 प्रति माह।${enrol}`;
       } else {
         text = askedParents
-          ? `Yes. Parents can be added for ₹1,200 a month, deducted from salary${cite("§3.2")}. ${covered} are covered with a sum insured of ₹5,00,000. Enrol within 7 days of joining; I'll bring it up when it opens.`
-          : `${covered} are covered with a sum insured of ₹5,00,000${cite("§3.2")}. Parents are optional at ₹1,200 a month. Enrol within 7 days of joining; I'll bring it up when it opens.`;
+          ? `Yes. Parents can be added for ₹1,200 a month, deducted from salary${cite("Section 3.2")}. ${covered} are covered with a sum insured of ₹5,00,000. Enrol within 7 days of joining; I'll bring it up when it opens.`
+          : `${covered} are covered with a sum insured of ₹5,00,000${cite("Section 3.2")}. Parents are optional at ₹1,200 a month. Enrol within 7 days of joining; I'll bring it up when it opens.`;
       }
       break;
     }
@@ -166,8 +166,8 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
       const ready = laptop?.status === "completed";
       const note = laptop?.statusNote ?? "waiting on your Employee ID";
       text = hi
-        ? `आपका laptop: ${ready ? "तैयार है" : note}। Laptop के लिए आपकी Employee ID और फिर 2 working days लगते हैं${cite("§5.1")}, और मैं दोनों पर नज़र रखता हूँ।`
-        : `Your laptop: ${ready ? "ready" : `${note.charAt(0).toLowerCase()}${note.slice(1)}`}. A laptop needs your Employee ID plus 2 working days${cite("§5.1")}, and I track both for you.`;
+        ? `आपका laptop: ${ready ? "तैयार है" : note}। Laptop के लिए आपकी Employee ID और फिर 2 working days लगते हैं${cite("Section 5.1")}, और मैं दोनों पर नज़र रखता हूँ।`
+        : `Your laptop: ${ready ? "ready" : `${note.charAt(0).toLowerCase()}${note.slice(1)}`}. A laptop needs your Employee ID plus 2 working days${cite("Section 5.1")}, and I track both for you.`;
       break;
     }
     default: {
@@ -185,5 +185,5 @@ export async function fallbackAnswer(ctx: AgentContext, question: string): Promi
   }
 
   const cited = sections.filter((s) => text.includes(`(${s.ref})`));
-  return { text, checked: [...cited.map((s) => `${s.documentTitle} ${s.ref}`), ...checked], sections: cited, showActivity };
+  return { text, checked: [...cited.map((s) => `${s.documentTitle}, ${s.ref}`), ...checked], sections: cited, showActivity };
 }

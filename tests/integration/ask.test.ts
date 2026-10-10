@@ -30,10 +30,10 @@ describe("Ask Navo offline", () => {
     const answer = await askNavo(db, ws, "What if HR doesn't respond?", { llm: null });
     expect(answer.composedBy).toBe("fallback");
     expect(answer.text).toBe(
-      "I reminded Priya Nair at 09:17 today. If there's no reply by tomorrow at 09:17, I escalate to the HR Ops lead (§4.2). If the ID still isn't there by 12:00 today, I'll ask you about a loaner laptop so Day 1 isn't affected. You don't need to chase anyone.",
+      "I reminded Priya Nair at 09:17 today. If there's no reply by tomorrow at 09:17, I escalate to the HR Ops lead (Section 4.2). If the ID still isn't there by 12:00 today, I'll ask you about a loaner laptop so Day 1 isn't affected. You don't need to chase anyone.",
     );
-    expect(answer.citations).toEqual([{ ref: "§4.2", title: "Escalation", document: "Onboarding standards and escalation" }]);
-    expect(answer.checked[0]).toBe("Onboarding standards and escalation §4.2");
+    expect(answer.citations).toEqual([{ ref: "Section 4.2", title: "Escalation", document: "Onboarding standards and escalation" }]);
+    expect(answer.checked[0]).toBe("Onboarding standards and escalation, Section 4.2");
     expect(answer.showActivity).toBe(true);
     const { run, calls } = await callsOfLatestRun();
     expect(run.trigger).toBe('Asked: "What if HR doesn\'t respond?"');
@@ -43,29 +43,29 @@ describe("Ask Navo offline", () => {
 
   it("answers what to bring on Day 1 and cites the Day 1 guide", async () => {
     const answer = await askNavo(db, ws, "What should I bring Monday?", { llm: null });
-    expect(answer.text).toMatch(/^Bring your PAN card and one photo ID for building access \(§6\.1\)\./);
+    expect(answer.text).toMatch(/^Bring your PAN card and one photo ID for building access \(Section 6\.1\)\./);
     expect(answer.text).toContain("Induction is Mon 19 Oct · 09:30");
   });
 
   it("answers about adding parents to health cover from the benefits policy and family details", async () => {
     const answer = await askNavo(db, ws, "Can I add my parents to insurance?", { llm: null });
-    expect(answer.text).toMatch(/^Yes\. Parents can be added for ₹1,200 a month, deducted from salary \(§3\.2\)\. You, your spouse and your child are covered/);
+    expect(answer.text).toMatch(/^Yes\. Parents can be added for ₹1,200 a month, deducted from salary \(Section 3\.2\)\. You, your spouse and your child are covered/);
   });
 
   it("uses the current hybrid policy (2.1), not the superseded version", async () => {
     const answer = await askNavo(db, ws, "Can I work remotely on Fridays?", { llm: null });
     expect(answer.text).toContain("Fridays are allowed");
-    expect(answer.text).toContain("(§2.1)");
+    expect(answer.text).toContain("(Section 2.1)");
   });
 
   it("answers a question asked in Hindi in Hindi, with the same facts and citation", async () => {
     const answer = await askNavo(db, ws, "अगर HR जवाब न दे तो क्या होगा?", { llm: null });
     expect(answer.text).toBe(
-      "मैंने आज 09:17 बजे Priya Nair को याद दिलाया है। अगर कल 09:17 बजे तक जवाब नहीं आता, तो मैं HR Ops lead को escalate करूँगा (§4.2)। अगर आज 12:00 बजे तक ID नहीं आती, तो मैं आपसे loaner laptop के बारे में पूछूँगा ताकि Day 1 पर असर न पड़े। आपको किसी के पीछे नहीं पड़ना है।",
+      "मैंने आज 09:17 बजे Priya Nair को याद दिलाया है। अगर कल 09:17 बजे तक जवाब नहीं आता, तो मैं HR Ops lead को escalate करूँगा (Section 4.2)। अगर आज 12:00 बजे तक ID नहीं आती, तो मैं आपसे loaner laptop के बारे में पूछूँगा ताकि Day 1 पर असर न पड़े। आपको किसी के पीछे नहीं पड़ना है।",
     );
-    expect(answer.citations.map((c) => c.ref)).toEqual(["§4.2"]);
+    expect(answer.citations.map((c) => c.ref)).toEqual(["Section 4.2"]);
     const leave = await askNavo(db, ws, "मुझे कितनी छुट्टी मिलती है?", { llm: null });
-    expect(leave.text).toMatch(/^Benefits के अनुसार: .*\(§3\.3\)$/);
+    expect(leave.text).toMatch(/^Benefits के अनुसार: .*\(Section 3\.3\)$/);
     const unknown = await askNavo(db, ws, "एयरपोर्ट शटल कब चलती है?", { llm: null });
     expect(unknown.text).toContain("यह मुझे वहाँ नहीं मिला");
     expect(unknown.citations).toEqual([]);
@@ -89,12 +89,12 @@ describe("Ask Navo with Claude", () => {
   it("lets Claude plan read-only tool calls, then accepts an answer whose citations were retrieved", async () => {
     const claude = fakeClaude([
       [toolUse("get_follow_ups", {}, "t1"), toolUse("search_policies", { query: "escalation reminder 24 hours" }, "t2")],
-      [text("I reminded Priya Nair this morning. If she hasn't replied within 24 hours, I escalate to the HR Ops lead (§4.2).")],
+      [text("I reminded Priya Nair this morning. If she hasn't replied within 24 hours, I escalate to the HR Ops lead (Section 4.2).")],
     ]);
     const answer = await askNavo(db, ws, "What if HR doesn't respond?", { llm: claude.llm });
     expect(answer.composedBy).toBe("claude");
-    expect(answer.citations.map((c) => c.ref)).toEqual(["§4.2"]);
-    expect(answer.checked).toEqual(["Onboarding standards and escalation §4.2", "Navo's follow-ups"]);
+    expect(answer.citations.map((c) => c.ref)).toEqual(["Section 4.2"]);
+    expect(answer.checked).toEqual(["Onboarding standards and escalation, Section 4.2", "Navo's follow-ups"]);
     // Claude saw the tool results it asked for, and only read-only tools were on offer.
     const second = claude.calls[1]!;
     const results = second.messages.at(-1)!.content as { type: string; content: string }[];
@@ -104,10 +104,10 @@ describe("Ask Navo with Claude", () => {
   });
 
   it("rejects an answer that cites a policy it never retrieved, and falls back", async () => {
-    const claude = fakeClaude([[text("HR must reply within 2 hours (§9.9).")]]);
+    const claude = fakeClaude([[text("HR must reply within 2 hours (Section 9.9).")]]);
     const answer = await askNavo(db, ws, "What if HR doesn't respond?", { llm: claude.llm });
     expect(answer.composedBy).toBe("fallback");
-    expect(answer.fallbackReason).toBe("cited unretrieved policy §9.9");
+    expect(answer.fallbackReason).toBe("cited unretrieved policy Section 9.9");
   });
 
   it("falls back within the deadline when Claude doesn't answer", async () => {
@@ -117,7 +117,7 @@ describe("Ask Navo with Claude", () => {
     expect(Date.now() - started).toBeLessThan(5_000);
     expect(answer.composedBy).toBe("fallback");
     expect(answer.fallbackReason).toBe("timed out after 300ms");
-    expect(answer.text).toContain("(§6.1)");
+    expect(answer.text).toContain("(Section 6.1)");
   });
 
   it("falls back on an API error", async () => {

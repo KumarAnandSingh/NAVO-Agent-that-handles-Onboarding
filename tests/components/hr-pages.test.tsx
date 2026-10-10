@@ -46,13 +46,13 @@ describe("cohort radar page", () => {
 const policies: HrVM["policies"] = {
   today: "2026-10-07",
   items: [
-    { documentId: "benefits", family: "benefits", title: "Benefits", version: "3.0", effectiveDate: "2026-04-01", refs: "§3.1–§3.3", sections: 3, source: "library", status: "in force" },
-    { documentId: "hybrid-work", family: "hybrid-work", title: "Hybrid work policy", version: "2.0", effectiveDate: "2025-01-01", refs: "§2.1", sections: 1, source: "library", status: "superseded" },
-    { documentId: "hr-1~ws", family: "hr-1~ws", title: "Parking", version: "1.0", effectiveDate: "2026-11-01", refs: "§9.1", sections: 1, source: "hr", status: "scheduled" },
+    { documentId: "benefits", family: "benefits", title: "Benefits", version: "3.0", effectiveDate: "2026-04-01", refs: "3.1–3.3", sections: 3, source: "library", status: "in force" },
+    { documentId: "hybrid-work", family: "hybrid-work", title: "Hybrid work policy", version: "2.0", effectiveDate: "2025-01-01", refs: "2.1", sections: 1, source: "library", status: "superseded" },
+    { documentId: "hr-1~ws", family: "hr-1~ws", title: "Parking", version: "1.0", effectiveDate: "2026-11-01", refs: "9.1", sections: 1, source: "hr", status: "scheduled" },
   ],
   replaceable: [{ family: "benefits", title: "Benefits", version: "3.0" }],
 };
-const preview = { documentId: "hr-2~ws", title: "Relocation support", version: "1.0", effectiveDate: "2026-10-07", replaces: null, sections: [{ ref: "§10.1", title: "Who is eligible", body: "Joiners who move." }, { ref: "§10.2", title: "Temporary housing", body: "14 nights." }] };
+const preview = { documentId: "hr-2~ws", title: "Relocation support", version: "1.0", effectiveDate: "2026-10-07", replaces: null, sections: [{ ref: "Section 10.1", title: "Who is eligible", body: "Joiners who move." }, { ref: "Section 10.2", title: "Temporary housing", body: "14 nights." }] };
 
 function respond(...bodies: { ok?: boolean; body: unknown; text?: string }[]) {
   const queue = [...bodies];
@@ -68,9 +68,9 @@ describe("policies page", () => {
     const rows = within(screen.getByRole("table", { name: "Policy library" })).getAllByRole("row");
     expect(rows.map((r) => r.textContent)).toEqual([
       "PolicyVersionSectionsEffectiveStatus",
-      "Benefits3.0§3.1–§3.3 · 32026-04-01In force",
-      "Hybrid work policy2.0§2.1 · 12025-01-01Superseded",
-      "ParkingAdded by HR1.0§9.1 · 12026-11-01Scheduled",
+      "Benefits3.03.1–3.3 · 32026-04-01In force",
+      "Hybrid work policy2.02.1 · 12025-01-01Superseded",
+      "ParkingAdded by HR1.09.1 · 12026-11-01Scheduled",
     ]);
   });
 
@@ -84,10 +84,10 @@ describe("policies page", () => {
     expect(publish.disabled).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Preview sections" }));
     const list = await screen.findByRole("list", { name: "Sections Navo found" });
-    expect(within(list).getAllByRole("listitem").map((li) => li.textContent)).toEqual(["§10.1Who is eligible Joiners who move.", "§10.2Temporary housing 14 nights."]);
+    expect(within(list).getAllByRole("listitem").map((li) => li.textContent)).toEqual(["10.1Who is eligible Joiners who move.", "10.2Temporary housing 14 nights."]);
     expect(publish.disabled).toBe(false);
     fireEvent.click(publish);
-    await waitFor(() => expect(screen.getByRole("status").textContent).toBe("Published Relocation support v1.0. Navo can cite §10.1–§10.2 from now on."));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toBe("Published Relocation support v1.0. Navo can cite Sections 10.1–10.2 from now on."));
     expect(refresh).toHaveBeenCalledOnce();
     const [, previewCall] = fetchMock.mock.calls as unknown as [string, RequestInit][];
     expect(JSON.parse(String(previewCall![1].body))).toMatchObject({ action: "preview_policy", policy: { title: "Relocation support", version: "1.0", effectiveDate: "2026-10-07" } });

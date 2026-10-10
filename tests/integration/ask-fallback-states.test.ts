@@ -31,7 +31,7 @@ describe("Navo's offline answers follow the live state", () => {
 
   it("explains reminders and escalation before anything is late", async () => {
     const ws = await fresh();
-    expect((await ask(ws, "What if HR doesn't respond?")).text).toMatch(/^If HR is late with anything, I remind them automatically\..*\(§4\.2\)/);
+    expect((await ask(ws, "What if HR doesn't respond?")).text).toMatch(/^If HR is late with anything, I remind them automatically\..*\(Section 4\.2\)/);
     expect((await ask(ws, "अगर HR जवाब न दे तो क्या होगा?")).text).toMatch(/^अगर HR किसी चीज़ में देर करता है/);
   });
 
@@ -52,15 +52,15 @@ describe("Navo's offline answers follow the live state", () => {
     expect((await ask(ws, "What if HR doesn't respond?")).text).toMatch(/^HR has already answered/);
     expect((await ask(ws, "अगर HR जवाब न दे तो?")).text).toMatch(/^HR जवाब दे चुका है/);
     const laptop = await ask(ws, "When will my laptop arrive?");
-    expect(laptop.text).toMatch(/^Your laptop: .*\(§5\.1\)/);
-    expect((await ask(ws, "मेरा लैपटॉप कब आएगा?")).text).toMatch(/^आपका laptop: .*\(§5\.1\)/);
+    expect(laptop.text).toMatch(/^Your laptop: .*\(Section 5\.1\)/);
+    expect((await ask(ws, "मेरा लैपटॉप कब आएगा?")).text).toMatch(/^आपका laptop: .*\(Section 5\.1\)/);
   });
 
   it("gives the booked pickup, in both languages, once it is arranged", async () => {
     const ws = await fresh();
     await jumpToChapter(db, ws, 3);
     expect((await ask(ws, "What should I bring Monday?")).text).toContain("Your ID card, laptop and kit are waiting at Twin Tower · Building B");
-    expect((await ask(ws, "सोमवार को क्या लाना है?")).text).toContain("एक ही बार में मिलेंगे (§6.2)");
+    expect((await ask(ws, "सोमवार को क्या लाना है?")).text).toContain("एक ही बार में मिलेंगे (Section 6.2)");
     expect((await ask(ws, "When will my laptop be ready?")).text).toMatch(/^Your laptop: ready\./);
     expect((await ask(ws, "मेरा लैपटॉप कब आएगा?")).text).toMatch(/^आपका laptop: तैयार है।/);
   });

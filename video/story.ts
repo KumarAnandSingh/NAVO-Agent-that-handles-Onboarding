@@ -18,7 +18,7 @@ export const STORY: readonly Scene[] = [
     duration: 11.2,
     card: {
       type: "hook",
-      day: { at: 0.2, label: "MON", date: "19 OCT · DAY 1" },
+      day: { at: 0.2, label: "MON", date: "19 OCT, DAY 1" },
       items: [
         { at: 2.6, label: "Laptop", status: "Not ready" },
         { at: 3.9, label: "Email", status: "Not active" },
@@ -83,7 +83,7 @@ export const STORY: readonly Scene[] = [
       name: { at: 0.3 },
       tagline: { at: 1.0, text: "AI That Handles Onboarding" },
       pillars: [
-        { at: 4.7, title: "Tracks", body: "every task, owner, deadline and dependency" },
+        { at: 4.7, title: "Tracks", body: "every task, owner and dependency" },
         { at: 6.0, title: "Acts", body: "before Day 1 breaks, within clear rules" },
         { at: 7.4, title: "Asks", body: "before anything sensitive" },
         { at: 8.6, title: "Explains", body: "every action, with the policy behind it" },
@@ -107,7 +107,7 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "documents",
-    chapter: "Demo · Documents",
+    chapter: "Demo: Documents",
     duration: 15.0,
     events: [
       { at: 0, show: "docs" },
@@ -143,7 +143,7 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "risk",
-    chapter: "Demo · Navo at work",
+    chapter: "Demo: Navo at work",
     duration: 24.6,
     events: [
       { at: 0, show: "home-wed" },
@@ -154,16 +154,16 @@ export const STORY: readonly Scene[] = [
       { at: 2.0, hideCursor: true },
       { at: 6.0, show: "risk" },
       { at: 6.1, highlight: "tool:get_dependencies", until: 10.4, label: "Traces what depends on the ID" },
-      { at: 10.6, highlight: "tool:calculate_day1_risk", until: 13.4, label: "High risk · zero days of slack" },
+      { at: 10.6, highlight: "tool:calculate_day1_risk", until: 13.4, label: "High risk: zero days of slack" },
       { at: 10.7, sfx: "alert" },
-      { at: 13.6, highlight: "tool:check_permission+tool:send_reminder", until: 17.2, label: "Allowed automatically · policy §4.1" },
+      { at: 13.6, highlight: "tool:check_permission+tool:send_reminder", until: 17.2, label: "Allowed automatically (Section 4.1)" },
       { at: 17.2, camera: "phone@mid", dur: 1.0 },
       { at: 18.0, highlight: "followed", until: 20.8, label: "Done for him" },
       { at: 20.6, cursor: "why", dur: 0.6, click: true },
       { at: 21.3, show: "why" },
       { at: 21.4, camera: "reasonList", zoom: 0.92, dur: 1.0 },
       { at: 21.8, hideCursor: true },
-      { at: 22.2, highlight: "reasons", until: 24.4, label: "Noticed · Decided · Acted · Planned" },
+      { at: 22.2, highlight: "reasons", until: 24.4, label: "Noticed, decided, acted, planned" },
     ],
     cues: [
       { at: 0.3, text: "Four days before Day 1, Navo's daily check runs. Every tool call shows live." },
@@ -177,7 +177,7 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "hr",
-    chapter: "Demo · HR's view",
+    chapter: "Demo: HR's view",
     duration: 13.2,
     events: [
       { at: 0, show: "why" },
@@ -206,7 +206,7 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "loaner",
-    chapter: "Demo · Asks before acting",
+    chapter: "Demo: Asks before acting",
     duration: 13.0,
     events: [
       { at: 0, show: "loaner" },
@@ -230,7 +230,7 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "ask",
-    chapter: "Demo · Ask Navo",
+    chapter: "Demo: Ask Navo",
     duration: 12.8,
     events: [
       { at: 0, show: "ask-open" },
@@ -258,7 +258,7 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "policy",
-    chapter: "Demo · HR adds a policy",
+    chapter: "Demo: HR adds a policy",
     duration: 13.0,
     events: [
       { at: 0, show: "policies" },
@@ -275,7 +275,7 @@ export const STORY: readonly Scene[] = [
       { at: 7.4, hideCursor: true },
       { at: 7.8, show: "ask-policy" },
       { at: 8.0, camera: "answer", zoom: 0.9, dur: 1.0 },
-      { at: 8.6, highlight: "answer", until: 12.8, label: "Cites the new §9.3" },
+      { at: 8.6, highlight: "answer", until: 12.8, label: "Cites the new Section 9.3" },
     ],
     cues: [
       { at: 0.3, text: "HR adds a policy, and Navo splits it into sections it can cite." },
@@ -286,13 +286,13 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "radar",
-    chapter: "Demo · Every joiner",
+    chapter: "Demo: Every joiner",
     duration: 13.4,
     events: [
       { at: 0, show: "radar" },
       { at: 0, camera: "full", dur: 0 },
       { at: 0.4, camera: "whatIf+summary", zoom: 0.62, dur: 1.2 },
-      { at: 1.4, highlight: "summary", until: 4.8, label: "14 joiners · one risk engine" },
+      { at: 1.4, highlight: "summary", until: 4.8, label: "14 joiners, one risk engine" },
       { at: 4.6, cursor: "it", dur: 0.6, click: true },
       { at: 5.3, show: "radar-it" },
       { at: 5.3, sfx: "alert" },
@@ -312,7 +312,7 @@ export const STORY: readonly Scene[] = [
   {
     kind: "app",
     id: "montage",
-    chapter: "Demo · Day 1 to Day 30",
+    chapter: "Demo: Day 1 to Day 30",
     duration: 9.4,
     events: [
       { at: 0, show: "ready" },
@@ -362,10 +362,10 @@ export const STORY: readonly Scene[] = [
       layers: [
         { at: 1.0, label: "Events", detail: "HR, IT, calendar, vendor, facilities and the joiner" },
         { at: 1.9, label: "Navo agent", detail: "Orchestrator and playbooks: notice, decide, act" },
-        { at: 2.8, label: "Tool registry", detail: "22 tools · validated · permission-checked · timed · audited", accent: true },
-        { at: 3.7, label: "Deterministic rules", detail: "Working days · dependencies · Day-1 risk · permissions" },
+        { at: 2.8, label: "Tool registry", detail: "22 tools, each validated, permission-checked, timed and audited", accent: true },
+        { at: 3.7, label: "Deterministic rules", detail: "Working days, dependencies, Day 1 risk and permissions" },
       ],
-      side: { at: 6.4, label: "AI gateway", detail: "Haiku writes updates · Sonnet answers · Opus reads documents", verified: "Personal data masked · every output checked by code" },
+      side: { at: 6.4, label: "AI gateway", detail: "Haiku writes updates, Sonnet answers, Opus reads documents", verified: "Personal data masked, every output checked by code" },
     },
     sfx: [
       { at: 1.0, sfx: "blip" },
@@ -393,7 +393,7 @@ export const STORY: readonly Scene[] = [
       { at: 4.3, show: "byok" },
       { at: 4.4, camera: "dialog", zoom: 0.95, dur: 1.0 },
       { at: 5.0, hideCursor: true },
-      { at: 5.0, highlight: "points", until: 8.8, label: "Stays in this tab · never stored" },
+      { at: 5.0, highlight: "points", until: 8.8, label: "Stays in this tab, never stored" },
     ],
     cues: [
       { at: 0.3, text: "The public demo runs offline, so it's free to try." },
@@ -414,7 +414,7 @@ export const STORY: readonly Scene[] = [
         { at: 2.0, value: "$0.07", label: "of Claude per onboarding" },
         { at: 2.6, value: "Offline", label: "fallback for every AI feature" },
       ],
-      footer: { at: 4.0, text: "Synthetic Halden data · simulated HR, IT and calendar systems" },
+      footer: { at: 4.0, text: "Synthetic Halden data, simulated HR, IT and calendar systems" },
     },
     sfx: [
       { at: 0.8, sfx: "pop" },
@@ -433,7 +433,7 @@ export const STORY: readonly Scene[] = [
     kind: "title",
     id: "close",
     chapter: "Navo",
-    duration: 7.8,
+    duration: 9.4,
     card: {
       type: "close",
       face: "Navo",
@@ -446,8 +446,8 @@ export const STORY: readonly Scene[] = [
     },
     sfx: [{ at: 0.3, sfx: "boom" }],
     cues: [
-      { at: 0.6, text: "Next: real HR and IT systems, behind the same tools." },
-      { at: 5.0, text: "Navo. AI that handles onboarding." },
+      { at: 0.6, text: "Next: replace the simulated HR and IT systems with real ones. Navo stays the same." },
+      { at: 6.6, text: "Navo. AI that handles onboarding." },
     ],
   },
 ];

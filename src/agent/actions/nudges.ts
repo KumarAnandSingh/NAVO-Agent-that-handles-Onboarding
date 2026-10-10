@@ -79,7 +79,7 @@ export async function openRelevant(ctx: AgentContext, snapshot: OnboardingSnapsh
   await recordActivity(ctx, {
     caseKey: "benefits",
     phase: "Noticed",
-    summary: `Health cover enrolment closes ${formatDay(task.dueAt)}. Matched Benefits policy §3.2 to your family details.`,
+    summary: `Health cover enrolment closes ${formatDay(task.dueAt)}. Matched Section 3.2 of the Benefits policy to your family details.`,
     taskId,
     headline: "Spotted a benefits deadline",
     headlineDetail: `Closes ${formatShortDate(task.dueAt)}`,

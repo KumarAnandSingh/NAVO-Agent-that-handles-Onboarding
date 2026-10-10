@@ -79,7 +79,7 @@ body { font-family: var(--text); color: #fff; -webkit-font-smoothing: antialiase
 .wordmark { position: absolute; left: 0; right: 0; top: 315px; text-align: center; font-family: var(--display); font-size: 168px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; }
 .tagline { position: absolute; left: 0; right: 0; top: 500px; text-align: center; font-size: 50px; font-weight: 600; color: var(--signal-2); letter-spacing: -0.01em; }
 .pillars { position: absolute; left: 0; right: 0; top: 615px; display: flex; justify-content: center; gap: 28px; }
-.pillar { width: 380px; height: 176px; border-radius: 26px; padding: 26px 30px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); }
+.pillar { width: 380px; min-height: 176px; border-radius: 26px; padding: 26px 30px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); }
 .pillar-title { font-size: 40px; font-weight: 800; color: var(--signal); }
 .pillar-body { font-size: 27px; color: #dfe6f5; margin-top: 10px; line-height: 1.3; }
 .footnote { position: absolute; right: 48px; top: 44px; font-size: 20px; color: var(--muted-2); }

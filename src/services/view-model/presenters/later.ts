@@ -132,14 +132,14 @@ export function presentWeek1(ctx: Ctx): Week1VM {
           daysLeft: Math.max(0, calendarDaysUntil(ctx.now, benefitsTask.dueAt)),
           covered,
           familyNote,
-          // Figures from Benefits policy §3.2 (src/content/policies.ts).
+          // Figures from Section 3.2 of the Benefits policy (src/content/policies.ts).
           rows: [
             { label: covered, value: "Covered", tone: "calm" },
             { label: "Sum insured", value: "₹5,00,000", tone: "calm" },
             { label: "Add parents", value: "Optional · ₹1,200/mo", tone: "calm" },
             { label: "Deadline", value: formatDay(benefitsTask.dueAt), tone: "risk" },
           ],
-          source: "From: Benefits policy §3.2 · Your family details",
+          source: "From: Benefits policy, Section 3.2 · Your family details",
         }
       : null,
   };

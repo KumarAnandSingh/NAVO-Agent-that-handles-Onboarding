@@ -64,7 +64,7 @@ The demo follows **Anand Mehta**, a Senior Product Manager joining Halden on **M
 
 1. **First launch.** He signs in and meets Navo, which states what it does alone and what it always asks first.
 2. **Documents and forms.** Navo has already read most of his documents. It asks for one missing address proof, then asks about **one unreadable date** on his relieving letter (not the whole document). His forms come pre-filled; only the emergency contact needs him.
-3. **Pre-joining: Navo at work.** On Thursday 15 October, Navo's daily check finds the **Employee ID 2 days late** with **zero working days of slack** for the laptop. It reminds HR on its own (§4.1), plans an escalation (§4.2) and a fallback.
+3. **Pre-joining: Navo at work.** On Thursday 15 October, Navo's daily check finds the **Employee ID 2 days late** with **zero working days of slack** for the laptop. It reminds HR on its own (Section 4.1), plans an escalation (Section 4.2) and a fallback.
    - *HR responds:* Priya in HR issues the ID from her console; Navo raises the laptop, email and ID-card requests within a minute.
    - *HR stays silent:* at the last safe moment Navo **asks Anand to approve a loaner laptop** (an asset change needs his OK), and escalates to the HR Ops lead after 24 hours.
 4. **Ready for Day 1.** Navo books **one pickup** at Twin Tower, Building B for the ID card, laptop and kit.
@@ -211,7 +211,7 @@ sequenceDiagram
   Risk-->>Navo: HIGH · 0 working days slack · last safe start Thu 12:00
   Navo->>Tools: check_permission(send_reminder)
   Tools->>Perm: decide
-  Perm-->>Navo: allowed · auto (§4.1)
+  Perm-->>Navo: allowed · auto (Section 4.1)
   Navo->>Tools: send_reminder(priya.nair, employee_id)
   Tools->>HR: reminder R-1 (reply due Fri 09:17)
   Navo->>Navo: schedule navo.deadline_check at 12:00 and sla.check at Fri 09:17
@@ -252,8 +252,8 @@ Each run records **activities** in four phases (Noticed → Decided → Acted �
 
 > 09:15 **Noticed** Employee ID not issued. Due 13 Oct, owner HR.
 > 09:16 **Decided** Laptop needs Employee ID + 2 working days. Today 12:00 is the last safe start. Day 1 at risk.
-> 09:17 **Acted** Reminded Priya Nair, HR. Allowed automatically (§4.1).
-> 09:17 **Planned** No reply in 24h → escalate to HR Ops lead (§4.2). No ID by 12:00 → offer you a loaner laptop.
+> 09:17 **Acted** Reminded Priya Nair, HR. Allowed automatically (Section 4.1).
+> 09:17 **Planned** No reply in 24h → escalate to HR Ops lead (Section 4.2). No ID by 12:00 → offer you a loaner laptop.
 
 ---
 
@@ -338,7 +338,7 @@ A committed ETA from the owning system overrides upstream lateness. Overdue caus
 |---|---|
 | Read (always) | reading state, dependencies, risk, policies, SLA |
 | Auto | reminders, HR and IT requests, scheduling, pickup, training enrolment, task updates, notifications |
-| Auto after 24h | `escalate_owner`, only when a reminder has gone 24 hours without a reply (§4.2) |
+| Auto after 24h | `escalate_owner`, only when a reminder has gone 24 hours without a reply (Section 4.2) |
 | Ask the joiner first | `request_loaner` (asset change), `update_personal_data`, `enrol_benefits` |
 | HR only | `issue_employee_id`, `change_start_date` |
 | Denied | anything not listed |
@@ -355,7 +355,7 @@ Claude is used where language understanding genuinely helps. Each use has a **ve
 
 | Feature | Model (fallback) | What Claude does | What code verifies | Fallback |
 |---|---|---|---|
-| **Ask Navo** | Sonnet 5.5 (Opus 5.5) | Plans which read-only tools to call, then writes the answer in Navo's voice, in English or Hindi. | Every policy ref it cites (e.g. §4.2) must have been returned by `search_policies` in this conversation; answer length and format. | Intent-matched answer built from live state and retrieved policy, through the same tools. |
+| **Ask Navo** | Sonnet 5.5 (Opus 5.5) | Plans which read-only tools to call, then writes the answer in Navo's voice, in English or Hindi. | Every policy ref it cites (e.g. Section 4.2) must have been returned by `search_policies` in this conversation; answer length and format. | Intent-matched answer built from live state and retrieved policy, through the same tools. |
 | **Document reading** | Opus 5.5 (Sonnet 5.5) | Reads the uploaded image (vision) into named fields with a confidence each; unreadable characters come back as raw text with `?`. | Structured output parsed with Zod; deterministic rules decide verified / clarify / re-upload (name match, date window, confidence ≥ 0.8). | The recorded reading for the synthetic sample. |
 | **Update writing** | Haiku 5.5 (Sonnet 5.5) | Rewrites Navo's template update so it reads naturally. | Every name, number, date and ticket from the facts must survive; no new numbers; no exclamation marks. | The template text. |
 
@@ -395,12 +395,12 @@ sequenceDiagram
   API->>Claude: system rules + question + 7 read-only tool specs
   Claude-->>API: tool_use: get_follow_ups, search_policies("escalation 24 hours")
   API->>Tools: run (validated, audited, joiner fixed by server)
-  Tools-->>API: R-1 to Priya Nair, reply due Fri 09:17 · §4.2 Escalation
+  Tools-->>API: R-1 to Priya Nair, reply due Fri 09:17 · Section 4.2 Escalation
   API->>Claude: tool results
-  Claude-->>API: "I reminded Priya Nair this morning … HR Ops lead (§4.2)."
+  Claude-->>API: "I reminded Priya Nair this morning … HR Ops lead (Section 4.2)."
   API->>Verify: cited refs ⊆ retrieved refs?
   alt verified
-    Verify-->>Anand: answer + "Checked Onboarding standards and escalation §4.2 · Navo's follow-ups"
+    Verify-->>Anand: answer + "Checked Onboarding standards and escalation Section 4.2 · Navo's follow-ups"
   else unverified, timeout, error or over budget
     API->>Tools: scripted, grounded fallback answer
     API-->>Anand: answer + "Answered from Navo's rules"
@@ -478,7 +478,7 @@ erDiagram
 
 **Policy upload** (`src/services/policy-retrieval/upload.ts`). HR pastes text or uploads a `.md` or `.txt` file.
 - **Splitting:** Navo splits it by Markdown headings, numbered headings or paragraphs, and cuts long sections at sentence boundaries.
-- **Refs:** a new policy gets the next free number (`§9.1`…); a newer version keeps its policy's number, so refs never collide.
+- **Refs:** a new policy gets the next free number (`Section 9.1`…); a newer version keeps its policy's number, so refs never collide.
 - **Publishing:** HR previews the sections first. Published sections are searchable at once, and a future effective date keeps them out until then.
 
 ---
@@ -516,7 +516,7 @@ The design follows the HTML prototype in `docs/design/Navo_Prototype.dc.html`.
 | Personal data and AI | Personal numbers are masked before chat and narration reach the model; visitor keys stay in the browser tab and are never stored or logged (tested). See [security and privacy](SECURITY_PRIVACY.md). |
 | A pushy agent | Navo asks about a loaner once; a "no" stands. HR can't issue an Employee ID that is still blocked. |
 | Hallucinated policy | Citations must match retrieved sections; low-relevance questions get "I don't know". |
-| Privacy | Synthetic data only. Documents are used only for onboarding (policy §8). The demo's sample images are rendered locally and watermarked "SYNTHETIC SAMPLE". API keys live in environment variables or, for visitors, in their own browser tab; never in code. |
+| Privacy | Synthetic data only. Documents are used only for onboarding (Section 8 of the document-handling policy). The demo's sample images are rendered locally and watermarked "SYNTHETIC SAMPLE". API keys live in environment variables or, for visitors, in their own browser tab; never in code. |
 
 ---
 
@@ -721,11 +721,11 @@ docs/
 
 **Business rules** (from Halden's synthetic policy library)
 
-- HR issues the Employee ID within 4 working days of documents being verified (§4.0).
-- A laptop needs the Employee ID plus 2 working days; a request before 12:00 counts that day (§5.1).
-- Email accounts take 1 working day; email, VPN and tools switch on at 09:00 on Day 1 once security training is done (§5.2, §7.1).
-- Navo may remind owners automatically (§4.1) and escalate after 24 hours without a reply (§4.2).
-- Asset changes such as a loaner laptop need the joiner's approval (§4.2, §5.3).
+- HR issues the Employee ID within 4 working days of documents being verified (Section 4.0).
+- A laptop needs the Employee ID plus 2 working days; a request before 12:00 counts that day (Section 5.1).
+- Email accounts take 1 working day; email, VPN and tools switch on at 09:00 on Day 1 once security training is done (Section 5.2, Section 7.1).
+- Navo may remind owners automatically (Section 4.1) and escalate after 24 hours without a reply (Section 4.2).
+- Asset changes such as a loaner laptop need the joiner's approval (Section 4.2, Section 5.3).
 
 **AI**
 

@@ -5,12 +5,13 @@
  * another's, and Reset removes them.
  *
  * Splitting rules, in order: Markdown headings, numbered headings ("4.2 Escalation",
- * "§3 Leave"), then plain paragraphs. Long sections are cut at sentence boundaries so each
+ * "Section 3 Leave"), then plain paragraphs. Long sections are cut at sentence boundaries so each
  * stays focused for retrieval. Refs are always fresh (a new policy gets the next free
  * number, an update keeps its policy's number), so two sections never share a ref.
  */
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import { refNumber } from "@/domain/policy-ref";
 import { dateKeyOf } from "@/domain/time";
 import type { Queryable } from "@/lib/db/client";
 import { policyDocuments, policySections } from "@/lib/db/schema";
@@ -45,7 +46,7 @@ export interface ParsedSection {
 }
 
 const MD_HEADING = /^(#{1,6})\s+(.+?)\s*#*$/;
-const NUMBERED_HEADING = /^(?:§\s*)?\d+(?:\.\d+)*[.)]?\s+(\S.{1,90})$/;
+const NUMBERED_HEADING = /^(?:(?:§|Section)\s*)?\d+(?:\.\d+)*[.)]?\s+(\S.{1,90})$/;
 
 const clean = (s: string) => s.replace(/\s+/g, " ").trim();
 
@@ -119,7 +120,7 @@ export function splitPolicy(text: string): { title: string | null; sections: Par
   return { title, sections: parsed };
 }
 
-const majorOf = (ref: string) => Number(/§(\d+)/.exec(ref)?.[1] ?? 0);
+const majorOf = (ref: string) => Number(/Section (\d+)/.exec(ref)?.[1] ?? 0);
 
 export interface PolicyPreview {
   documentId: string;
@@ -159,7 +160,7 @@ export async function previewPolicy(db: Queryable, workspaceId: string, asOf: Da
     version: input.version,
     effectiveDate: input.effectiveDate ?? dateKeyOf(asOf),
     replaces: input.replaces ?? null,
-    sections: sections.map((s, i) => ({ ref: `§${major}.${i + 1}`, title: s.title, body: s.body })),
+    sections: sections.map((s, i) => ({ ref: `Section ${major}.${i + 1}`, title: s.title, body: s.body })),
   };
 }
 
@@ -205,7 +206,7 @@ export async function listPolicies(db: Queryable, workspaceId: string, asOf: Dat
   return [...docs.entries()]
     .map(([key, sections]) => {
       const first = sections[0]!;
-      const refs = sections.map((s) => s.ref).sort((a, b) => compareVersions(a.slice(1), b.slice(1)));
+      const refs = sections.map((s) => refNumber(s.ref)).sort(compareVersions);
       return {
         documentId: first.documentId,
         family: first.family ?? first.documentId,
@@ -218,5 +219,5 @@ export async function listPolicies(db: Queryable, workspaceId: string, asOf: Dat
         status: inForce.has(key) ? ("in force" as const) : first.effectiveDate > today ? ("scheduled" as const) : ("superseded" as const),
       };
     })
-    .sort((a, b) => compareVersions(a.refs.slice(1).split("–")[0] ?? "0", b.refs.slice(1).split("–")[0] ?? "0") || compareVersions(b.version, a.version));
+    .sort((a, b) => compareVersions(a.refs.split("–")[0] ?? "0", b.refs.split("–")[0] ?? "0") || compareVersions(b.version, a.version));
 }

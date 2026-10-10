@@ -27,7 +27,7 @@ export async function startTask(ctx: AgentContext, snapshot: OnboardingSnapshot,
         await recordActivity(ctx, {
           caseKey: "setup",
           phase: "Acted",
-          summary: `Asked HR for your Employee ID. Due ${formatShortDate(due)} under the 4-working-day standard (§4.0).`,
+          summary: `Asked HR for your Employee ID. Due ${formatShortDate(due)} under the 4-working-day standard (Section 4.0).`,
           taskId,
         });
       } else {

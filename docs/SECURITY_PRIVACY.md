@@ -73,7 +73,7 @@ Navo handles the most sensitive data a new joiner shares: identity numbers, bank
 | DPDP principle | What Navo does today | What production adds |
 |---|---|---|
 | **Consent and notice** (s. 5–6) | Privacy screen before documents; asks before using personal data or bank details | Recorded, itemised consent with timestamps; notice in English and the joiner's language |
-| **Purpose limitation** | Documents used only for onboarding (policy §8.1); the agent reads only what a task needs | A purpose tag on each data field, enforced by the tool registry |
+| **Purpose limitation** | Documents used only for onboarding (Section 8.1 of the document-handling policy); the agent reads only what a task needs | A purpose tag on each data field, enforced by the tool registry |
 | **Data minimisation** | Only named fields requested from documents; masked storage; placeholders before chat and narration reach the model | Field-level encryption; drop document images after verification |
 | **Accuracy** | Unclear fields go back to the joiner; low-confidence readings are never accepted | Correction requests from the joiner, with an audit trail |
 | **Storage limitation** | Demo workspaces expire after 48 hours; Reset deletes everything | Retention schedule per data type; automatic deletion after onboarding plus the legal period |

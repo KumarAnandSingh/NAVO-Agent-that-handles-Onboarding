@@ -46,13 +46,13 @@ export async function remindOwner(ctx: AgentContext, snapshot: OnboardingSnapsho
   await recordActivity(ctx, {
     caseKey: caseFor(task.key),
     phase: "Acted",
-    summary: `Reminded ${ownerName}, ${team}. Allowed automatically (§4.1).`,
+    summary: `Reminded ${ownerName}, ${team}. Allowed automatically (Section 4.1).`,
     taskId,
     action: "send_reminder",
     headline: `Followed up with ${team}`,
     headlineDetail: `${task.name} is ${late} late`,
   });
-  const plan = ["No reply in 24h → escalate to HR Ops lead (§4.2)."];
+  const plan = ["No reply in 24h → escalate to HR Ops lead (Section 4.2)."];
   if (safe && safe.getTime() > ctx.clock.getTime()) {
     plan.push(`No ID by ${formatTime(safe)} → offer you a loaner laptop.`);
     await enqueueEvent(ctx.db, ctx.workspace.id, {
@@ -105,7 +105,7 @@ export async function escalate(ctx: AgentContext, snapshot: OnboardingSnapshot, 
   await recordActivity(ctx, {
     caseKey: caseFor(task.key),
     phase: "Acted",
-    summary: `Escalated to ${lead?.name ?? "the HR Ops lead"}, HR Ops lead. Allowed after 24h (§4.2).`,
+    summary: `Escalated to ${lead?.name ?? "the HR Ops lead"}, HR Ops lead. Allowed after 24h (Section 4.2).`,
     taskId,
     action: "escalate_owner",
     headline: "Escalated to HR Ops",
@@ -137,7 +137,7 @@ export async function proposeLoaner(ctx: AgentContext, snapshot: OnboardingSnaps
     action: "request_loaner",
     title: "Use a loaner laptop for Day 1?",
     detail,
-    reason: "Asset change · needs your approval (§4.2)",
+    reason: "Asset change · needs your approval (Section 4.2)",
     payload: { taskId },
   });
   await recordActivity(ctx, { caseKey: "empid", phase: "Asked", summary: "Loaner laptop is an asset change. Asked Anand to approve.", taskId, action: "request_loaner" });

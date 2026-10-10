@@ -88,7 +88,7 @@ describe("the client store", () => {
   });
 
   it("asks Navo, shows the pending line, then the answer with who wrote it", async () => {
-    const answer = { text: "Bring your PAN card (§6.1).", checked: ["Day 1 guide §6.1"], composedBy: "claude", model: "claude-sonnet-5-5", showActivity: true };
+    const answer = { text: "Bring your PAN card (Section 6.1).", checked: ["Day 1 guide Section 6.1"], composedBy: "claude", model: "claude-sonnet-5-5", showActivity: true };
     server({ "/api/state": [{ body: { vm: vms.risk } }], "/api/ask": [{ body: { answer, vm: vms.risk } }] });
     const store = mount();
     await waitFor(() => expect(store().vm).not.toBeNull());
@@ -98,7 +98,7 @@ describe("the client store", () => {
     expect(store().sheet).toBe("ask");
     expect(store().messages.map((m) => [m.role, m.text, m.answeredBy ?? null])).toEqual([
       ["user", "What should I bring?", null],
-      ["navo", "Bring your PAN card (§6.1).", "Answered by Claude Sonnet 5.5 with Navo's tools"],
+      ["navo", "Bring your PAN card (Section 6.1).", "Answered by Claude Sonnet 5.5 with Navo's tools"],
     ]);
     expect(store().messages[1]!.actions).toEqual([{ label: "Show me", run: "activity" }]);
     await act(async () => {

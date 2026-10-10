@@ -26,7 +26,7 @@ describe("policy retrieval", () => {
 
   it("finds the matching policy section", () => {
     const [top] = rankSections(currentSections(SECTIONS, NOW), "Can I work from home on Friday?");
-    expect(top?.ref).toBe("§2.1");
+    expect(top?.ref).toBe("Section 2.1");
     expect(top?.version).toBe("2.1");
   });
 
@@ -46,9 +46,9 @@ describe("policy retrieval", () => {
 
   it("answers escalation and benefits questions from the right sections", () => {
     const current = currentSections(SECTIONS, NOW);
-    expect(rankSections(current, "What if HR doesn't respond?")[0]?.ref).toBe("§4.2");
-    expect(rankSections(current, "Can I add my parents to insurance?")[0]?.ref).toBe("§3.2");
-    expect(rankSections(current, "What should I bring on Day 1?")[0]?.ref).toBe("§6.1");
+    expect(rankSections(current, "What if HR doesn't respond?")[0]?.ref).toBe("Section 4.2");
+    expect(rankSections(current, "Can I add my parents to insurance?")[0]?.ref).toBe("Section 3.2");
+    expect(rankSections(current, "What should I bring on Day 1?")[0]?.ref).toBe("Section 6.1");
   });
 
   it("compares versions numerically", () => {

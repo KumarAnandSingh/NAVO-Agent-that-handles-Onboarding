@@ -128,7 +128,7 @@ async function setup(manifest: Manifest, base: string, voice?: VoiceTrack): Prom
   }
   chipText = h("span", { class: "chip-text" });
   chip = h("div", { class: "chip" }, h("span", { class: "chip-face", html: manifest.faces.Navo ?? "" }), chipText);
-  note = h("div", { class: "note", text: manifest.live ? "Recorded from the working prototype · Claude live · synthetic data" : "Recorded from the working prototype · synthetic data" });
+  note = h("div", { class: "note", text: manifest.live ? "Recorded from the working prototype, with live Claude and synthetic data" : "Recorded from the working prototype, with synthetic data" });
   subLine = h("div", { class: "sub-line" });
   subs = h("div", { class: "subs" }, subLine);
   bar = h("div", { class: "bar" });

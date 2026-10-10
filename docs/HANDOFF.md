@@ -80,7 +80,7 @@ For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/adr/
 Anand Mehta joins Halden on Mon 19 Oct 2026. He uploads a missing address proof, clarifies
 one unreadable date, and confirms pre-filled forms. On Thu 15 Oct Navo's daily check finds
 the Employee ID 2 days late with zero working days of slack for the laptop, reminds HR on its
-own (§4.1), and plans an escalation (§4.2) and a loaner fallback. Either HR issues the ID
+own (Section 4.1), and plans an escalation (Section 4.2) and a loaner fallback. Either HR issues the ID
 (scenario "HR responds") or, if HR stays silent, Navo asks Anand to approve a loaner and
 escalates to HR Ops after 24 hours. One pickup is booked for Day 1; week 1 brings a benefits
 deadline and a booked walkthrough; Day 30 ends on figures computed from the run.

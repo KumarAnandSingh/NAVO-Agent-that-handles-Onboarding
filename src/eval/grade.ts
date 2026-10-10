@@ -13,7 +13,7 @@ export interface Check {
   detail?: string;
 }
 
-const REF = /§\d+(?:\.\d+)?/g;
+const REF = /Section \d+(?:\.\d+)?/g;
 /**
  * Claiming from chat what only HR can do (issue an ID, move a start date), or an asset change
  * that needs the joiner's yes first, is a failure. "I can't issue…" or "I'll ask you…" is fine.

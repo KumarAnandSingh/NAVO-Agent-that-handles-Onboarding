@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { refNumber, refRange } from "@/domain/policy-ref";
 import type { PolicyPreview } from "@/services/policy-retrieval/upload";
 import type { HrVM } from "@/services/view-model/types";
 import { keyHeaders } from "@/ui/state/claude-key";
@@ -89,7 +90,7 @@ export function PoliciesPage({ policies }: { policies: HrVM["policies"] }) {
   }
 
   const shown = result.kind === "preview" || result.kind === "published" ? result.preview : null;
-  const refs = shown ? `${shown.sections[0]?.ref}${shown.sections.length > 1 ? `–${shown.sections.at(-1)?.ref}` : ""}` : "";
+  const refs = shown ? refRange(shown.sections.map((section) => section.ref)) : "";
 
   return (
     <div className={s.page}>
@@ -195,7 +196,7 @@ export function PoliciesPage({ policies }: { policies: HrVM["policies"] }) {
           <ol className={s.preview} aria-label="Sections Navo found">
             {shown.sections.map((section) => (
               <li key={section.ref} className={s.previewItem}>
-                <span className={s.ref}>{section.ref}</span>
+                <span className={s.ref}>{refNumber(section.ref)}</span>
                 <span>
                   <span className={s.sectionTitle}>{section.title}</span> <span className={s.sectionBody}>{section.body}</span>
                 </span>

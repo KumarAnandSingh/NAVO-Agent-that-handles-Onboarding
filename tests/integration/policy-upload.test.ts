@@ -31,7 +31,7 @@ describe("splitting a policy into sections", () => {
 
   it("recognises numbered headings, but not numbered list items", () => {
     const { sections } = splitPolicy(
-      ["1. Scope", "Applies to all joiners.", "", "2 Steps", "1. Bring your PAN card.", "2. Collect your laptop.", "", "§3 Exceptions", "HR can approve exceptions."].join("\n"),
+      ["1. Scope", "Applies to all joiners.", "", "2 Steps", "1. Bring your PAN card.", "2. Collect your laptop.", "", "Section 3 Exceptions", "HR can approve exceptions."].join("\n"),
     );
     expect(sections.map((s) => s.title)).toEqual(["Scope", "Steps", "Exceptions"]);
     expect(sections[1]!.body).toBe("1. Bring your PAN card. 2. Collect your laptop.");
@@ -62,15 +62,15 @@ describe("publishing a policy", () => {
     const ws = await fresh();
     const other = await fresh();
     const preview = await previewPolicy(db, ws, NOW, { title: "Relocation support", version: "1.0", text: sample });
-    expect(preview.sections.map((s) => s.ref)).toEqual(["§9.1", "§9.2", "§9.3", "§9.4"]);
+    expect(preview.sections.map((s) => s.ref)).toEqual(["Section 9.1", "Section 9.2", "Section 9.3", "Section 9.4"]);
     expect(preview.effectiveDate).toBe("2026-10-07");
     expect(await searchPolicies(db, "moving household goods costs", { asOf: NOW, workspaceId: ws })).toEqual([]);
 
     await publishPolicy(db, ws, NOW, { title: "Relocation support", version: "1.0", text: sample });
     const [hit] = await searchPolicies(db, "Who pays for moving my household goods?", { asOf: NOW, workspaceId: ws });
-    expect(hit).toMatchObject({ ref: "§9.2", title: "What Halden pays for", source: "hr" });
+    expect(hit).toMatchObject({ ref: "Section 9.2", title: "What Halden pays for", source: "hr" });
     expect(await searchPolicies(db, "Who pays for moving my household goods?", { asOf: NOW, workspaceId: other })).toEqual([]);
-    expect((await listPolicies(db, ws, NOW)).at(-1)).toMatchObject({ title: "Relocation support", refs: "§9.1–§9.4", sections: 4, source: "hr", status: "in force" });
+    expect((await listPolicies(db, ws, NOW)).at(-1)).toMatchObject({ title: "Relocation support", refs: "9.1–9.4", sections: 4, source: "hr", status: "in force" });
   });
 
   it("lets Ask Navo answer from the new policy and cite it", async () => {
@@ -78,7 +78,7 @@ describe("publishing a policy", () => {
     await publishPolicy(db, ws, NOW, { title: "Relocation support", version: "1.0", text: sample });
     const answer = await askNavo(db, ws, "How many nights of temporary housing do I get?", { llm: null });
     expect(answer.text).toContain("14 nights");
-    expect(answer.citations).toEqual([{ ref: "§9.3", title: "Temporary housing", document: "Relocation support" }]);
+    expect(answer.citations).toEqual([{ ref: "Section 9.3", title: "Temporary housing", document: "Relocation support" }]);
   });
 
   it("publishes a newer version of a library policy that supersedes it in this workspace only", async () => {
@@ -87,7 +87,7 @@ describe("publishing a policy", () => {
     const text = "## Remote days\nUp to three remote days a week, any weekday.\n\n## Office days\nTuesdays are team days in the office.";
     await expect(previewPolicy(db, ws, NOW, { title: "Hybrid work policy", version: "2.1", replaces: "hybrid-work", text })).rejects.toThrow("higher than 2.1");
     const preview = await publishPolicy(db, ws, NOW, { title: "Hybrid work policy", version: "2.2", replaces: "hybrid-work", text });
-    expect(preview.sections.map((s) => s.ref)).toEqual(["§2.1", "§2.2"]);
+    expect(preview.sections.map((s) => s.ref)).toEqual(["Section 2.1", "Section 2.2"]);
     const [mine] = await searchPolicies(db, "How many remote days a week?", { asOf: NOW, workspaceId: ws });
     expect(mine).toMatchObject({ version: "2.2", body: "Up to three remote days a week, any weekday." });
     const [theirs] = await searchPolicies(db, "How many remote days a week?", { asOf: NOW, workspaceId: other });
@@ -104,7 +104,7 @@ describe("publishing a policy", () => {
     const ws = await fresh();
     await publishPolicy(db, ws, NOW, { title: "Relocation support", version: "1.0", effectiveDate: "2026-11-01", text: sample });
     expect(await searchPolicies(db, "temporary housing nights", { asOf: NOW, workspaceId: ws })).toEqual([]);
-    expect((await searchPolicies(db, "temporary housing nights", { asOf: atIst("2026-11-02", "10:00"), workspaceId: ws }))[0]?.ref).toBe("§9.3");
+    expect((await searchPolicies(db, "temporary housing nights", { asOf: atIst("2026-11-02", "10:00"), workspaceId: ws }))[0]?.ref).toBe("Section 9.3");
     expect((await listPolicies(db, ws, NOW)).find((p) => p.title === "Relocation support")?.status).toBe("scheduled");
   });
 
