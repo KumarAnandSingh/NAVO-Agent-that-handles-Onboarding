@@ -16,7 +16,7 @@ export function IdCardScreen({ vm }: { vm: ViewModel }) {
   const { go } = useNavo();
   const card = vm.day1.idCard;
   return (
-    <div className={p.screen} style={{ gap: 18 }}>
+    <div className={`${p.screen} ${s.detailScreen}`}>
       <button className={p.back} onClick={() => go("home")}>
         ‹ Home
       </button>
@@ -29,25 +29,25 @@ export function IdCardScreen({ vm }: { vm: ViewModel }) {
         <span className={s.idPhoto} aria-hidden>
           {vm.employee.initials}
         </span>
-        <div className={p.stack2} style={{ gap: 3 }}>
-          <span style={{ fontSize: 11, color: "var(--signal-2)", fontWeight: 600, letterSpacing: "0.08em" }}>{COMPANY.name.toUpperCase()}</span>
-          <span style={{ fontSize: 17, fontWeight: 600 }}>{vm.employee.name}</span>
-          <span style={{ fontSize: 12, color: "var(--text-on-navy-2)" }}>{vm.employee.role}</span>
-          <span style={{ fontSize: 12, color: "var(--text-on-navy-2)", fontFamily: "var(--font-mono)" }}>{card.number ?? "Number pending"}</span>
+        <div className={s.idText}>
+          <span className={s.idCompany}>{COMPANY.name.toUpperCase()}</span>
+          <span className={s.idName}>{vm.employee.name}</span>
+          <span className={s.idMeta}>{vm.employee.role}</span>
+          <span className={`${s.idMeta} ${s.idNumber}`}>{card.number ?? "Number pending"}</span>
         </div>
       </div>
       <div className={p.list}>
-        <div className={p.row} style={{ fontSize: 14 }}>
+        <div className={`${p.row} ${s.statusRow}`}>
           <span>Generated</span>
-          <span style={{ color: card.generated ? "var(--done)" : "var(--text-3)" }}>{card.generated ? `✓ ${card.generated}` : "Waiting on HR"}</span>
+          <span className={card.generated ? s.statusDone : s.statusPending}>{card.generated ? `✓ ${card.generated}` : "Waiting on HR"}</span>
         </div>
-        <div className={p.row} style={{ fontSize: 14 }}>
+        <div className={`${p.row} ${s.statusRow}`}>
           <span>Ready for collection</span>
-          <span style={{ color: card.ready ? "var(--done)" : "var(--text-3)" }}>{card.ready ? `✓ ${card.ready}` : "Printing"}</span>
+          <span className={card.ready ? s.statusDone : s.statusPending}>{card.ready ? `✓ ${card.ready}` : "Printing"}</span>
         </div>
-        <div className={`${p.row} ${p.rowLast}`} style={{ fontSize: 14 }}>
+        <div className={`${p.row} ${p.rowLast} ${s.statusRow}`}>
           <span>Collect</span>
-          <span style={{ fontWeight: 600 }}>{card.collect}</span>
+          <span className={s.collectWhen}>{card.collect}</span>
         </div>
       </div>
       <button className={`${p.primary} ${p.bottom}`} onClick={() => go("pickup")}>
@@ -67,7 +67,7 @@ export function PickupScreen({ vm }: { vm: ViewModel }) {
     go("day1");
   };
   return (
-    <div className={p.screen} style={{ gap: 18 }}>
+    <div className={`${p.screen} ${s.detailScreen}`}>
       <button className={p.back} onClick={() => go("idcard")}>
         ‹ ID card
       </button>
@@ -78,16 +78,16 @@ export function PickupScreen({ vm }: { vm: ViewModel }) {
       </div>
       {pickup && (
         <>
-          <div className={p.panel} style={{ borderRadius: 18, gap: 2 }}>
-            <span style={{ fontSize: 15, fontWeight: 600 }}>{pickup.site.replace(" · ", ", ")}</span>
+          <div className={`${p.panel} ${s.pickupSite}`}>
+            <span className={s.pickupName}>{pickup.site.replace(" · ", ", ")}</span>
             <span className={p.muted}>{pickup.window}</span>
           </div>
           <div className={p.list}>
             {pickup.items.map((item, i) => (
-              <div key={item.key} className={p.row} style={{ gridTemplateColumns: "1fr auto auto", padding: "12px 0", borderBottom: i === pickup.items.length - 1 ? "none" : undefined }}>
-                <span style={{ fontSize: 15, fontWeight: 600 }}>{item.name}</span>
-                <span style={{ fontSize: 11, fontWeight: 700, color: OWNER_INK[item.owner] }}>{item.owner}</span>
-                <span style={{ fontSize: 12, color: item.ready ? "var(--done)" : "var(--text-3)" }}>{item.status}</span>
+              <div key={item.key} className={`${p.row} ${s.pickupRow} ${i === pickup.items.length - 1 ? p.rowLast : ""}`}>
+                <span className={s.pickupName}>{item.name}</span>
+                <span className={s.ownerTag} style={{ color: OWNER_INK[item.owner] }}>{item.owner}</span>
+                <span className={`${s.pickupStatus} ${item.ready ? s.statusDone : s.statusPending}`}>{item.status}</span>
               </div>
             ))}
           </div>
@@ -111,19 +111,17 @@ export function DayOneScreen({ vm }: { vm: ViewModel }) {
   return (
     <div className={p.screen}>
       <NavoFace state="calm" size={50} />
-      <div className={p.titleBlock} style={{ gap: 6 }}>
-        <span className={p.muted} style={{ fontSize: 14 }}>
-          Good morning, {vm.employee.firstName}.
-        </span>
+      <div className={`${p.titleBlock} ${s.dayOneTitle}`}>
+        <span className={`${p.muted} ${s.dayOneGreeting}`}>Good morning, {vm.employee.firstName}.</span>
         <h1 className={p.headline}>Today is Day 1. I&apos;ve got the plan.</h1>
         <p className={p.sub}>{day1.travelTip}</p>
       </div>
       <div className={p.list}>
         {day1.schedule.map((item, i) => (
-          <div key={`${item.time}-${item.what}`} className={`${s.scheduleRow} ${item.current ? s.scheduleNow : ""}`} style={{ borderBottom: i === day1.schedule.length - 1 ? "none" : undefined }}>
-            <span style={{ fontSize: 12, color: "var(--text-3)", fontVariantNumeric: "tabular-nums" }}>{item.time}</span>
-            <span className={p.stack2} style={{ gap: 1 }}>
-              <span style={{ fontSize: 14, fontWeight: 600 }}>{item.what}</span>
+          <div key={`${item.time}-${item.what}`} className={`${s.scheduleRow} ${item.current ? s.scheduleNow : ""} ${i === day1.schedule.length - 1 ? s.scheduleRowLast : ""}`}>
+            <span className={s.scheduleTime}>{item.time}</span>
+            <span className={s.itemText}>
+              <span className={s.itemTitle}>{item.what}</span>
               <span className={p.rowNote}>{item.where}</span>
             </span>
             <span className={s.whoTag} style={{ color: WHO_INK[item.tone] }}>
@@ -132,9 +130,9 @@ export function DayOneScreen({ vm }: { vm: ViewModel }) {
           </div>
         ))}
       </div>
-      <div className={p.panel} style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 14 }}>
+      <div className={`${p.panel} ${s.reminder}`}>
         <NavoFace state="watching" size={24} decorative />
-        <span style={{ fontSize: 13, lineHeight: 1.4 }}>I&apos;ll remind you as each one comes up. Bring PAN and one photo ID.</span>
+        <span className={s.reminderText}>I&apos;ll remind you as each one comes up. Bring PAN and one photo ID.</span>
       </div>
       <button className={`${p.primary} ${p.bottom}`} disabled={busy} onClick={arrive}>
         {day1.collected ? "See today's summary" : `I'm at ${COMPANY.pickupSite.split(" · ").pop()}`}
@@ -159,7 +157,7 @@ export function ConfirmScreen({ vm }: { vm: ViewModel }) {
     if (next && (await demo({ action: "skip", to: "day1_end" }))) go("day1done");
   };
   return (
-    <div className={p.screen} style={{ gap: 18 }}>
+    <div className={`${p.screen} ${s.detailScreen}`}>
       <button className={p.back} onClick={() => go("day1")}>
         ‹ Day 1
       </button>
@@ -168,7 +166,7 @@ export function ConfirmScreen({ vm }: { vm: ViewModel }) {
         <h1 className={p.headline}>Did you get everything?</h1>
         <p className={p.sub}>Tap what you collected. I&apos;ll close the requests with HR and IT.</p>
       </div>
-      <div className={p.stack2} style={{ gap: 8 }}>
+      <div className={s.toggleList}>
         {items.map((item) => {
           const on = Boolean(got[item.key]);
           return (
@@ -194,26 +192,26 @@ export function DayOneDoneScreen({ vm }: { vm: ViewModel }) {
     go("week1");
   };
   return (
-    <div className={`${p.screen} ${s.celebrate}`} style={{ gap: 18 }}>
-      <div style={{ display: "flex", justifyContent: "center", paddingTop: 6 }}>
+    <div className={`${p.screen} ${s.detailScreen} ${s.celebrate}`}>
+      <div className={s.celebrateFace}>
         <NavoFace state="celebrating" size={92} />
       </div>
-      <div className={p.titleBlock} style={{ textAlign: "center" }}>
+      <div className={`${p.titleBlock} ${s.celebrateTitle}`}>
         <h1 className={p.headline}>Day 1 done. Welcome to {COMPANY.name}.</h1>
         <p className={p.sub}>Everything from today is closed out.</p>
       </div>
       <div className={p.list}>
         {vm.day1.wrapUp.map((row, i) => (
-          <div key={row.name} className={p.row} style={{ fontSize: 14, borderBottom: i === vm.day1.wrapUp.length - 1 ? "none" : undefined }}>
+          <div key={row.name} className={`${p.row} ${s.statusRow} ${i === vm.day1.wrapUp.length - 1 ? p.rowLast : ""}`}>
             <span>{row.name}</span>
-            <span style={{ fontSize: 12, color: TONE[row.tone].ink }}>{row.status}</span>
+            <span className={s.wrapUpStatus} style={{ color: TONE[row.tone].ink }}>{row.status}</span>
           </div>
         ))}
       </div>
       {vm.day1.tomorrow && (
         <div className={p.panel}>
-          <span style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)" }}>Tomorrow</span>
-          <span style={{ fontSize: 14, lineHeight: 1.45 }}>{vm.day1.tomorrow}</span>
+          <span className={s.panelLabel}>Tomorrow</span>
+          <span className={s.panelText}>{vm.day1.tomorrow}</span>
         </div>
       )}
       <button className={`${p.primary} ${p.bottom}`} disabled={busy} onClick={skip}>

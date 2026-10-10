@@ -23,10 +23,10 @@ export function IntroBrief() {
   if (overlay !== "intro") return null;
   const e = vm?.employee;
   const people = [
-    { initials: e?.initials ?? "AM", name: e?.name ?? "Anand Mehta", role: `New joiner · ${e?.role ?? "Senior Product Manager"} · starts ${e?.day1 ?? "Mon 19 Oct"}`, bg: "var(--accent-soft)", ink: "var(--accent)", ring: true },
-    { initials: "PN", name: e?.hrName ?? "Priya Nair", role: `HR onboarding owner · ${vm?.impact.joiners ?? 14} joiners this month`, bg: "#F1ECFE", ink: "var(--owner-hr)" },
-    { initials: "RI", name: e?.managerName ?? "Rahul Iyer", role: "Hiring manager", bg: "#FEF3E2", ink: "var(--owner-manager)" },
-    { initials: "MS", name: e?.buddyName ?? "Meera Shah", role: "Buddy, same team", bg: "var(--surface-4)", ink: "var(--text-2)" },
+    { initials: e?.initials ?? "AM", name: e?.name ?? "Anand Mehta", role: `New joiner · ${e?.role ?? "Senior Product Manager"} · starts ${e?.day1 ?? "Mon 19 Oct"}`, avatar: st.avatarJoiner, ring: true },
+    { initials: "PN", name: e?.hrName ?? "Priya Nair", role: `HR onboarding owner · ${vm?.impact.joiners ?? 14} joiners this month`, avatar: st.avatarHr },
+    { initials: "RI", name: e?.managerName ?? "Rahul Iyer", role: "Hiring manager", avatar: st.avatarManager },
+    { initials: "MS", name: e?.buddyName ?? "Meera Shah", role: "Buddy, same team", avatar: st.avatarBuddy },
   ];
   const explore = () => {
     setOverlay(null);
@@ -37,10 +37,8 @@ export function IntroBrief() {
       <div className={st.sheet}>
         <div className={st.hero}>
           <NavoFace state="brand" size={96} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <span className={st.kicker} style={{ color: "var(--accent)" }}>
-              Demo · about 3 minutes
-            </span>
+          <div className={st.heroText}>
+            <span className={`${st.kicker} ${st.heroKicker}`}>Demo · about 3 minutes</span>
             <h1 className={st.title}>
               {COMPANY.product}: {COMPANY.tagline}.
             </h1>
@@ -48,17 +46,13 @@ export function IntroBrief() {
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <span className={st.kicker} style={{ color: "var(--text-3)" }}>
-            Who you&apos;ll meet
-          </span>
+        <div className={st.block}>
+          <span className={`${st.kicker} ${st.blockKicker}`}>Who you&apos;ll meet</span>
           <div className={st.people}>
             {people.map((p) => (
-              <div key={p.name} className={st.person} style={p.ring ? { boxShadow: "0 0 0 1.5px var(--accent)" } : undefined}>
-                <span className={st.avatar} style={{ background: p.bg, color: p.ink }}>
-                  {p.initials}
-                </span>
-                <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <div key={p.name} className={`${st.person} ${p.ring ? st.personJoiner : ""}`}>
+                <span className={`${st.avatar} ${p.avatar}`}>{p.initials}</span>
+                <span className={st.personText}>
                   <span className={st.personName}>{p.name}</span>
                   <span className={st.personRole}>{p.role}</span>
                 </span>
@@ -66,61 +60,51 @@ export function IntroBrief() {
             ))}
             <div className={`${st.person} ${st.personNavo}`}>
               <NavoFace state="watching" size={44} />
-              <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span className={st.personText}>
                 <span className={st.personName}>{COMPANY.product}</span>
-                <span className={st.personRole} style={{ color: "var(--text-on-navy-2)" }}>
-                  The onboarding agent working for both
-                </span>
+                <span className={st.personRole}>The onboarding agent working for both</span>
               </span>
             </div>
           </div>
         </div>
 
         <div className={st.columns}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <span className={st.kicker} style={{ color: "var(--text-3)" }}>
-              The story in 6 chapters
-            </span>
+          <div className={st.block}>
+            <span className={`${st.kicker} ${st.blockKicker}`}>The story in 6 chapters</span>
             <div>
               {INTRO_CHAPTERS.map(([what, when], i) => (
-                <div key={what} className={st.chapterRow}>
-                  <span className={st.chapterDot} style={i === 2 ? { background: "var(--accent)", color: "#fff" } : { background: "var(--accent-soft)", color: "var(--accent)" }}>
-                    {i + 1}
-                  </span>
-                  <span style={{ fontSize: 16, fontWeight: i === 2 ? 700 : 500 }}>{what}</span>
-                  <span style={{ fontSize: 13, color: "var(--text-3)" }}>
-                    {i === 0 ? when : `${when} · ${CHAPTERS[i]?.when}`}
-                  </span>
+                <div key={what} className={`${st.chapterRow} ${i === 2 ? st.chapterRowKey : ""}`}>
+                  <span className={st.chapterDot}>{i + 1}</span>
+                  <span className={st.chapterName}>{what}</span>
+                  <span className={st.chapterWhen}>{i === 0 ? when : `${when} · ${CHAPTERS[i]?.when}`}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <span className={st.kicker} style={{ color: "var(--text-3)" }}>
-              Watch for
-            </span>
+          <div className={st.block}>
+            <span className={`${st.kicker} ${st.blockKicker}`}>Watch for</span>
             <div className={st.watch}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div className={st.watchHead}>
                 <NavoFace state="concerned" size={32} />
-                <span style={{ fontSize: 17, fontWeight: 600 }}>The late Employee ID</span>
+                <span className={st.watchTitle}>The late Employee ID</span>
               </div>
-              <span style={{ fontSize: 14, lineHeight: 1.5, color: "var(--text-on-navy)" }}>
+              <span className={st.watchText}>
                 HR is late with {e?.firstName ?? "Anand"}&apos;s Employee ID. His laptop, email and VPN all depend on it. Navo spots the risk, follows up, and escalates or asks{" "}
                 {e?.firstName ?? "Anand"} for a decision, all within its rules.
               </span>
               <div className={st.chain}>
                 <span>Employee ID</span>
-                <b style={{ color: "var(--signal-2)" }}>→</b>
+                <b>→</b>
                 <span>Laptop</span>
-                <b style={{ color: "var(--signal-2)" }}>→</b>
+                <b>→</b>
                 <span>Email, VPN</span>
-                <b style={{ color: "var(--signal-2)" }}>→</b>
+                <b>→</b>
                 <span>Day 1</span>
               </div>
             </div>
             <div className={st.legend}>
               <span>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--you-dot)" }} />
+                <span className={st.legendYou} />
                 <b>YOU</b> needs Anand
               </span>
               <span>
@@ -128,11 +112,11 @@ export function IntroBrief() {
                 <b>NAVO</b> is on it
               </span>
               <span>
-                <span style={{ width: 12, height: 12, borderRadius: "50%", background: "var(--done)" }} />
+                <span className={st.legendDone} />
                 <b>DONE</b>
               </span>
               <span>
-                <span style={{ width: 11, height: 11, borderRadius: "50%", border: "2.5px solid var(--wait-2)" }} />
+                <span className={st.legendWaiting} />
                 <b>WAITING</b> on a team
               </span>
             </div>
@@ -140,9 +124,9 @@ export function IntroBrief() {
         </div>
 
         <div className={st.footer}>
-          <span style={{ fontSize: 13, color: "var(--text-3)" }}>{COMPANY.disclaimer}</span>
-          <span style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-            <span style={{ fontSize: 12, color: "var(--text-3)" }}>Space to play · → next step · B brief</span>
+          <span className={st.disclaimer}>{COMPANY.disclaimer}</span>
+          <span className={st.footerActions}>
+            <span className={st.shortcuts}>Space to play · → next step · B brief</span>
             <button className={st.ghostButton} onClick={explore}>
               Explore on my own
             </button>
@@ -178,22 +162,18 @@ export function ImpactOutro() {
   ];
   return (
     <div className={`${st.overlay} ${st.outro}`} role="dialog" aria-modal="true" aria-label="Impact">
-      <div className={st.sheet} style={{ width: 1000 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+      <div className={`${st.sheet} ${st.outroSheet}`}>
+        <div className={st.outroHead}>
           <NavoFace state="celebrating" size={88} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <span className={st.kicker} style={{ color: "var(--signal-2)" }}>
-              {vm.employee.firstName}&apos;s first 30 days
-            </span>
+          <div className={st.outroHeadText}>
+            <span className={`${st.kicker} ${st.outroKicker}`}>{vm.employee.firstName}&apos;s first 30 days</span>
             <h1 className={st.title}>Navo did the coordinating. People made the decisions.</h1>
           </div>
         </div>
         <div className={st.stats}>
           {stats.map((s) => (
             <div key={s.label} className={st.stat}>
-              <span className={st.statNumber} style={s.accent ? { color: "var(--signal-2)" } : undefined}>
-                {s.n}
-              </span>
+              <span className={`${st.statNumber} ${s.accent ? st.statNumberLead : ""}`}>{s.n}</span>
               <span className={st.statLabel}>{s.label}</span>
             </div>
           ))}
@@ -211,8 +191,8 @@ export function ImpactOutro() {
           </div>
         </div>
         <div className={`${st.footer} ${st.outroFooter}`}>
-          <span style={{ fontSize: 13, color: "#8A9BC2" }}>Figures computed from this simulated run.</span>
-          <span style={{ display: "flex", gap: 10 }}>
+          <span className={st.outroNote}>Figures computed from this simulated run.</span>
+          <span className={st.outroActions}>
             <button className={st.darkGhost} onClick={() => setOverlay(null)}>
               Back to the demo
             </button>

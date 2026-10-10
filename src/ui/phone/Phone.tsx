@@ -78,7 +78,7 @@ export function Phone({ fullscreen = false }: { fullscreen?: boolean }) {
             </div>
           )}
           {error && (
-            <div className={p.toast} role="alert" style={{ background: "var(--you)" }}>
+            <div className={`${p.toast} ${p.toastError}`} role="alert">
               <span>{error}</span>
             </div>
           )}
@@ -86,7 +86,7 @@ export function Phone({ fullscreen = false }: { fullscreen?: boolean }) {
           <AskSheet />
         </>
       ) : (
-        <div style={{ flex: 1, display: "grid", placeItems: "center" }}>
+        <div className={p.loading}>
           <NavoFace state="thinking" size={64} />
         </div>
       )}
@@ -97,8 +97,8 @@ export function Phone({ fullscreen = false }: { fullscreen?: boolean }) {
 function Sheet({ open, label, title, onClose, children, footer }: { open: boolean; label: string; title: ReactNode; onClose: () => void; children: ReactNode; footer?: ReactNode }) {
   return (
     <>
-      <div className={p.scrim} style={{ opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none" }} onClick={onClose} aria-hidden />
-      <div className={p.sheet} style={{ transform: `translateY(${open ? "0%" : "105%"})`, visibility: open ? "visible" : "hidden", transition: open ? undefined : "transform .38s cubic-bezier(.2,.8,.2,1), visibility 0s .38s" }} role="dialog" aria-label={label} aria-modal={open} aria-hidden={!open} inert={!open}>
+      <div className={`${p.scrim} ${open ? "" : p.scrimHidden}`} onClick={onClose} aria-hidden />
+      <div className={`${p.sheet} ${open ? "" : p.sheetClosed}`} role="dialog" aria-label={label} aria-modal={open} aria-hidden={!open} inert={!open}>
         <div className={p.sheetHeader}>
           <span className={p.sheetTitle}>{title}</span>
           <button className={p.sheetDone} onClick={onClose}>
@@ -128,24 +128,24 @@ function ActivitySheet({ vm }: { vm: ViewModel }) {
     >
       {vm.activity.length === 0 && <span className={p.muted}>Nothing yet. Every action Navo takes shows up here, with the reason.</span>}
       {vm.activity.map((c) => (
-        <div key={c.key} className={p.stack2} style={{ gap: 10 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 15, fontWeight: 600 }}>{c.title}</span>
-            <span className={p.pill} style={{ fontWeight: 400, fontSize: 12, color: TONE[c.tone].ink, background: c.tone === "risk" ? "#FCEBDD" : c.tone === "wait" ? "#FBF1D9" : TONE[c.tone].bg }}>
+        <div key={c.key} className={p.case}>
+          <div className={p.caseHead}>
+            <span className={p.caseTitle}>{c.title}</span>
+            <span className={`${p.pill} ${p.caseStatus}`} style={{ color: TONE[c.tone].ink, background: c.tone === "risk" ? "#FCEBDD" : c.tone === "wait" ? "#FBF1D9" : TONE[c.tone].bg }}>
               {c.status}
             </span>
           </div>
-          <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
+          <ol className={p.events}>
             {c.events.map((e, i) => (
-              <li key={i} style={{ display: "grid", gridTemplateColumns: "64px 12px 1fr", gap: 8 }}>
-                <span style={{ fontSize: 12, color: "var(--text-3)", fontVariantNumeric: "tabular-nums", paddingTop: 1 }}>{e.time}</span>
-                <span style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: TONE[e.tone].dot, marginTop: 5, flex: "none" }} />
-                  <span style={{ flex: 1, width: 1, background: "#E2E6ED" }} />
+              <li key={i} className={p.event}>
+                <span className={p.eventTime}>{e.time}</span>
+                <span className={p.eventRail}>
+                  <span className={p.eventDot} style={{ background: TONE[e.tone].dot }} />
+                  <span className={p.eventLine} />
                 </span>
-                <span className={p.stack2} style={{ paddingBottom: 12 }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: TONE[e.tone].ink }}>{e.phase}</span>
-                  <span style={{ fontSize: 13, lineHeight: 1.4 }}>{e.text}</span>
+                <span className={p.eventBody}>
+                  <span className={p.eventPhase} style={{ color: TONE[e.tone].ink }}>{e.phase}</span>
+                  <span className={p.eventText}>{e.text}</span>
                 </span>
               </li>
             ))}
@@ -180,30 +180,30 @@ function AskSheet() {
       onClose={() => setSheet(null)}
       title="Ask Navo"
       footer={
-        <div style={{ flex: "none", padding: "10px 16px 26px", borderTop: "1px solid var(--line-3)", display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        <div className={p.askFooter}>
+          <div className={p.askChips}>
             {ASK_CHIPS.map((chip) => (
-              <button key={chip} onClick={() => send(chip)} style={{ border: "1px solid #E2E6ED", background: "#fff", borderRadius: 999, padding: "6px 11px", fontSize: 12, color: "var(--ink)" }}>
+              <button key={chip} className={p.askChip} onClick={() => send(chip)}>
                 {chip}
               </button>
             ))}
           </div>
           <form
-            style={{ display: "flex", gap: 8 }}
+            className={p.askForm}
             onSubmit={(e) => {
               e.preventDefault();
               send(question);
             }}
           >
             <input
+              className={p.askInput}
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="Type a question"
               aria-label="Question for Navo"
               maxLength={500}
-              style={{ flex: 1, border: "1px solid #E2E6ED", borderRadius: 22, padding: "11px 16px", fontSize: 14, outline: "none", color: "var(--ink)", minWidth: 0 }}
             />
-            <button type="submit" style={{ background: "var(--accent)", color: "#fff", border: "none", borderRadius: 22, padding: "0 16px", fontSize: 14, fontWeight: 600 }}>
+            <button type="submit" className={p.askSend}>
               Ask
             </button>
           </form>
@@ -213,22 +213,22 @@ function AskSheet() {
       {messages.length === 0 && (
         <>
           <NavoFace state="calm" size={44} />
-          <span style={{ fontSize: 14, color: "var(--text-3)", lineHeight: 1.5 }}>I know your onboarding state, your calendar and Halden&apos;s policies. Ask about anything coming up.</span>
+          <span className={p.askIntro}>I know your onboarding state, your calendar and Halden&apos;s policies. Ask about anything coming up.</span>
         </>
       )}
-      <div ref={thread} aria-live="polite" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <div ref={thread} aria-live="polite" className={p.thread}>
         {messages.map((m) =>
           m.role === "user" ? (
-            <span key={m.id} style={{ alignSelf: "flex-end", fontSize: 14, lineHeight: 1.5, maxWidth: "92%", background: "var(--surface-3)", borderRadius: 14, padding: "9px 13px" }}>
+            <span key={m.id} className={p.question}>
               {m.text}
             </span>
           ) : (
-            <div key={m.id} style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
-              {m.checked && m.checked.length > 0 && <span style={{ fontSize: 11, color: "var(--accent)" }}>Checked {m.checked.join(" · ")}</span>}
-              <span style={{ fontSize: 14, lineHeight: 1.5, maxWidth: "92%", color: m.pending ? "var(--text-3)" : "var(--ink)", textWrap: "pretty" }}>{m.text}</span>
-              {m.answeredBy && <span style={{ fontSize: 10, color: "var(--text-4)" }}>{m.answeredBy}</span>}
+            <div key={m.id} className={p.answer}>
+              {m.checked && m.checked.length > 0 && <span className={p.answerChecked}>Checked {m.checked.join(" · ")}</span>}
+              <span className={`${p.answerText} ${m.pending ? p.answerPending : ""}`}>{m.text}</span>
+              {m.answeredBy && <span className={p.answeredBy}>{m.answeredBy}</span>}
               {m.actions?.map((a) => (
-                <button key={a.label} onClick={() => setSheet(a.run)} style={{ background: "var(--accent-soft-2)", color: "var(--accent)", border: "none", borderRadius: 10, padding: "8px 12px", fontSize: 13, fontWeight: 600 }}>
+                <button key={a.label} className={p.answerAction} onClick={() => setSheet(a.run)}>
                   {a.label}
                 </button>
               ))}

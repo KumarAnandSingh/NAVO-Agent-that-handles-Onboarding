@@ -51,9 +51,7 @@ export function PresenterPanel() {
             Brief
           </button>
         </div>
-        <span className={st.small} style={{ lineHeight: 1.5 }}>
-          Keys: → next · ← back · Space play/pause · H HR view · B brief · Esc close
-        </span>
+        <span className={`${st.small} ${st.keys}`}>Keys: → next · ← back · Space play/pause · H HR view · B brief · Esc close</span>
 
         <div className={st.notice}>
           <span className={st.noticeKicker}>WHAT TO NOTICE</span>
@@ -70,21 +68,15 @@ export function PresenterPanel() {
         </div>
 
         <nav className={st.upcoming} aria-label="Chapters">
-          <span className={st.label} style={{ paddingBottom: 6 }}>
-            Chapters
-          </span>
+          <span className={`${st.label} ${st.chaptersLabel}`}>Chapters</span>
           {CHAPTERS.map((chapter, i) => {
             const on = i === current && view === "emp";
             const done = i < current;
             return (
-              <button key={chapter.name} className={`${st.chapter} ${on ? st.chapterOn : ""}`} disabled={working} onClick={() => jump(i)} aria-current={on ? "step" : undefined}>
-                <span className={st.chapterDot} style={on ? { background: "var(--accent)", color: "#fff" } : done ? { background: "var(--done-soft)", color: "var(--done)" } : undefined}>
-                  {done ? "✓" : i + 1}
-                </span>
-                <span className={st.brandText} style={{ gap: 1 }}>
-                  <span className={st.chapterName} style={{ fontWeight: on ? 600 : 400 }}>
-                    {chapter.name}
-                  </span>
+              <button key={chapter.name} className={`${st.chapter} ${on ? st.chapterOn : done ? st.chapterDone : ""}`} disabled={working} onClick={() => jump(i)} aria-current={on ? "step" : undefined}>
+                <span className={st.chapterDot}>{done ? "✓" : i + 1}</span>
+                <span className={`${st.brandText} ${st.chapterText}`}>
+                  <span className={st.chapterName}>{chapter.name}</span>
                   <span className={st.small}>{chapter.when}</span>
                 </span>
               </button>
@@ -111,9 +103,7 @@ export function PresenterPanel() {
 
           {vm && vm.runtime.upcoming.length > 0 && (
             <div className={st.upcoming}>
-              <span className={st.small} style={{ fontWeight: 600 }}>
-                Up next in the simulation
-              </span>
+              <span className={`${st.small} ${st.upNext}`}>Up next in the simulation</span>
               {vm.runtime.upcoming.slice(0, 4).map((e, i) => (
                 <div key={i} className={st.upcomingRow}>
                   <span>{e.label}</span>
@@ -135,12 +125,12 @@ export function PresenterPanel() {
             {vm?.workspace.itDelay ? "IT delay injected" : "Inject IT delay"}
           </button>
           {vm?.pendingApproval && (
-            <span className={st.tip} style={{ color: "#9A3B12" }}>
+            <span className={`${st.tip} ${st.tipWaiting}`}>
               Waiting on {vm.employee.firstName}. Approve the loaner in the app.
             </span>
           )}
           {hrCanAct && (
-            <span className={st.tip} style={{ color: "var(--text-3)" }}>
+            <span className={`${st.tip} ${st.tipHint}`}>
               Tip: switch to HR owner and press Generate ID.
             </span>
           )}

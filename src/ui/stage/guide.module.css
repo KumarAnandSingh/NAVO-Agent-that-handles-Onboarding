@@ -105,11 +105,35 @@
   gap: 40px;
 }
 
+.outroSheet {
+  width: 1000px;
+}
+
 .hero {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 28px;
   align-items: center;
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heroKicker {
+  color: var(--accent);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.blockKicker {
+  color: var(--text-3);
 }
 
 .kicker {
@@ -151,6 +175,17 @@
   gap: 12px;
 }
 
+/* The joiner is the one the story follows. */
+.personJoiner {
+  box-shadow: 0 0 0 1.5px var(--accent);
+}
+
+.personText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .personNavo {
   background: var(--navy);
   color: #fff;
@@ -167,6 +202,26 @@
   justify-content: center;
 }
 
+.avatarJoiner {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.avatarHr {
+  background: #f1ecfe;
+  color: var(--owner-hr);
+}
+
+.avatarManager {
+  background: #fef3e2;
+  color: var(--owner-manager);
+}
+
+.avatarBuddy {
+  background: var(--surface-4);
+  color: var(--text-2);
+}
+
 .personName {
   font-size: 16px;
   font-weight: 600;
@@ -176,6 +231,10 @@
   font-size: 13px;
   line-height: 1.4;
   color: var(--text-3);
+}
+
+.personNavo .personRole {
+  color: var(--text-on-navy-2);
 }
 
 .columns {
@@ -202,6 +261,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.chapterName {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.chapterWhen {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+/* The chapter where Navo acts on the late Employee ID. */
+.chapterRowKey .chapterDot {
+  background: var(--accent);
+  color: #fff;
+}
+
+.chapterRowKey .chapterName {
+  font-weight: 700;
 }
 
 .watch {
@@ -213,6 +294,23 @@
   flex-direction: column;
   gap: 14px;
   box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4), 0 20px 40px -20px rgba(56, 189, 248, 0.5);
+}
+
+.watchHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.watchTitle {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.watchText {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-on-navy);
 }
 
 .chain {
@@ -227,6 +325,10 @@
   background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   padding: 5px 10px;
+}
+
+.chain b {
+  color: var(--signal-2);
 }
 
 .legend {
@@ -244,6 +346,27 @@
   gap: 8px;
 }
 
+.legendYou {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--you-dot);
+}
+
+.legendDone {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--done);
+}
+
+.legendWaiting {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2.5px solid var(--wait-2);
+}
+
 .footer {
   display: flex;
   align-items: center;
@@ -254,8 +377,51 @@
   flex-wrap: wrap;
 }
 
+.disclaimer {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.footerActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.shortcuts {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
 .outroFooter {
   border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.outroHead {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.outroHeadText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.outroKicker {
+  color: var(--signal-2);
+}
+
+.outroNote {
+  font-size: 13px;
+  color: #8a9bc2;
+}
+
+.outroActions {
+  display: flex;
+  gap: 10px;
 }
 
 .ghostButton {
@@ -305,6 +471,10 @@
   font-size: 44px;
   font-weight: 700;
   letter-spacing: -0.03em;
+}
+
+.statNumberLead {
+  color: var(--signal-2);
 }
 
 .statLabel {

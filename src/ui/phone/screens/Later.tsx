@@ -15,36 +15,33 @@ export function CultureScreen() {
   const slide = CULTURE_SLIDES[index] ?? CULTURE_SLIDES[0]!;
   const last = index === CULTURE_SLIDES.length - 1;
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "npIn .35s ease" }}>
+    <div className={s.culture}>
       <div
         className={s.slideImage}
         role="img"
         aria-label={`${slide.kicker} illustration`}
         style={{ background: `radial-gradient(260px 200px at 70% 30%, ${slide.art[1]}55, transparent 70%), linear-gradient(160deg, ${slide.art[0]}, #0B1530)` }}
       />
-      <div style={{ flex: 1, padding: "18px 24px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div className={s.slideBody}>
         <div className={s.slideBars}>
           {CULTURE_SLIDES.map((item, i) => (
-            <div key={item.kicker} style={{ height: 3, borderRadius: 2, background: i <= index ? "var(--signal)" : "rgba(255,255,255,.2)" }} />
+            <div key={item.kicker} className={`${s.slideBar} ${i <= index ? s.slideBarSeen : ""}`} />
           ))}
         </div>
-        <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--signal-2)" }}>
+        <span className={s.slideKicker}>
           {index + 1} of {CULTURE_SLIDES.length} · {slide.kicker}
         </span>
-        <h1 style={{ margin: 0, fontSize: 25, lineHeight: 1.2, fontWeight: 600, letterSpacing: "-0.02em" }}>{slide.title}</h1>
-        <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5, color: "var(--text-on-navy-2)" }}>{slide.body}</p>
-        <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,.06)" }}>
+        <h1 className={s.slideTitle}>{slide.title}</h1>
+        <p className={s.slideText}>{slide.body}</p>
+        <div className={s.slideNote}>
           <NavoFace state="calm" size={26} decorative />
-          <span style={{ fontSize: 12, lineHeight: 1.4, color: "var(--text-on-navy)" }}>What to know before mandatory training.</span>
+          <span className={s.slideNoteText}>What to know before mandatory training.</span>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <button onClick={() => go("home")} style={{ background: "none", border: "none", color: "var(--text-on-navy-3)", fontSize: 14, padding: 0 }}>
+        <div className={s.slideNav}>
+          <button className={s.slideClose} onClick={() => go("home")}>
             Close
           </button>
-          <button
-            onClick={() => (last ? go("home") : setIndex(index + 1))}
-            style={{ background: "#fff", color: "var(--ink)", border: "none", borderRadius: 12, padding: "10px 18px", fontSize: 14, fontWeight: 600 }}
-          >
+          <button className={s.slideNext} onClick={() => (last ? go("home") : setIndex(index + 1))}>
             {last ? "Done" : "Next →"}
           </button>
         </div>
@@ -72,11 +69,11 @@ export function WeekOneScreen({ vm }: { vm: ViewModel }) {
       </div>
       <div className={p.list}>
         {week.items.map((item, i) => (
-          <div key={item.name} className={p.row} style={{ gridTemplateColumns: "22px 1fr auto", padding: "10px 0", borderBottom: i === week.items.length - 1 ? "none" : undefined }}>
-            {item.done ? <span className={s.greenCheck} style={{ width: 18, height: 18, fontSize: 10, margin: 0 }}>✓</span> : <NavoFace state="acting" size={20} decorative />}
-            <span className={p.stack2} style={{ gap: 1 }}>
-              <span style={{ fontSize: 14, fontWeight: item.done ? 400 : 600 }}>{item.name}</span>
-              {item.sub && <span style={{ fontSize: 11, color: "var(--accent)" }}>{item.sub}</span>}
+          <div key={item.name} className={`${p.row} ${s.weekRow} ${i === week.items.length - 1 ? p.rowLast : ""}`}>
+            {item.done ? <span className={`${s.greenCheck} ${s.weekCheck}`}>✓</span> : <NavoFace state="acting" size={20} decorative />}
+            <span className={s.itemText}>
+              <span className={`${s.itemTitle} ${item.done ? s.itemTitleDone : ""}`}>{item.name}</span>
+              {item.sub && <span className={s.itemSub}>{item.sub}</span>}
             </span>
             <span className={p.rowNote}>{item.day}</span>
           </div>
@@ -85,23 +82,23 @@ export function WeekOneScreen({ vm }: { vm: ViewModel }) {
       {benefits && (
         <button className={s.nudge} onClick={() => go("benefits")}>
           <NavoFace state="thinking" size={26} decorative />
-          <span className={p.stack2} style={{ flex: 1 }}>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>{benefits.enrolled ? "Health cover enrolled" : `Health cover enrolment closes in ${benefits.daysLeft} day${benefits.daysLeft === 1 ? "" : "s"}`}</span>
-            <span style={{ fontSize: 12, color: "#7A5418" }}>{benefits.enrolled ? `${benefits.covered} · confirmed` : "Relevant to you now · 1 min"}</span>
+          <span className={s.nudgeText}>
+            <span className={s.itemTitle}>{benefits.enrolled ? "Health cover enrolled" : `Health cover enrolment closes in ${benefits.daysLeft} day${benefits.daysLeft === 1 ? "" : "s"}`}</span>
+            <span className={s.nudgeNote}>{benefits.enrolled ? `${benefits.covered} · confirmed` : "Relevant to you now · 1 min"}</span>
           </span>
-          <span style={{ color: "var(--risk-ink)" }}>→</span>
+          <span className={s.nudgeArrow}>→</span>
         </button>
       )}
       {week.suggestion && (
-        <div className={p.panel} style={{ gap: 10 }}>
-          <div className={p.kickerRow} style={{ gap: 8 }}>
+        <div className={`${p.panel} ${s.suggestion}`}>
+          <div className={`${p.kickerRow} ${s.suggestionHead}`}>
             <NavoFace state="thinking" size={22} decorative />
-            <span style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)" }}>Navo suggests</span>
+            <span className={s.panelLabel}>Navo suggests</span>
           </div>
-          <span style={{ fontSize: 14, lineHeight: 1.45 }}>{week.suggestion.text}</span>
+          <span className={s.panelText}>{week.suggestion.text}</span>
           {!week.suggestion.booked && (
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className={p.primary} style={{ borderRadius: 10, padding: "9px 16px", fontSize: 13 }} disabled={busy} onClick={() => employee({ action: "book_walkthrough" }, (next) => next.week1.suggestion?.booked ? "Booked. It's on your calendar." : null)}>
+            <div className={s.suggestionActions}>
+              <button className={`${p.primary} ${s.bookButton}`} disabled={busy} onClick={() => employee({ action: "book_walkthrough" }, (next) => next.week1.suggestion?.booked ? "Booked. It's on your calendar." : null)}>
                 Book it
               </button>
             </div>
@@ -141,19 +138,18 @@ export function BenefitsScreen({ vm }: { vm: ViewModel }) {
         <h1 className={p.headline}>{benefits.enrolled ? "You're enrolled in health cover." : `Health cover enrolment closes in ${benefits.daysLeft} day${benefits.daysLeft === 1 ? "" : "s"}.`}</h1>
         <p className={p.sub}>{benefits.familyNote}</p>
       </div>
-      <div className={p.panel} style={{ padding: "4px 16px", gap: 0 }}>
+      <div className={`${p.panel} ${s.benefitsPanel}`}>
         {benefits.rows.map((row, i) => (
-          <div key={row.label} className={s.depRow} style={{ padding: "12px 0", borderBottom: i === benefits.rows.length - 1 ? "none" : "1px solid #E6EAF1" }}>
+          <div key={row.label} className={`${s.depRow} ${s.benefitsRow} ${i === benefits.rows.length - 1 ? s.benefitsRowLast : ""}`}>
             <span>{row.label}</span>
-            <span style={{ fontWeight: 600, color: row.tone === "risk" ? "var(--risk-ink)" : undefined }}>{row.value}</span>
+            <span className={`${s.benefitsValue} ${row.tone === "risk" ? s.benefitsValueRisk : ""}`}>{row.value}</span>
           </div>
         ))}
       </div>
-      <span style={{ fontSize: 11, color: "var(--accent)" }}>{benefits.source}</span>
-      <div className={p.bottom} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <span className={s.benefitsSource}>{benefits.source}</span>
+      <div className={`${p.bottom} ${s.benefitsActions}`}>
         <button
-          className={p.primary}
-          style={{ background: benefits.enrolled ? "var(--done)" : undefined }}
+          className={`${p.primary} ${benefits.enrolled ? s.enrolled : ""}`}
           disabled={busy || benefits.enrolled || !benefits.open}
           onClick={() => employee({ action: "enrol_benefits" }, "Enrolled. HR and the insurer are notified.")}
         >
@@ -192,10 +188,8 @@ export function DayThirtyScreen({ vm }: { vm: ViewModel }) {
           <span className={s.statNumber}>{d.tasksDone}</span>
           <span className={p.rowNote}>Tasks done</span>
         </div>
-        <div className={s.stat} style={{ boxShadow: "inset 0 0 0 1px rgba(56,189,248,.45)" }}>
-          <span className={s.statNumber} style={{ color: "var(--accent)" }}>
-            {d.byNavo}
-          </span>
+        <div className={`${s.stat} ${s.statNavo}`}>
+          <span className={s.statNumber}>{d.byNavo}</span>
           <span className={p.rowNote}>By Navo and teams</span>
         </div>
         <div className={s.stat}>
@@ -203,19 +197,19 @@ export function DayThirtyScreen({ vm }: { vm: ViewModel }) {
           <span className={p.rowNote}>By you</span>
         </div>
       </div>
-      <div className={p.stack2} style={{ gap: 8 }}>
-        <span style={{ fontSize: 14, fontWeight: 600 }}>I&apos;ve prepared your check-in</span>
+      <div className={s.checkIn}>
+        <span className={s.itemTitle}>I&apos;ve prepared your check-in</span>
         {d.checkIn && (
-          <span style={{ display: "flex", gap: 8, fontSize: 13 }}>
-            <span style={{ color: "var(--done)" }}>✓</span>Booked with {manager} · {d.checkIn}
+          <span className={s.checkInItem}>
+            <span className={s.checkMark}>✓</span>Booked with {manager} · {d.checkIn}
           </span>
         )}
-        <span style={{ display: "flex", gap: 8, fontSize: 13 }}>
-          <span style={{ color: "var(--done)" }}>✓</span>Your first-month summary, from the numbers above
+        <span className={s.checkInItem}>
+          <span className={s.checkMark}>✓</span>Your first-month summary, from the numbers above
         </span>
       </div>
-      <div className={p.panel} style={{ background: "#fff", border: "1px solid var(--line-2)", gap: 10 }}>
-        <span style={{ fontSize: 14, fontWeight: 600 }}>{picked ? "Thanks for telling me." : "How has joining felt?"}</span>
+      <div className={`${p.panel} ${s.pulsePanel}`}>
+        <span className={s.itemTitle}>{picked ? "Thanks for telling me." : "How has joining felt?"}</span>
         <div className={s.pulse} role="radiogroup" aria-label="How has joining felt, 1 to 5">
           {[1, 2, 3, 4, 5].map((n) => (
             <button key={n} role="radio" aria-checked={picked === n} className={`${s.pulseButton} ${picked === n ? s.pulseOn : ""}`} onClick={() => pick(n)}>

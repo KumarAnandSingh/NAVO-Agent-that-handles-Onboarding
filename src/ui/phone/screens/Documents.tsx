@@ -70,9 +70,8 @@ export function DocumentsScreen({ vm }: { vm: ViewModel }) {
           return (
             <button
               key={doc.type}
-              className={`${p.row} ${i === docs.items.length - 1 ? p.rowLast : ""}`}
+              className={`${p.row} ${i === docs.items.length - 1 ? p.rowLast : ""} ${doc.tappable ? "" : s.docRowStatic}`}
               onClick={doc.tappable ? () => go("clarify") : undefined}
-              style={{ cursor: doc.tappable ? "pointer" : "default" }}
               tabIndex={doc.tappable ? 0 : -1}
             >
               <span className={p.stack2}>
@@ -129,9 +128,7 @@ export function ClarifyScreen({ vm }: { vm: ViewModel }) {
       </button>
       <div className={p.kickerRow}>
         <NavoFace state="needs" size={42} />
-        <span className={p.kicker} style={{ color: "var(--risk-ink)" }}>
-          NEEDS CLARIFICATION
-        </span>
+        <span className={`${p.kicker} ${s.clarifyKicker}`}>NEEDS CLARIFICATION</span>
       </div>
       <div className={p.titleBlock}>
         <h1 className={p.headline}>I couldn&apos;t read your last working date.</h1>
@@ -142,7 +139,7 @@ export function ClarifyScreen({ vm }: { vm: ViewModel }) {
           <SampleImage file="/samples/relieving-letter.png" className={s.docImage} />
           <span className={s.docHighlight} aria-hidden />
         </span>
-        <span className={p.muted} style={{ color: "var(--text-2)" }}>
+        <span className={`${p.muted} ${s.docRead}`}>
           I read: &ldquo;Last working day: <b>{clarify.raw}</b>&rdquo;
         </span>
       </div>
@@ -150,10 +147,10 @@ export function ClarifyScreen({ vm }: { vm: ViewModel }) {
         <>
           <span className={s.question}>Is it {clarify.suggestionLabel}?</span>
           <div className={s.twoButtons}>
-            <button className={p.primary} style={{ borderRadius: 12, padding: 13, fontSize: 14 }} disabled={busy} onClick={confirm}>
+            <button className={`${p.primary} ${s.choice}`} disabled={busy} onClick={confirm}>
               Yes, {clarify.suggestionLabel.split(" ").slice(0, 2).join(" ")}
             </button>
-            <button className={p.secondary} style={{ borderRadius: 12, padding: 13 }} disabled={busy} onClick={reupload}>
+            <button className={`${p.secondary} ${s.choice}`} disabled={busy} onClick={reupload}>
               Re-upload
             </button>
           </div>
@@ -194,7 +191,7 @@ export function FormsScreen({ vm }: { vm: ViewModel }) {
   };
 
   return (
-    <div className={p.screen} style={{ gap: 14 }}>
+    <div className={`${p.screen} ${s.listScreen}`}>
       <div className={p.kickerRow}>
         <NavoFace state="calm" size={42} />
         <span className={p.muted}>3 forms · 2 min</span>
@@ -210,9 +207,7 @@ export function FormsScreen({ vm }: { vm: ViewModel }) {
             <div key={row.label} className={`${s.formRow} ${i === forms.rows.length - 1 ? p.rowLast : ""}`}>
               <span className={p.stack2}>
                 <span className={s.formLabel}>{row.label}</span>
-                <span className={s.formValue} style={{ color: row.needsYou ? "var(--text-4)" : undefined }}>
-                  {row.value}
-                </span>
+                <span className={`${s.formValue} ${row.needsYou ? s.formValueMissing : ""}`}>{row.value}</span>
               </span>
               <span className={s.sourceTag} style={{ color: tag.ink, background: tag.bg }}>
                 {row.source}
@@ -223,8 +218,7 @@ export function FormsScreen({ vm }: { vm: ViewModel }) {
       </div>
       {editing && missing && (
         <form
-          className={p.stack2}
-          style={{ gap: 8 }}
+          className={s.contactForm}
           onSubmit={(e) => {
             e.preventDefault();
             if (contact.trim().length >= 5) void saveContact();
