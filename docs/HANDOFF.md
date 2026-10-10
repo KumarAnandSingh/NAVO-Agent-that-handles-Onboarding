@@ -43,7 +43,7 @@ For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/adr/
 | Code quality: large modules split, no casts through `unknown`, static styles in CSS modules, 8 decision records, dependency audit | Done |
 | Tests: 264 unit, integration, property and component tests; 13 end-to-end on PGlite and Postgres; load test | Done |
 | Docs: technical design, enterprise architecture, security and privacy (DPDP), cost model, API reference, AI quality, load test | Done |
-| Product video re-render (about 3 minutes, with the new features) | In progress |
+| Product video (3 min 13 s): policy upload, cohort radar, Hindi and bring-your-own-key scenes added | Done |
 | Deploy, make the repository public, upload the video, submit | **Needs the owner** |
 
 ## What's left (needs you)

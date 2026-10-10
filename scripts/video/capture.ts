@@ -484,6 +484,88 @@ async function askStory(browser: Browser) {
       sheet,
     },
   );
+
+  // The same question in Hindi.
+  await r.sequence(
+    "ask-hindi",
+    async () => {
+      await sheet.getByRole("button", { name: "अगर HR जवाब न दे तो क्या होगा?" }).click();
+      await page.mouse.move(2, 2);
+      await expect(sheet.getByText(/Priya Nair को याद दिलाया है/)).toBeVisible({ timeout: 60_000 });
+    },
+    { hindi: [sheet.getByText(/Priya Nair को याद दिलाया है/), 1], sheet },
+  );
+
+  // Which model does what, and the visitor's own-key option.
+  const ai = r.runtime.getByRole("region", { name: "AI models and usage" });
+  await sheet.getByRole("button", { name: "Done" }).click();
+  await r.shot("ai-panel", { ai, connect: ai.getByRole("button") });
+  await r.click(ai.getByRole("button", { name: /own Claude key/ }));
+  const dialog = page.getByRole("dialog", { name: "Try Navo with live Claude" });
+  await expect(dialog).toBeVisible();
+  await r.shot("byok", { dialog, points: dialog.getByRole("list"), input: dialog.getByLabel("Anthropic API key") });
+  await page.context().close();
+}
+
+/** HR publishes a policy; Navo splits it into citable sections and Ask Navo answers from it. */
+async function policyStory(browser: Browser) {
+  const r = await open(browser);
+  const { page } = r;
+  const app = r.phone;
+  await openStage(r);
+  await jumpToChapter(r, /Pre-joining/);
+  await r.click(page.getByRole("tab", { name: "HR owner" }));
+  const hr = page.getByRole("region", { name: "HR console" });
+  await r.click(hr.getByRole("navigation", { name: "HR navigation" }).getByRole("button", { name: "Policies and rules" }));
+  const library = hr.getByRole("table", { name: "Policy library" });
+  await expect(library).toBeVisible();
+  await r.shot("policies", { library, load: hr.getByRole("button", { name: "Load a sample policy" }) });
+  await r.click(hr.getByRole("button", { name: "Load a sample policy" }));
+  await expect(hr.getByLabel("Title")).toHaveValue("Relocation support");
+  await r.click(hr.getByRole("button", { name: "Preview sections" }));
+  const sections = hr.getByRole("list", { name: "Sections Navo found" });
+  await expect(sections).toBeVisible();
+  await sections.evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await r.shot("policy-preview", { sections, publish: hr.getByRole("button", { name: "Publish" }) });
+  await r.click(hr.getByRole("button", { name: "Publish" }));
+  const status = hr.getByRole("status");
+  await expect(status).toContainText("Navo can cite");
+  await r.shot("policy-published", { status, sections });
+  await r.click(page.getByRole("tab", { name: "Employee" }));
+  await r.click(app.getByRole("button", { name: "Ask Navo" }));
+  const sheet = app.getByRole("dialog", { name: "Ask Navo" });
+  await sheet.getByRole("textbox", { name: "Question for Navo" }).fill("How many nights of temporary housing do I get?");
+  await sheet.getByRole("button", { name: "Ask", exact: true }).click();
+  await expect(sheet.getByText(/14 nights/)).toBeVisible({ timeout: 60_000 });
+  await r.settled();
+  await r.shot("ask-policy", { answer: [sheet.getByText(/14 nights/), 1], checked: sheet.getByText(/^Checked Relocation support/), sheet });
+  await page.context().close();
+}
+
+/** The cohort radar: every joiner's Day 1, and where it would break if IT slowed down. */
+async function radarStory(browser: Browser) {
+  const r = await open(browser);
+  const { page } = r;
+  await openStage(r);
+  await jumpToChapter(r, /Ready for Day 1/);
+  await r.click(page.getByRole("tab", { name: "HR owner" }));
+  const hr = page.getByRole("region", { name: "HR console" });
+  await r.click(hr.getByRole("navigation", { name: "HR navigation" }).getByRole("button", { name: /All joiners/ }));
+  const whatIf = hr.getByRole("group", { name: "What if" });
+  await expect(whatIf).toBeVisible();
+  await r.shot("radar", { whatIf, summary: hr.getByText("No Day 1 at risk."), it: whatIf.getByRole("button", { name: "IT takes a week longer" }), table: hr.getByRole("table", { name: "Joiners by Day-1 risk" }) });
+  await r.click(whatIf.getByRole("button", { name: "IT takes a week longer" }));
+  const summary = hr.getByText(/joiners at risk of a broken Day 1/);
+  await expect(summary).toBeVisible();
+  await page.waitForTimeout(400);
+  await r.shot("radar-it", {
+    whatIf,
+    summary,
+    bars: hr.getByRole("list", { name: "Bottlenecks by team" }),
+    changed: [hr.getByText("changed").first(), 2],
+    table: hr.getByRole("table", { name: "Joiners by Day-1 risk" }),
+  });
+  manifest.data.radarSummary = (await summary.textContent()) ?? "";
   await page.context().close();
 }
 
@@ -495,6 +577,8 @@ async function main() {
     await mainStory(browser);
     await silentStory(browser);
     await askStory(browser);
+    await policyStory(browser);
+    await radarStory(browser);
   } finally {
     await browser.close();
   }

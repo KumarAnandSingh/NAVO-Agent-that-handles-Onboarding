@@ -18,7 +18,7 @@ A voice-over can be added later, on top, without re-editing.
 
 ## How it is made
 
-1. **Capture** (`scripts/video/capture.ts`). Playwright drives the app with real clicks through the whole story: documents, the Day-1 risk, HR issuing the ID, the loaner approval, Ask Navo, and Day 1 to Day 30. It saves sharp 2× screenshots, short frame sequences while Navo works, and the position of every element the video zooms to or clicks.
+1. **Capture** (`scripts/video/capture.ts`). Playwright drives the app with real clicks through the whole story: documents, the Day-1 risk, HR issuing the ID, the loaner approval, Ask Navo in English and Hindi, the AI panel and own-key dialog, HR publishing a policy, the cohort radar's what-if, and Day 1 to Day 30. It saves sharp 2× screenshots, short frame sequences while Navo works, and the position of every element the video zooms to or clicks.
 2. **Storyboard** (`video/story.ts`). This holds every scene, subtitle line, camera move, cursor click, highlight and sound cue. Edit this file to change the video.
 3. **Compose and render** (`video/composer/`, `scripts/video/render.ts`). A headless browser draws each frame as a pure function of time:
    - title cards,
@@ -74,21 +74,23 @@ ffmpeg -i video/out/navo-demo-silent.mp4 -i voice.wav -i video/out/navo-demo-sfx
 
 Or drop `navo-demo-silent.mp4`, `navo-demo-sfx.wav` and your voice track into any video editor on separate tracks. To time the voice differently, change the cue times in `video/story.ts` and render again. The subtitles, sound and voice-over script all move together.
 
-## Story (about 4½ minutes)
+## Story (about 3¼ minutes)
 
 | | Scene | What it shows |
 |---|---|---|
 | Hook | Day 1 | It's Day 1: laptop, email and ID card aren't ready, and nobody knows why. |
-| Problem | Teams, chain | Five teams, 27 tasks, nobody owns the chain; one late Employee ID breaks everything after it. |
+| Problem | Chain | Five teams, no owner; one late Employee ID breaks everything after it. |
 | Solution | Meet Navo | An agent that tracks, acts, asks first and explains. |
-| Demo | Meet the people | Anand (joiner) and Priya (HR) on the real app's brief. |
-| | First launch | Navo's rules: what it does alone, what it always asks first. |
-| | Documents, forms | Reads documents, asks about one unreadable date, pre-fills forms. |
+| Demo | Documents | Navo reads a bill, matches it to his ID, and asks about one unreadable date. |
 | | Navo at work | The daily check finds the late ID: every tool call, the risk, the permission, the reminder, the reasons. |
 | | HR's view | Exceptions only; HR issues the ID and Navo raises the IT requests within a minute. |
-| | Plan B | HR silent: Navo asks Anand before ordering a loaner laptop. |
-| | Ask Navo | A typed question, answered from live state, citing the policy it retrieved. |
+| | Asks before acting | HR silent: Navo asks Anand before ordering a loaner laptop. |
+| | Ask Navo | A typed question answered from live state, citing the policy it retrieved; the same question in Hindi. |
+| | HR adds a policy | HR loads a policy, Navo splits it into citable sections, and Ask Navo answers from it at once. |
+| | Every joiner | The cohort radar: 14 joiners' Day 1 risk, and what breaks if IT takes a week longer. |
 | | Day 1 to Day 30 | One pickup, Day 1, a benefits deadline at the right moment, the 30-day check-in. |
 | | Impact | Figures computed from the run. |
-| How it works | Architecture, trust | Claude understands, code decides; 22 audited tools, 142 tests, offline fallbacks. |
-| Close | What's next, Navo | Real systems behind the same tools; Navo, AI That Handles Onboarding. |
+| How it works | Architecture | Claude understands, code decides; the AI gateway routes each task to the right-sized model and masks personal data. |
+| | Try it live | The public demo runs offline; visitors can bring their own Claude key, which is never stored. |
+| | Built to be trusted | 264 tests, a 50-visitor load test, about $0.07 of Claude per onboarding, offline fallbacks. |
+| Close | Navo | Real systems next, behind the same tools; Navo, AI That Handles Onboarding. |
