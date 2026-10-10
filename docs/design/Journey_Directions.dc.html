@@ -149,7 +149,7 @@ button{font-family:inherit}
 <sc-if value="{{ bankNotDone }}" hint-placeholder-val="{{ true }}">
 <div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
 <div style="display:flex;gap:10px;align-items:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:#C8372D;margin-top:7px;flex:none"></span><div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:600">Upload bank proof</div><div style="font-size:13px;color:#5B6474">I read your cancelled cheque. Check and confirm · 1 min</div></div></div>
-<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;padding-left:18px"><span style="color:#5B6474">Holder</span><span>Anand Mehta</span><span style="color:#5B6474">Bank</span><span>HDFC Bank</span><span style="color:#5B6474">Account</span><span>•••• 4821</span><span style="color:#5B6474">IFSC</span><span>HDFC0001234</span></div>
+<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;padding-left:18px"><span style="color:#5B6474">Holder</span><span>Anand Mehta</span><span style="color:#5B6474">Bank</span><span>Meridian Bank</span><span style="color:#5B6474">Account</span><span>•••• 4821</span><span style="color:#5B6474">IFSC</span><span>MRDN0001234</span></div>
 <div style="display:flex;gap:8px;padding-left:18px"><button onClick="{{ confirmBank }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">Confirm</button><button style="background:#fff;color:#0E1420;border:1px solid #E2E6ED;border-radius:10px;padding:10px 16px;font-size:14px;cursor:pointer">Edit</button></div>
 </div>
 </sc-if>
@@ -215,7 +215,7 @@ button{font-family:inherit}
 <div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:6px 16px;display:flex;flex-direction:column">
 <div style="font-size:12px;font-weight:600;color:#5B6474;padding:10px 0 4px">{{ needLabel }}</div>
 <sc-if value="{{ bankNotDone }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF1F5"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Upload bank proof</span><span style="font-size:12px;color:#5B6474">Read from cheque · HDFC •••• 4821</span></div><button onClick="{{ confirmBank }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">Confirm</button></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF1F5"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Upload bank proof</span><span style="font-size:12px;color:#5B6474">Read from cheque · Meridian Bank •••• 4821</span></div><button onClick="{{ confirmBank }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">Confirm</button></div>
 </sc-if>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Complete security training</span><span style="font-size:12px;color:#5B6474">15 min · before Day 1</span></div><button style="background:#EEF2FE;color:#2F5BEA;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">Start</button></div>
 </div>
@@ -287,7 +287,7 @@ button{font-family:inherit}
 <div style="font-size:16px;line-height:1.5;text-wrap:pretty">Good morning, Anand. Two things need you before Monday. I'm handling the rest.</div>
 <sc-if value="{{ bankNotDone }}" hint-placeholder-val="{{ true }}">
 <div style="background:#fff;border:1px solid #E2E6ED;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
-<div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:600">Upload bank proof</div><div style="font-size:13px;color:#5B6474">I read your cheque: HDFC Bank, •••• 4821, HDFC0001234</div></div>
+<div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:600">Upload bank proof</div><div style="font-size:13px;color:#5B6474">I read your cheque: Meridian Bank, •••• 4821, MRDN0001234</div></div>
 <div style="display:flex;gap:8px"><button onClick="{{ confirmBank }}" style="background:#2F5BEA;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">Confirm</button><button style="background:#fff;color:#0E1420;border:1px solid #E2E6ED;border-radius:10px;padding:10px 16px;font-size:14px;cursor:pointer">Edit</button></div>
 </div>
 </sc-if>

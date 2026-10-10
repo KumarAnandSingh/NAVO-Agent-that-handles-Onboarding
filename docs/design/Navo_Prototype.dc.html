@@ -389,7 +389,7 @@ button,input{font-family:inherit}
 <div style="display:flex;flex-direction:column">
 <sc-for list="{{ doneList }}" as="d" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #EEF1F5;font-size:14px"><span>{{ d.n }}</span><span style="font-size:12px;color:{{ d.ink }}">{{ d.s }}</span></div></sc-for>
 </div>
-<div style="display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:16px;background:#F6F8FC"><span style="font-size:12px;font-weight:600;color:#2F5BEA">Tomorrow</span><span style="font-size:14px;line-height:1.45">Product induction at 10:00. I've requested your Jira and Figma access.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:16px;background:#F6F8FC"><span style="font-size:12px;font-weight:600;color:#2F5BEA">Tomorrow</span><span style="font-size:14px;line-height:1.45">Product induction at 10:00. I've requested your project tool access.</span></div>
 <button onClick="{{ go.week1 }}" style="margin-top:auto;background:#2F5BEA;color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">Skip to Week 1 ▸</button>
 </div>
 </sc-if>
@@ -767,7 +767,7 @@ class Component extends DCLogic {
     const uploadAddr = () => { if (st.reading || st.addr) return; this.setState({ reading: true }); this.rt = setTimeout(() => { this.setState({ reading: false, addr: true }); this.say('Read your address proof. It matches your Aadhaar.'); }, 1500); };
     const docsCta = !st.addr ? { label: st.reading ? 'Reading your document…' : 'Upload address proof', run: uploadAddr } : !st.relieving ? { label: 'Clarify relieving letter', run: go.clarify } : { label: 'Continue to forms', run: go.forms };
     // forms
-    const formRows = [['Full name', 'Anand Mehta', 'From PAN'], ['Date of birth', '14 Mar 1991', 'From Aadhaar'], ['Address', 'Andheri West, Mumbai 400058', 'From address proof'], ['Bank account', 'HDFC •••• 4821', 'From cheque'], ['Nominee', 'Kavya Mehta, spouse', 'From offer form'], ['Emergency contact', st.emerg ? 'Kavya Mehta · +91 98200 11223' : 'Not provided', st.emerg ? 'Added by you' : 'Needs you']]
+    const formRows = [['Full name', 'Anand Mehta', 'From PAN'], ['Date of birth', '14 Mar 1991', 'From Aadhaar'], ['Address', 'Andheri West, Mumbai 400058', 'From address proof'], ['Bank account', 'Meridian Bank •••• 4821', 'From cheque'], ['Nominee', 'Kavya Mehta, spouse', 'From offer form'], ['Emergency contact', st.emerg ? 'Kavya Mehta · +91 98200 11223' : 'Not provided', st.emerg ? 'Added by you' : 'Needs you']]
       .map(([label, value, src]) => { const need = src === 'Needs you'; return { label, value, src, ink: need ? '#8A93A3' : '#0B1530', srcInk: need ? '#C8372D' : src === 'Added by you' ? '#13795B' : '#2F5BEA', srcBg: need ? '#FDECEC' : src === 'Added by you' ? '#E3F2EC' : '#E8F1FF' }; });
     const formsCta = st.emerg ? { label: 'Confirm and submit', run: () => { this.go('home'); this.say('Forms sent to HR. I\'ll take it from here.'); } } : { label: 'Add emergency contact', run: () => this.setState({ emerg: true }) };
     // culture
@@ -793,7 +793,7 @@ class Component extends DCLogic {
     const nGot = Object.values(st.got).filter(Boolean).length;
     const doneList = [['ID card collected', st.got.id], [(loaner ? 'Loaner laptop' : 'Laptop') + ', email and VPN', st.got.laptop], ['Met Rahul and Meera', true], ['Onboarding kit', st.got.kit]].map(([n, ok]) => ({ n, s: ok ? '✓ Done' : 'Navo sorting with Facilities', ink: ok ? C.done : C.agent }));
     // week 1
-    const week = [['Product induction', 'Tue', 1], ['Mandatory training', 'Tue', 1], ['Email and VPN access', 'Mon', 1], ['Team introductions', 'Wed', 1], ['First project setup', 'Thu', 0]].map(([n, d, ok]) => ({ n, d, done: !!ok, navo: !ok, w: ok ? 400 : 600, sub: ok ? '' : 'Requesting Jira and Figma access' }));
+    const week = [['Product induction', 'Tue', 1], ['Mandatory training', 'Tue', 1], ['Email and VPN access', 'Mon', 1], ['Team introductions', 'Wed', 1], ['First project setup', 'Thu', 0]].map(([n, d, ok]) => ({ n, d, done: !!ok, navo: !ok, w: ok ? 400 : 600, sub: ok ? '' : 'Requesting project tool access' }));
     // HR
     const hrQueue = [];
     if (st.step >= 1 && !issued) hrQueue.push(st.scen === 'B' && st.step >= 2
