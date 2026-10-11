@@ -34,6 +34,15 @@
   gap: 10px;
 }
 
+.home {
+  color: var(--text-on-navy-2);
+  margin-top: -8px;
+}
+
+.home:hover {
+  color: #fff;
+}
+
 .navItems {
   display: flex;
   flex-direction: column;

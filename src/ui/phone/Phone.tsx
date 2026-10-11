@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import type { ViewModel } from "@/services/view-model/types";
+import { HomeLink } from "@/ui/components/HomeLink";
 import { NavoFace } from "@/ui/components/NavoFace";
 import { useNavo, type Screen } from "@/ui/state/NavoStore";
 import { TONE } from "@/ui/tones";
@@ -66,7 +67,11 @@ export function Phone({ fullscreen = false }: { fullscreen?: boolean }) {
   const frame = [p.frame, NAVY.has(screen) ? p.frameNavy : screen === "home" ? p.frameHome : "", fullscreen ? p.fullscreen : ""].join(" ");
   return (
     <section className={frame} aria-label="Anand's phone">
-      <div className={p.statusBar}>{vm?.clock.time ?? ""}</div>
+      <div className={p.statusBar}>
+        {vm?.clock.time ?? ""}
+        {/* On its own page; on the demo stage the presenter panel has Home. */}
+        {fullscreen && <HomeLink className={p.home} />}
+      </div>
       {vm ? (
         <>
           {/* Keyed by screen so each one mounts fresh, like navigating in the app. */}

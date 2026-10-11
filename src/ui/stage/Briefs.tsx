@@ -18,7 +18,7 @@ const INTRO_CHAPTERS = [
 
 /** The opening brief: who's who, the six chapters, and what to watch for. */
 export function IntroBrief() {
-  const { overlay, setOverlay, play, pause, playChapter, running } = useGuide();
+  const { overlay, setOverlay, play, pause, playChapter, running, beat, total } = useGuide();
   const { vm, go, setView, busy, replay } = useNavo();
   // Like the presenter's chapter jumps: wait until Navo has finished what it is doing.
   const working = running || busy || Boolean(replay);
@@ -55,7 +55,8 @@ export function IntroBrief() {
             <p className={st.lede}>{COMPANY.supportingLine} {COMPANY.name} is a made-up company and its people and records are sample data. {COMPANY.product}&apos;s agent engine, rules and workflows are real and run live on a simulated clock.</p>
             <div className={st.heroActions}>
               <button className={st.primaryButton} onClick={play} autoFocus>
-                ▶ Play guided demo
+                {/* Back here from Home partway through, Play carries on where the tour stopped. */}
+                {beat !== null && beat < total ? "▶ Resume guided demo" : "▶ Play guided demo"}
               </button>
               <button className={st.ghostButton} onClick={explore}>
                 Explore on my own
@@ -176,7 +177,7 @@ export function IntroBrief() {
         <div className={st.footer}>
           <span className={st.disclaimer}>{COMPANY.disclaimer}</span>
           <span className={st.footerActions}>
-            <span className={st.shortcuts}>Space to play · → next step · B brief</span>
+            <span className={st.shortcuts}>Space to play · → next step · B home</span>
           </span>
         </div>
       </div>
@@ -237,6 +238,9 @@ export function ImpactOutro() {
         <div className={`${st.footer} ${st.outroFooter}`}>
           <span className={st.outroNote}>Figures computed from this simulated run.</span>
           <span className={st.outroActions}>
+            <button className={st.darkGhost} onClick={() => setOverlay("intro")}>
+              ⌂ Back to Home
+            </button>
             <button className={st.darkGhost} onClick={() => setOverlay(null)}>
               Back to the demo
             </button>

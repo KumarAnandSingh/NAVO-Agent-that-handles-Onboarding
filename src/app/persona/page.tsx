@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { COMPANY } from "@/content/company";
+import { HomeLink } from "@/ui/components/HomeLink";
 import { NavoFace, type NavoFaceState } from "@/ui/components/NavoFace";
 import styles from "./persona.module.css";
 
@@ -20,6 +21,7 @@ const STATES: { id: NavoFaceState; name: string; when: string; line: string }[] 
 export default function PersonaPage() {
   return (
     <main className={styles.page}>
+      <HomeLink className={styles.home} />
       <section className={styles.hero}>
         <NavoFace state="brand" size={180} />
         <div className={styles.heroText}>

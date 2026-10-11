@@ -8,7 +8,7 @@ vi.mock("@/ui/state/NavoStore", async (original) => ({ ...(await original<object
 const { HrConsole } = await import("@/ui/hr/HrConsole");
 const { RuntimePanel } = await import("@/ui/stage/RuntimePanel");
 const { PresenterPanel } = await import("@/ui/stage/PresenterPanel");
-const { CaptionBar, GuideProvider } = await import("@/ui/stage/Guide");
+const { CaptionBar, GuideProvider, useGuide } = await import("@/ui/stage/Guide");
 const { IntroBrief, ImpactOutro } = await import("@/ui/stage/Briefs");
 
 const vms = inject("viewModels");
@@ -66,6 +66,15 @@ describe("HR console", () => {
     use(vms.risk!, { vm: null });
     render(<HrConsole />);
     expect(find.getByRole("region", { name: "HR console" }).textContent).toBe("");
+  });
+
+  it("links back to Home on its own page, where there's no presenter panel", () => {
+    use(vms.risk!);
+    const { unmount } = render(<HrConsole fullscreen />);
+    expect(find.getByRole("link", { name: "← Back to Home" }).getAttribute("href")).toBe("/");
+    unmount();
+    render(<HrConsole />);
+    expect(find.queryByRole("link", { name: "← Back to Home" })).toBeNull();
   });
 });
 
@@ -196,6 +205,39 @@ describe("presenter controls and briefs", () => {
     await act(async () => fireEvent.click(within(bar).getByRole("button", { name: "▶ Play" })));
     expect(s.demo).toHaveBeenCalledWith({ action: "chapter", chapter: 4 });
     expect(s.demo).not.toHaveBeenCalledWith(expect.objectContaining({ action: "reset" }));
+  });
+
+  it("goes back to Home from the presenter panel, the guided demo's caption and the impact screen", async () => {
+    const vm = vms.risk!;
+    use({ ...vm, workspace: { ...vm.workspace, scenario: "hr_responds" } });
+    function OpenImpact() {
+      const { setOverlay } = useGuide();
+      return <button onClick={() => setOverlay("outro")}>Open impact</button>;
+    }
+    render(
+      <GuideProvider>
+        <PresenterPanel />
+        <CaptionBar />
+        <IntroBrief />
+        <ImpactOutro />
+        <OpenImpact />
+      </GuideProvider>,
+    );
+    const intro = () => find.getByRole("dialog", { name: "About this demo" });
+    fireEvent.click(within(intro()).getByRole("button", { name: "Explore on my own" }));
+    fireEvent.click(within(find.getByRole("complementary", { name: "Presenter controls" })).getByRole("button", { name: "⌂ Home" }));
+    expect(within(intro()).getByRole("button", { name: "▶ Play guided demo" })).toBeTruthy();
+
+    // Partway through the tour, Home pauses it and Play picks up where it stopped.
+    await act(async () => fireEvent.click(within(intro()).getByRole("button", { name: /Navo at work/ })));
+    fireEvent.click(within(find.getByRole("region", { name: "Guided demo" })).getByRole("button", { name: "⌂ Home" }));
+    expect(within(intro()).getByRole("button", { name: "▶ Resume guided demo" })).toBeTruthy();
+    expect(find.queryByRole("region", { name: "Guided demo" })).toBeNull();
+
+    fireEvent.click(find.getByRole("button", { name: "Open impact" }));
+    fireEvent.click(within(find.getByRole("dialog", { name: "Impact" })).getByRole("button", { name: "⌂ Back to Home" }));
+    expect(find.queryByRole("dialog", { name: "Impact" })).toBeNull();
+    expect(intro()).toBeTruthy();
   });
 
   it("opens Anand's app or Priya's HR console from their cards", () => {

@@ -32,6 +32,10 @@
   box-shadow: none;
 }
 
+.home {
+  margin-left: auto;
+}
+
 .loading {
   flex: 1;
   display: grid;

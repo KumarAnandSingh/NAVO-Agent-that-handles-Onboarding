@@ -47,11 +47,11 @@ export function PresenterPanel() {
           <button className={st.play} onClick={guide.toggle}>
             {guide.auto ? "❚❚ Pause guided demo" : "▶ Play guided demo"}
           </button>
-          <button className={st.ghost} onClick={() => guide.setOverlay("intro")} title="Show the brief (B)">
-            Brief
+          <button className={st.ghost} onClick={guide.goHome} title="Back to Home (B)">
+            ⌂ Home
           </button>
         </div>
-        <span className={`${st.small} ${st.keys}`}>Keys: → next · ← back · Space play/pause · H HR view · B brief · Esc close</span>
+        <span className={`${st.small} ${st.keys}`}>Keys: → next · ← back · Space play/pause · H HR view · B home · Esc close</span>
 
         <div className={st.notice}>
           <span className={st.noticeKicker}>WHAT TO NOTICE</span>

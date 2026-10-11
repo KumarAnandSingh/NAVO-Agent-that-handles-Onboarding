@@ -25,6 +25,8 @@ interface GuideState {
   prev: () => void;
   /** Start the guided demo at a chapter (0–5) and keep playing from there. */
   playChapter: (chapter: number) => void;
+  /** Pause and go back to the home screen (the intro). */
+  goHome: () => void;
   setOverlay: (overlay: Overlay) => void;
 }
 
@@ -140,6 +142,10 @@ export function GuideProvider({ children }: { children: ReactNode }) {
     if (beat === null || beat >= BEATS.length - 1) void run([0]);
   }, [beat, playChapter, run]);
   const pause = useCallback(() => setAuto(false), []);
+  const goHome = useCallback(() => {
+    setAuto(false);
+    setOverlay("intro");
+  }, []);
   const toggle = useCallback(() => (auto ? pause() : play()), [auto, pause, play]);
 
   // Auto-play: once a beat's action and Navo's tool replay have finished, dwell, then move on.
@@ -195,6 +201,7 @@ export function GuideProvider({ children }: { children: ReactNode }) {
     next,
     prev,
     playChapter,
+    goHome,
     setOverlay,
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
@@ -213,7 +220,7 @@ export function useGuide(): GuideState {
 
 /** The caption bar along the bottom while the guided demo is running. */
 export function CaptionBar() {
-  const { shownBeat: beat, total, caption, auto, running, overlay, error, toggle, next, prev } = useGuide();
+  const { shownBeat: beat, total, caption, auto, running, overlay, error, toggle, next, prev, goHome } = useGuide();
   if (beat === null || overlay || (!caption && !error)) return null;
   return (
     <div className={st.caption} role="region" aria-label="Guided demo">
@@ -228,6 +235,9 @@ export function CaptionBar() {
           {error ?? caption}
         </span>
         <span className={st.captionButtons}>
+          <button className={st.captionHome} onClick={goHome} title="Back to Home (B)">
+            ⌂ Home
+          </button>
           <button className={st.captionNav} onClick={prev} disabled={running || beat === 0} aria-label="Previous step">
             ←
           </button>

@@ -7,6 +7,12 @@
   gap: 40px;
 }
 
+.home {
+  align-self: flex-start;
+  color: var(--accent);
+  margin-bottom: -16px;
+}
+
 .hero {
   display: grid;
   grid-template-columns: auto 1fr;

@@ -1,0 +1,30 @@
+.page {
+  min-height: 100dvh;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.home {
+  color: #fff;
+  background: var(--accent);
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 15px;
+}
+
+.home:hover {
+  background: var(--accent-hover);
+  text-decoration: none;
+}
