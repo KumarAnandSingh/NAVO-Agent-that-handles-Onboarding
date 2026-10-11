@@ -77,12 +77,13 @@ export async function jumpToChapter(db: Db, workspaceId: string, chapter: number
   await documentsChapter(db, workspaceId);
   await runUntil(db, workspaceId, atIst(TIMELINE.riskDay, "09:00"), FAST);
   if (chapter < 3) return;
+  // The guided demo has Anand finish his security training before the pickup chapter, so do the same.
+  await completeTraining(db, workspaceId, ANAND, FAST);
   for (let i = 0; i < 40 && (await taskStatus(db, workspaceId, "pickup")) !== "completed"; i++) {
     await approvePending(db, workspaceId);
     await advance(db, workspaceId, FAST);
   }
   if (chapter < 4) return;
-  await completeTraining(db, workspaceId, ANAND, FAST);
   await runUntil(db, workspaceId, atIst(TIMELINE.day1, "07:30"), FAST);
   if (chapter < 5) return;
   await runUntil(db, workspaceId, atIst(TIMELINE.day1, "11:40"), FAST);

@@ -14,7 +14,7 @@
 
 .fullscreen {
   width: 100%;
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--home-bar));
   border-radius: 0;
   border: none;
 }

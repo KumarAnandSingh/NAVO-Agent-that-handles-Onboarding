@@ -18,19 +18,29 @@ const INTRO_CHAPTERS = [
 
 /** The opening brief: who's who, the six chapters, and what to watch for. */
 export function IntroBrief() {
-  const { overlay, setOverlay, play } = useGuide();
-  const { vm, go } = useNavo();
+  const { overlay, setOverlay, play, pause, playChapter, running, beat, total } = useGuide();
+  const { vm, go, setView, busy, replay } = useNavo();
+  // Like the presenter's chapter jumps: wait until Navo has finished what it is doing.
+  const working = running || busy || Boolean(replay);
   if (overlay !== "intro") return null;
   const e = vm?.employee;
   const people = [
-    { initials: e?.initials ?? "AM", name: e?.name ?? "Anand Mehta", role: `New joiner · ${e?.role ?? "Senior Product Manager"} · starts ${e?.day1 ?? "Mon 19 Oct"}`, avatar: st.avatarJoiner, ring: true },
-    { initials: "PN", name: e?.hrName ?? "Priya Nair", role: `HR onboarding owner · ${vm?.impact.joiners ?? 14} joiners this month`, avatar: st.avatarHr },
+    { initials: e?.initials ?? "AM", name: e?.name ?? "Anand Mehta", role: `New joiner · ${e?.role ?? "Senior Product Manager"} · starts ${e?.day1 ?? "Mon 19 Oct"}`, avatar: st.avatarJoiner, ring: true, open: "emp" as const, link: "Open his app" },
+    { initials: "PN", name: e?.hrName ?? "Priya Nair", role: `HR onboarding owner · ${vm?.impact.joiners ?? 14} joiners this month`, avatar: st.avatarHr, open: "hr" as const, link: "Open her HR console" },
     { initials: "RI", name: e?.managerName ?? "Rahul Iyer", role: "Hiring manager", avatar: st.avatarManager },
     { initials: "MS", name: e?.buddyName ?? "Meera Shah", role: "Buddy, same team", avatar: st.avatarBuddy },
   ];
   const explore = () => {
+    pause();
     setOverlay(null);
     go("launch");
+  };
+  /** A person card opens the stage on their side of the story, for exploring alone. */
+  const openAs = (view: "emp" | "hr") => {
+    pause();
+    setOverlay(null);
+    setView(view);
+    if (view === "emp") go("launch");
   };
   return (
     <div className={`${st.overlay} ${st.intro}`} role="dialog" aria-modal="true" aria-label="About this demo">
@@ -45,7 +55,8 @@ export function IntroBrief() {
             <p className={st.lede}>{COMPANY.supportingLine} {COMPANY.name} is a made-up company and its people and records are sample data. {COMPANY.product}&apos;s agent engine, rules and workflows are real and run live on a simulated clock.</p>
             <div className={st.heroActions}>
               <button className={st.primaryButton} onClick={play} autoFocus>
-                ▶ Play guided demo
+                {/* Back here from Home partway through, Play carries on where the tour stopped. */}
+                {beat !== null && beat < total ? "▶ Resume guided demo" : "▶ Play guided demo"}
               </button>
               <button className={st.ghostButton} onClick={explore}>
                 Explore on my own
@@ -57,15 +68,34 @@ export function IntroBrief() {
         <div className={st.block}>
           <span className={`${st.kicker} ${st.blockKicker}`}>Who you&apos;ll meet</span>
           <div className={st.people}>
-            {people.map((p) => (
-              <div key={p.name} className={`${st.person} ${p.ring ? st.personJoiner : ""}`}>
-                <span className={`${st.avatar} ${p.avatar}`}>{p.initials}</span>
-                <span className={st.personText}>
-                  <span className={st.personName}>{p.name}</span>
-                  <span className={st.personRole}>{p.role}</span>
-                </span>
-              </div>
-            ))}
+            {people.map((p) => {
+              const body = (
+                <>
+                  <span className={`${st.avatar} ${p.avatar}`}>{p.initials}</span>
+                  <span className={st.personText}>
+                    <span className={st.personName}>{p.name}</span>
+                    <span className={st.personRole}>{p.role}</span>
+                  </span>
+                  {p.link && <span className={st.personLink}>{p.link} →</span>}
+                </>
+              );
+              const open = p.open;
+              return open ? (
+                <button
+                  key={p.name}
+                  type="button"
+                  className={`${st.person} ${st.personButton} ${p.ring ? st.personJoiner : ""}`}
+                  aria-label={`${p.link}: ${p.name}, ${p.role}`}
+                  onClick={() => openAs(open)}
+                >
+                  {body}
+                </button>
+              ) : (
+                <div key={p.name} className={st.person}>
+                  {body}
+                </div>
+              );
+            })}
             <div className={`${st.person} ${st.personNavo}`}>
               <NavoFace state="watching" size={44} />
               <span className={st.personText}>
@@ -78,14 +108,24 @@ export function IntroBrief() {
 
         <div className={st.columns}>
           <div className={st.block}>
-            <span className={`${st.kicker} ${st.blockKicker}`}>The story in 6 chapters</span>
+            <span className={`${st.kicker} ${st.blockKicker}`}>The story in 6 chapters · click one to start there</span>
             <div>
               {INTRO_CHAPTERS.map(([what, when], i) => (
-                <div key={what} className={`${st.chapterRow} ${i === 2 ? st.chapterRowKey : ""}`}>
+                <button
+                  key={what}
+                  type="button"
+                  className={`${st.chapterRow} ${i === 2 ? st.chapterRowKey : ""}`}
+                  disabled={working}
+                  onClick={() => playChapter(i)}
+                  aria-label={`Play from chapter ${i + 1}: ${what}, ${when}`}
+                >
                   <span className={st.chapterDot}>{i + 1}</span>
                   <span className={st.chapterName}>{what}</span>
                   <span className={st.chapterWhen}>{i === 0 ? when : `${when} · ${CHAPTERS[i]?.when}`}</span>
-                </div>
+                  <span className={st.chapterGo} aria-hidden="true">
+                    ▶
+                  </span>
+                </button>
               ))}
             </div>
           </div>
@@ -109,6 +149,9 @@ export function IntroBrief() {
                 <b>→</b>
                 <span>Day 1</span>
               </div>
+              <button type="button" className={st.watchJump} disabled={working} onClick={() => playChapter(2)}>
+                ▶ Jump to this moment
+              </button>
             </div>
             <div className={st.legend}>
               <span>
@@ -134,7 +177,7 @@ export function IntroBrief() {
         <div className={st.footer}>
           <span className={st.disclaimer}>{COMPANY.disclaimer}</span>
           <span className={st.footerActions}>
-            <span className={st.shortcuts}>Space to play · → next step · B brief</span>
+            <span className={st.shortcuts}>Space to play · → next step · B home</span>
           </span>
         </div>
       </div>
@@ -195,6 +238,9 @@ export function ImpactOutro() {
         <div className={`${st.footer} ${st.outroFooter}`}>
           <span className={st.outroNote}>Figures computed from this simulated run.</span>
           <span className={st.outroActions}>
+            <button className={st.darkGhost} onClick={() => setOverlay("intro")}>
+              ← Back to Home
+            </button>
             <button className={st.darkGhost} onClick={() => setOverlay(null)}>
               Back to the demo
             </button>

@@ -8,8 +8,10 @@ vi.mock("@/ui/state/NavoStore", async (original) => ({ ...(await original<object
 const { HrConsole } = await import("@/ui/hr/HrConsole");
 const { RuntimePanel } = await import("@/ui/stage/RuntimePanel");
 const { PresenterPanel } = await import("@/ui/stage/PresenterPanel");
-const { GuideProvider } = await import("@/ui/stage/Guide");
+const { CaptionBar, GuideProvider, useGuide } = await import("@/ui/stage/Guide");
 const { IntroBrief, ImpactOutro } = await import("@/ui/stage/Briefs");
+const { Stage } = await import("@/ui/stage/Stage");
+const { HomeBar } = await import("@/ui/components/HomeBar");
 
 const vms = inject("viewModels");
 const BROKEN = /undefined|NaN|\[object Object\]|Invalid Date/;
@@ -20,6 +22,12 @@ function use(vm: ViewModel, extra: Partial<Record<string, unknown>> = {}) {
     screen: "home",
     view: "emp",
     sheet: null,
+    toast: null,
+    error: null,
+    why: false,
+    liveStatus: null,
+    toggleWhy: vi.fn(),
+    setWhy: vi.fn(),
     busy: false,
     replay: null,
     liveFace: "watching",
@@ -67,6 +75,7 @@ describe("HR console", () => {
     render(<HrConsole />);
     expect(find.getByRole("region", { name: "HR console" }).textContent).toBe("");
   });
+
 });
 
 describe("runtime panel", () => {
@@ -122,5 +131,148 @@ describe("presenter controls and briefs", () => {
     expect(intro.textContent).toContain("Navo");
     fireEvent.click(within(intro).getByRole("button", { name: "Explore on my own" }));
     expect(find.queryByRole("dialog", { name: "About this demo" })).toBeNull();
+  });
+
+  it("starts the guided demo at the chapter clicked in the intro brief", async () => {
+    const vm = vms.risk!;
+    const s = use({ ...vm, workspace: { ...vm.workspace, scenario: "hr_responds" } });
+    render(
+      <GuideProvider>
+        <IntroBrief />
+      </GuideProvider>,
+    );
+    const intro = find.getByRole("dialog", { name: "About this demo" });
+    await act(async () => fireEvent.click(within(intro).getByRole("button", { name: /Navo at work/ })));
+    expect(find.queryByRole("dialog", { name: "About this demo" })).toBeNull();
+    expect(s.demo).toHaveBeenNthCalledWith(1, { action: "chapter", chapter: 2 });
+    // Then the chapter's first beat runs on the engine.
+    expect(s.demo).toHaveBeenNthCalledWith(2, { action: "skip", to: "risk_day" });
+  });
+
+  it("jumps to the late Employee ID from the Watch for card, switching HR back to responding first", async () => {
+    const vm = vms.risk!;
+    const s = use({ ...vm, workspace: { ...vm.workspace, scenario: "hr_silent" } });
+    render(
+      <GuideProvider>
+        <IntroBrief />
+      </GuideProvider>,
+    );
+    await act(async () => fireEvent.click(find.getByRole("button", { name: "▶ Jump to this moment" })));
+    expect(s.demo).toHaveBeenNthCalledWith(1, { action: "scenario", scenario: "hr_responds" });
+    expect(s.demo).toHaveBeenNthCalledWith(2, { action: "chapter", chapter: 2 });
+  });
+
+  it("restarts the story when the first chapter is clicked", async () => {
+    const s = use(vms.risk!);
+    render(
+      <GuideProvider>
+        <IntroBrief />
+      </GuideProvider>,
+    );
+    await act(async () => fireEvent.click(find.getByRole("button", { name: /Meet Navo/ })));
+    expect(s.demo).toHaveBeenCalledWith({ action: "reset", scenario: "hr_responds" });
+    expect(s.demo).not.toHaveBeenCalledWith(expect.objectContaining({ action: "chapter" }));
+  });
+
+  it("lets Space press a focused chapter row instead of playing the demo from the start", () => {
+    const s = use(vms.risk!);
+    render(
+      <GuideProvider>
+        <IntroBrief />
+      </GuideProvider>,
+    );
+    const row = find.getByRole("button", { name: /Ready for Day 1/ });
+    row.focus();
+    fireEvent.keyDown(row, { key: " " });
+    expect(s.demo).not.toHaveBeenCalled();
+    expect(find.getByRole("dialog", { name: "About this demo" })).toBeTruthy();
+  });
+
+  it("offers the same chapter again when a jump fails", async () => {
+    const vm = vms.risk!;
+    const s = use({ ...vm, workspace: { ...vm.workspace, scenario: "hr_responds" } });
+    s.demo.mockImplementation(async (body: { action: string }) => (body.action === "chapter" ? null : vm));
+    render(
+      <GuideProvider>
+        <IntroBrief />
+        <CaptionBar />
+      </GuideProvider>,
+    );
+    await act(async () => fireEvent.click(find.getByRole("button", { name: /chapter 5: Day 1/ })));
+    const bar = find.getByRole("region", { name: "Guided demo" });
+    expect(bar.textContent).toContain("The demo action failed");
+    s.demo.mockClear();
+    await act(async () => fireEvent.click(within(bar).getByRole("button", { name: "▶ Play" })));
+    expect(s.demo).toHaveBeenCalledWith({ action: "chapter", chapter: 4 });
+    expect(s.demo).not.toHaveBeenCalledWith(expect.objectContaining({ action: "reset" }));
+  });
+
+  it("keeps Back to Home pinned above the stage in both views, and on the impact screen", async () => {
+    const vm = vms.risk!;
+    const s = use({ ...vm, workspace: { ...vm.workspace, scenario: "hr_responds" } }) as ReturnType<typeof use> & { setView: ReturnType<typeof vi.fn> };
+    const { unmount } = render(<Stage />);
+    const intro = () => find.getByRole("dialog", { name: "About this demo" });
+    const home = () => within(find.getByRole("banner")).getByRole("button", { name: "← Back to Home" });
+    fireEvent.click(within(intro()).getByRole("button", { name: "Explore on my own" }));
+    fireEvent.click(home());
+    expect(within(intro()).getByRole("button", { name: "▶ Play guided demo" })).toBeTruthy();
+
+    // From Priya's card the HR console opens, still under the same bar.
+    fireEvent.click(within(intro()).getByRole("button", { name: new RegExp(vm.employee.hrName) }));
+    expect(s.setView).toHaveBeenCalledWith("hr");
+    fireEvent.click(home());
+    expect(intro()).toBeTruthy();
+
+    // Partway through the tour, Home pauses it and Play picks up where it stopped.
+    await act(async () => fireEvent.click(within(intro()).getByRole("button", { name: /Navo at work/ })));
+    expect(find.queryByRole("dialog", { name: "About this demo" })).toBeNull();
+    fireEvent.click(home());
+    expect(within(intro()).getByRole("button", { name: "▶ Resume guided demo" })).toBeTruthy();
+    expect(find.queryByRole("region", { name: "Guided demo" })).toBeNull();
+    unmount();
+
+    // The impact screen covers the bar, so it has its own.
+    function OpenImpact() {
+      const { setOverlay } = useGuide();
+      return <button onClick={() => setOverlay("outro")}>Open impact</button>;
+    }
+    render(
+      <GuideProvider>
+        <IntroBrief />
+        <ImpactOutro />
+        <OpenImpact />
+      </GuideProvider>,
+    );
+    fireEvent.click(find.getByRole("button", { name: "Open impact" }));
+    fireEvent.click(within(find.getByRole("dialog", { name: "Impact" })).getByRole("button", { name: "← Back to Home" }));
+    expect(find.queryByRole("dialog", { name: "Impact" })).toBeNull();
+    expect(intro()).toBeTruthy();
+  });
+
+  it("links the pages outside the stage back to Home", () => {
+    render(<HomeBar />);
+    expect(find.getByRole("link", { name: "← Back to Home" }).getAttribute("href")).toBe("/");
+  });
+
+  it("opens Anand's app or Priya's HR console from their cards", () => {
+    const vm = vms.documents!;
+    const s = use(vm) as ReturnType<typeof use> & { setView: ReturnType<typeof vi.fn> };
+    const { unmount } = render(
+      <GuideProvider>
+        <IntroBrief />
+      </GuideProvider>,
+    );
+    fireEvent.click(find.getByRole("button", { name: new RegExp(vm.employee.hrName) }));
+    expect(s.setView).toHaveBeenCalledWith("hr");
+    expect(find.queryByRole("dialog", { name: "About this demo" })).toBeNull();
+    unmount();
+    render(
+      <GuideProvider>
+        <IntroBrief />
+      </GuideProvider>,
+    );
+    fireEvent.click(find.getByRole("button", { name: new RegExp(vm.employee.name) }));
+    expect(s.setView).toHaveBeenLastCalledWith("emp");
+    expect(s.go).toHaveBeenCalledWith("launch");
   });
 });

@@ -1,0 +1,33 @@
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  height: var(--home-bar);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--stage) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.home {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px -8px rgba(11, 21, 48, 0.35);
+  cursor: pointer;
+}
+
+.home:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

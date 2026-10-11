@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HomeBar } from "@/ui/components/HomeBar";
 import { HrConsole } from "@/ui/hr/HrConsole";
 import { NavoProvider } from "@/ui/state/NavoStore";
 
@@ -8,6 +9,7 @@ export const metadata: Metadata = { title: "Navo · HR console" };
 export default function HrPage() {
   return (
     <NavoProvider pollMs={4000}>
+      <HomeBar />
       <HrConsole fullscreen />
     </NavoProvider>
   );

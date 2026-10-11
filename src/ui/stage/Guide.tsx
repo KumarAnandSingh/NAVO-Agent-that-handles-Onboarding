@@ -23,6 +23,10 @@ interface GuideState {
   toggle: () => void;
   next: () => void;
   prev: () => void;
+  /** Start the guided demo at a chapter (0–5) and keep playing from there. */
+  playChapter: (chapter: number) => void;
+  /** Pause and go back to the home screen (the intro). */
+  goHome: () => void;
   setOverlay: (overlay: Overlay) => void;
 }
 
@@ -40,6 +44,13 @@ export function GuideProvider({ children }: { children: ReactNode }) {
   // Captions describe the state a beat produced, so they're computed when its action finishes.
   const [shown, setShown] = useState<{ beat: number; caption: string } | null>(null);
   const runningRef = useRef(false);
+  /** A chapter jump that failed, so Play and → try it again. */
+  const retryChapter = useRef<number | null>(null);
+  /** Whether Navo has finished: no request in flight and its tool calls done replaying. */
+  const idle = useRef(true);
+  useEffect(() => {
+    idle.current = !busy && !replay;
+  }, [busy, replay]);
 
   const api = useMemo<GuideApi>(
     () => ({ go, setView, setSheet, setWhy, demo, employee, hr, latest, openOutro: () => setOverlay("outro") }),
@@ -47,12 +58,13 @@ export function GuideProvider({ children }: { children: ReactNode }) {
   );
 
   const run = useCallback(
-    async (indices: number[]) => {
+    async (indices: number[], prepare?: () => Promise<boolean>) => {
       if (runningRef.current) return;
       runningRef.current = true;
       setRunning(true);
       setError(null);
       try {
+        if (prepare && !(await prepare())) throw new BeatFailed("The demo action failed");
         for (const i of indices) {
           const target = BEATS[i];
           if (!target) break;
@@ -71,12 +83,43 @@ export function GuideProvider({ children }: { children: ReactNode }) {
     [api, latest],
   );
 
+  /** Restore a chapter's starting point on the engine, then auto-play from its first beat. */
+  const playChapter = useCallback(
+    (chapter: number) => {
+      const start = BEATS.findIndex((b) => b.chapter === chapter);
+      if (start < 0) return;
+      setOverlay(null);
+      setAuto(true);
+      retryChapter.current = null;
+      // The first beat resets the story itself; later chapters are replayed on the engine first.
+      if (chapter === 0) return void run([start]);
+      void run([start], async () => {
+        setShown({ beat: start, caption: `Skipping ahead to chapter ${chapter + 1}…` });
+        // The tour is told with HR responding, as its first beat sets it.
+        const ready =
+          (latest()?.workspace.scenario === "hr_responds" || Boolean(await demo({ action: "scenario", scenario: "hr_responds" }))) &&
+          Boolean(await demo({ action: "chapter", chapter }));
+        if (!ready) {
+          // The replay may have reset the story already, so Play and → retry the jump, not the old beat.
+          retryChapter.current = chapter;
+          setBeat(null);
+          return false;
+        }
+        // Keep "Skipping ahead" up until the phone shows the chapter's state.
+        for (let waited = 0; !idle.current && waited < 20_000; waited += 100) await new Promise((r) => setTimeout(r, 100));
+        return true;
+      });
+    },
+    [demo, latest, run],
+  );
+
   const next = useCallback(() => {
+    if (retryChapter.current !== null) return playChapter(retryChapter.current);
     const target = beat === null ? 0 : beat + 1;
     if (target >= BEATS.length) return setAuto(false);
     setOverlay(null);
     void run([target]);
-  }, [beat, run]);
+  }, [beat, playChapter, run]);
 
   /** Back one beat: restore the chapter's starting point, then replay up to the beat before. */
   const prev = useCallback(() => {
@@ -93,11 +136,16 @@ export function GuideProvider({ children }: { children: ReactNode }) {
   }, [beat, demo, run]);
 
   const play = useCallback(() => {
+    if (retryChapter.current !== null) return playChapter(retryChapter.current);
     setOverlay(null);
     setAuto(true);
     if (beat === null || beat >= BEATS.length - 1) void run([0]);
-  }, [beat, run]);
+  }, [beat, playChapter, run]);
   const pause = useCallback(() => setAuto(false), []);
+  const goHome = useCallback(() => {
+    setAuto(false);
+    setOverlay("intro");
+  }, []);
   const toggle = useCallback(() => (auto ? pause() : play()), [auto, pause, play]);
 
   // Auto-play: once a beat's action and Navo's tool replay have finished, dwell, then move on.
@@ -121,6 +169,8 @@ export function GuideProvider({ children }: { children: ReactNode }) {
         e.preventDefault();
         prev();
       } else if (e.key === " ") {
+        // Space on a focused button presses that button, as it should.
+        if (target?.closest("button, a, select, [role='button'], [role='radio'], [role='tab']")) return;
         e.preventDefault();
         toggle();
       } else if (e.key === "h" || e.key === "H") {
@@ -150,6 +200,8 @@ export function GuideProvider({ children }: { children: ReactNode }) {
     toggle,
     next,
     prev,
+    playChapter,
+    goHome,
     setOverlay,
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
