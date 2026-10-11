@@ -64,9 +64,9 @@ task and dependency, spots Day-1 risk early, acts within guardrails (reminders, 
 escalation after 24h), asks the joiner before sensitive changes, and explains every action.
 
 Track: Business Case #2: Employee Onboarding Companion
-Code: https://github.com/KumarAnandSingh/new
+Code: https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding
 Live demo: <hosted link>
-Technical design: https://github.com/KumarAnandSingh/new/blob/main/docs/TECHNICAL_DESIGN.md
+Technical design: https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding/blob/main/docs/TECHNICAL_DESIGN.md
 
 0:00 The problem
 0:35 First launch and documents

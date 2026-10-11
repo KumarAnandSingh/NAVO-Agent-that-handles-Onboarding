@@ -573,7 +573,7 @@ Writing these tests found and fixed real bugs:
 ### Run locally
 
 ```bash
-git clone https://github.com/KumarAnandSingh/new.git navo && cd navo
+git clone https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding.git navo && cd navo
 npm ci
 cp .env.example .env.local     # optional: add ANTHROPIC_API_KEY for live Claude features
 npm run dev                    # http://localhost:3000
