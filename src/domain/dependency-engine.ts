@@ -17,7 +17,10 @@ export class DependencyGraph {
   private readonly prerequisites = new Map<string, DependencyEdge[]>();
   private readonly dependents = new Map<string, DependencyEdge[]>();
 
-  constructor(tasks: readonly TaskNode[], edges: readonly DependencyEdge[]) {
+  constructor(
+    tasks: readonly TaskNode[],
+    private readonly edges: readonly DependencyEdge[],
+  ) {
     for (const task of tasks) this.tasks.set(task.id, task);
     for (const edge of edges) {
       if (!this.tasks.has(edge.prerequisiteTaskId) || !this.tasks.has(edge.dependentTaskId)) {
@@ -38,6 +41,11 @@ export class DependencyGraph {
 
   allTasks(): TaskNode[] {
     return [...this.tasks.values()];
+  }
+
+  /** The same graph with some tasks changed: for what-if projections, never for real state. */
+  withTasks(change: (task: TaskNode) => TaskNode): DependencyGraph {
+    return new DependencyGraph(this.allTasks().map(change), this.edges);
   }
 
   /** Incomplete prerequisites that block this task. */

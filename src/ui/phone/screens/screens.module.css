@@ -1,3 +1,62 @@
+/* Screen variants: detail screens get a little more air, list screens sit a little tighter. */
+.detailScreen {
+  gap: 18px;
+}
+
+.listScreen {
+  gap: 14px;
+}
+
+/* Shared text roles across screens. */
+.itemText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.itemTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.itemTitleDone {
+  font-weight: 400;
+}
+
+.itemSub,
+.benefitsSource {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.statusRow {
+  font-size: 14px;
+}
+
+.statusDone {
+  color: var(--done);
+}
+
+.statusPending {
+  color: var(--text-3);
+}
+
+.ownerTag {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.panelLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.panelText {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .launch {
   flex: 1;
   border: none;
@@ -10,6 +69,11 @@
   gap: 22px;
   position: relative;
   margin-top: -44px;
+}
+
+.launchTitle {
+  align-items: center;
+  gap: 6px;
 }
 
 .launchName {
@@ -39,6 +103,12 @@
   animation: npIn 0.35s ease;
 }
 
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .fieldLabel {
   font-size: 12px;
   font-weight: 600;
@@ -52,6 +122,10 @@
   font-size: 16px;
   display: flex;
   gap: 10px;
+}
+
+.countryCode {
+  color: var(--text-3);
 }
 
 .otp {
@@ -97,6 +171,21 @@
   border-bottom: none;
 }
 
+.privacyRow {
+  grid-template-columns: 1fr;
+}
+
+.privacyText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.disclaimer {
+  font-size: 11px;
+  color: var(--text-4);
+}
+
 .ruleTitle {
   font-size: 15px;
   font-weight: 600;
@@ -127,6 +216,10 @@
   align-items: center;
   justify-content: center;
   margin: 1px;
+}
+
+.docRowStatic {
+  cursor: default;
 }
 
 .samples {
@@ -160,6 +253,10 @@
   background-size: cover, auto;
   background-position: top center, 0 0;
   border: 1px solid var(--line-2);
+}
+
+.clarifyKicker {
+  color: var(--risk-ink);
 }
 
 .docPreview {
@@ -199,6 +296,10 @@
   background: rgba(217, 119, 6, 0.08);
 }
 
+.docRead {
+  color: var(--text-2);
+}
+
 .question {
   font-size: 15px;
   font-weight: 600;
@@ -211,6 +312,12 @@
 
 .twoButtons > * {
   flex: 1;
+}
+
+.choice {
+  border-radius: 12px;
+  padding: 13px;
+  font-size: 14px;
 }
 
 .thenNavo {
@@ -255,12 +362,22 @@
   font-weight: 500;
 }
 
+.formValueMissing {
+  color: var(--text-4);
+}
+
 .sourceTag {
   font-size: 10px;
   font-weight: 600;
   border-radius: 6px;
   padding: 3px 7px;
   white-space: nowrap;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .input {
@@ -284,6 +401,12 @@
   gap: 4px;
 }
 
+.barItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .bar {
   height: 5px;
   border-radius: 3px;
@@ -295,6 +418,21 @@
   color: var(--text-2);
 }
 
+.barLabelCurrent {
+  font-weight: 700;
+}
+
+.depPanel {
+  border-radius: 18px;
+  gap: 0;
+}
+
+.depLabel {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-bottom: 8px;
+}
+
 .depRow {
   display: flex;
   justify-content: space-between;
@@ -303,11 +441,50 @@
   gap: 8px;
 }
 
+.depName {
+  color: var(--ink-soft);
+}
+
+.depMeta {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  text-align: right;
+}
+
+.depStatus {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
 .facts {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 6px 14px;
   font-size: 13px;
+}
+
+.factLabel {
+  color: var(--text-3);
+}
+
+.factImpact {
+  font-weight: 600;
+}
+
+.trackerFoot {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.journeyTitle {
+  font-size: 28px;
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .timelineRow {
@@ -334,6 +511,7 @@
 .timelineLine {
   flex: 1;
   width: 2px;
+  background: var(--line-2);
 }
 
 .timelineBody {
@@ -347,6 +525,45 @@
   display: flex;
   justify-content: space-between;
   gap: 8px;
+}
+
+.stepName {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.stepWhen {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.stepSub {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-3);
+}
+
+.stepDone .timelineDot,
+.stepDone .timelineLine {
+  background: var(--done);
+}
+
+.stepNow .timelineDot {
+  background: var(--signal);
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2), 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+.stepNow .stepName {
+  font-weight: 700;
+}
+
+.stepNow .stepSub {
+  color: var(--accent);
+}
+
+.stepUpcoming .timelineDot {
+  background: #fff;
+  border: 2px solid #cbd2dd;
 }
 
 .tabs {
@@ -374,6 +591,12 @@
   font-weight: 600;
 }
 
+.updateGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .updateRow {
   display: grid;
   grid-template-columns: 8px 1fr auto;
@@ -386,6 +609,34 @@
   height: 7px;
   border-radius: 50%;
   margin-top: 5px;
+  background: var(--accent);
+}
+
+.updateDotYou {
+  background: var(--you-dot);
+}
+
+.updateText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.updateBody {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+
+.updateByline {
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.updateTime {
+  font-size: 11px;
+  color: var(--text-4);
+  font-variant-numeric: tabular-nums;
 }
 
 .groupLabel {
@@ -419,6 +670,64 @@
   color: var(--signal-3);
 }
 
+.idText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.idCompany {
+  font-size: 11px;
+  color: var(--signal-2);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.idName {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.idMeta {
+  font-size: 12px;
+  color: var(--text-on-navy-2);
+}
+
+.idNumber {
+  font-family: var(--font-mono);
+}
+
+.collectWhen {
+  font-weight: 600;
+}
+
+.pickupSite {
+  border-radius: 18px;
+  gap: 2px;
+}
+
+.pickupName {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pickupRow {
+  grid-template-columns: 1fr auto auto;
+  padding: 12px 0;
+}
+
+.pickupStatus {
+  font-size: 12px;
+}
+
+.dayOneTitle {
+  gap: 6px;
+}
+
+.dayOneGreeting {
+  font-size: 14px;
+}
+
 .scheduleRow {
   display: grid;
   grid-template-columns: 46px 1fr auto;
@@ -436,10 +745,39 @@
   box-shadow: inset 0 0 0 1px var(--signal-ring);
 }
 
+.scheduleRowLast {
+  border-bottom: none;
+}
+
+.scheduleTime {
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
 .whoTag {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
+}
+
+.reminder {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+
+.reminderText {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.toggleList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .toggle {
@@ -482,6 +820,20 @@
   background: radial-gradient(380px 240px at 50% 0%, rgba(52, 211, 153, 0.14), transparent 70%);
 }
 
+.celebrateFace {
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+.celebrateTitle {
+  text-align: center;
+}
+
+.wrapUpStatus {
+  font-size: 12px;
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -500,6 +852,36 @@
 .statNumber {
   font-size: 21px;
   font-weight: 600;
+}
+
+.statNavo {
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.45);
+}
+
+.statNavo .statNumber {
+  color: var(--accent);
+}
+
+.checkIn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkInItem {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.checkMark {
+  color: var(--done);
+}
+
+.pulsePanel {
+  background: #fff;
+  border: 1px solid var(--line-2);
+  gap: 10px;
 }
 
 .pulse {
@@ -536,6 +918,22 @@
   color: var(--ink);
 }
 
+.nudgeText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.nudgeNote {
+  font-size: 12px;
+  color: #7a5418;
+}
+
+.nudgeArrow {
+  color: var(--risk-ink);
+}
+
 .slideImage {
   height: 250px;
   flex: none;
@@ -548,4 +946,170 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 4px;
+}
+
+.slideBar {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.slideBarSeen {
+  background: var(--signal);
+}
+
+/* CSS modules rename keyframes, so the global npIn isn't reachable from this file. */
+@keyframes cultureIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.culture {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  animation: cultureIn 0.35s ease;
+}
+
+.slideBody {
+  flex: 1;
+  padding: 18px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.slideKicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--signal-2);
+}
+
+.slideTitle {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.slideText {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-on-navy-2);
+}
+
+.slideNote {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.slideNoteText {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-on-navy);
+}
+
+.slideNav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.slideClose {
+  background: none;
+  border: none;
+  color: var(--text-on-navy-3);
+  font-size: 14px;
+  padding: 0;
+}
+
+.slideNext {
+  background: #fff;
+  color: var(--ink);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Week 1 */
+.weekRow {
+  grid-template-columns: 22px 1fr auto;
+  padding: 10px 0;
+}
+
+.weekCheck {
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  margin: 0;
+}
+
+.suggestion {
+  gap: 10px;
+}
+
+.suggestionHead {
+  gap: 8px;
+}
+
+.suggestionActions {
+  display: flex;
+  gap: 8px;
+}
+
+.bookButton {
+  border-radius: 10px;
+  padding: 9px 16px;
+  font-size: 13px;
+}
+
+/* Benefits */
+.benefitsPanel {
+  padding: 4px 16px;
+  gap: 0;
+}
+
+.benefitsRow {
+  padding: 12px 0;
+  border-bottom: 1px solid #e6eaf1;
+}
+
+.benefitsRowLast {
+  border-bottom: none;
+}
+
+.benefitsValue {
+  font-weight: 600;
+}
+
+.benefitsValueRisk {
+  color: var(--risk-ink);
+}
+
+.benefitsActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* An enrolled button is disabled, but stays green rather than taking the disabled colour. */
+.enrolled,
+.enrolled:disabled {
+  background: var(--done);
 }

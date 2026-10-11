@@ -95,11 +95,9 @@ function planForLateItem(snapshot: OnboardingSnapshot, task: TaskRow, driverLeve
   return [];
 }
 
+/** Navo asks about a loaner once. A "no" stands: it keeps chasing the real laptop instead of asking again. */
 function hasLoanerRequest(snapshot: OnboardingSnapshot): boolean {
-  return (
-    snapshot.approvals.some((a) => a.action === "request_loaner" && a.status !== "declined") ||
-    snapshot.tickets.some((t) => t.type === "loaner")
-  );
+  return snapshot.approvals.some((a) => a.action === "request_loaner") || snapshot.tickets.some((t) => t.type === "loaner");
 }
 
 function dedupe(actions: PlannedAction[]): PlannedAction[] {

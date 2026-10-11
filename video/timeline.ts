@@ -76,6 +76,14 @@ export function timeWords(text: string, start: number, end: number): { words: Wo
   return { words, natural };
 }
 
+/** A line's words at the times a recorded narrator says them (falls back to speaking pace if they don't match). */
+function spokenWords(text: string, spoken: [number, number][], offset: number, start: number, end: number): { words: Word[]; natural: number } {
+  const parts = text.split(/\s+/).filter(Boolean);
+  if (parts.length !== spoken.length) return timeWords(text, start, end);
+  const words = parts.map((part, i) => ({ text: part, start: offset + spoken[i]![0], end: offset + spoken[i]![1] }));
+  return { words, natural: words[words.length - 1]!.end - words[0]!.start };
+}
+
 /** The frames of a sequence mapped onto its playback window, as [time, frame index] pairs. */
 export function sequenceTimes(manifest: Manifest, id: string, at: number, dur: number): { at: number; index: number; tools: number }[] {
   const frames = manifest.sequences[id]?.frames ?? [];
@@ -118,7 +126,7 @@ export function buildTimeline(story: readonly Scene[], manifest: Manifest): Time
       const cueStart = start + cue.at;
       const cueEnd = start + (cue.until ?? (next ? next.at - 0.1 : scene.duration - 0.15));
       const text = fill(cue.text, manifest.data);
-      const { words, natural } = timeWords(text, cueStart, cueEnd);
+      const { words, natural } = cue.words ? spokenWords(text, cue.words, start, cueStart, cueEnd) : timeWords(text, cueStart, cueEnd);
       cues.push({ scene: scene.id, start: cueStart, end: cueEnd, text, words, natural });
     });
     if (scene.kind === "title") for (const s of scene.sfx ?? []) sfx.push({ at: start + s.at, sfx: s.sfx, gain: 1 });

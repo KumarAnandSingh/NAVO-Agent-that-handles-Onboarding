@@ -152,7 +152,7 @@ export const ASK_TOOLS: Record<string, AskTool> = {
   search_policies: {
     spec: {
       name: "search_policies",
-      description: "Search Halden's current policy library. Returns matching sections with their refs (e.g. §4.2). Cite only refs returned here.",
+      description: "Search Halden's current policy library. Returns matching sections with their refs (e.g. Section 4.2). Cite only refs returned here.",
       input_schema: {
         type: "object",
         properties: { query: { type: "string", description: "Keywords, e.g. 'health cover parents'" } },

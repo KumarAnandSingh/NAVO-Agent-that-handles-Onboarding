@@ -23,6 +23,8 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:coverage
+      - name: AI quality benchmark (offline)
+        run: npm run eval
       - run: npm run build
       - name: Upload coverage report
         if: always()
@@ -31,6 +33,24 @@ jobs:
           name: coverage
           path: coverage/
           if-no-files-found: ignore
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # What ships must have no high or critical advisories.
+      - name: Production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      # Dev tooling (linters, migration CLI) never ships; report it without failing the build.
+      - name: All dependencies (report only)
+        run: npm audit || true
 
   e2e:
     name: End-to-end (Playwright, offline mode)
@@ -53,3 +73,38 @@ jobs:
           name: playwright-report
           path: playwright-report/
           if-no-files-found: ignore
+
+  postgres:
+    name: Real Postgres (migrations, end-to-end, 50-visitor load)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: navo
+          POSTGRES_PASSWORD: navo
+          POSTGRES_DB: navo
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U navo" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://navo:navo@localhost:5432/navo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Apply migrations
+        run: npm run db:migrate
+      - run: npm run build
+      - name: End-to-end on Postgres
+        run: npm run test:e2e
+      - name: Load test, 50 concurrent visitors
+        run: |
+          NAVO_LIVE_AI=off npx next start -p 3300 &
+          for i in $(seq 1 60); do curl -sf http://localhost:3300/api/state > /dev/null && break; sleep 1; done
+          npm run load-test -- --base http://localhost:3300 --visitors 50 | tee -a "$GITHUB_STEP_SUMMARY"

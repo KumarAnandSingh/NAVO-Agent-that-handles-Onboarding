@@ -114,7 +114,7 @@ async function main() {
       // The home screen's suggestion chip opens the sheet and asks in one tap.
       await app.getByRole("button", { name: "What if HR doesn't respond?" }).first().click();
       const sheet = app.getByRole("dialog", { name: "Ask Navo" });
-      await expect(sheet.getByText(/Offline answer from Navo's rules|Answered by Claude/)).toBeVisible({ timeout: 60_000 });
+      await expect(sheet.getByText(/Answered from Navo's rules|Answered by Claude/)).toBeVisible({ timeout: 60_000 });
       await settled(page);
       await shot(page, "phone-ask-navo", app);
     }

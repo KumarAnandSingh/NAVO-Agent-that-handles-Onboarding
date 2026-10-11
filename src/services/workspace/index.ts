@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, eq, lt } from "drizzle-orm";
+import { and, eq, inArray, like, lt } from "drizzle-orm";
 import { POLICIES } from "@/content/policies";
 import { SEED_VERSION } from "@/content/company";
 import type { ScenarioId } from "@/domain/types";
@@ -13,6 +13,8 @@ const WORKSPACE_TTL_MS = 48 * 3_600_000;
 
 /** Load the global policy library. Idempotent: existing versions are left untouched. */
 export async function ensurePolicies(db: Queryable): Promise<void> {
+  // Refs were once written "§4.2"; drop library sections stored that way so none is served twice.
+  await db.delete(policySections).where(and(inArray(policySections.documentId, POLICIES.map((p) => p.id)), like(policySections.ref, "§%")));
   for (const policy of POLICIES) {
     await db
       .insert(policyDocuments)

@@ -31,6 +31,10 @@
   gap: 16px;
 }
 
+.runtimeCard {
+  gap: 14px;
+}
+
 .brandRow {
   display: flex;
   align-items: center;
@@ -53,6 +57,14 @@
   color: var(--text-3);
 }
 
+.keys {
+  line-height: 1.5;
+}
+
+.upNext {
+  font-weight: 600;
+}
+
 .clock {
   font-size: 12px;
   color: var(--text-3);
@@ -65,6 +77,10 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-3);
+}
+
+.chaptersLabel {
+  padding-bottom: 6px;
 }
 
 .notice {
@@ -151,8 +167,26 @@
   color: var(--text-3);
 }
 
+.chapterOn .chapterDot {
+  background: var(--accent);
+  color: #fff;
+}
+
+.chapterDone .chapterDot {
+  background: var(--done-soft);
+  color: var(--done);
+}
+
+.chapterText {
+  gap: 1px;
+}
+
 .chapterName {
   font-size: 13px;
+}
+
+.chapterOn .chapterName {
+  font-weight: 600;
 }
 
 .section {
@@ -232,10 +266,28 @@
   line-height: 1.4;
 }
 
+.tipWaiting {
+  color: #9a3b12;
+}
+
+.tipHint {
+  color: var(--text-3);
+}
+
 .runHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.runState {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--done);
+}
+
+.runStateRunning {
+  color: var(--accent);
 }
 
 .runLine {
@@ -248,6 +300,23 @@
   color: #fff;
   font-size: 13px;
   line-height: 1.35;
+}
+
+.runLineText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.runTrigger {
+  font-size: 11px;
+  color: var(--text-on-navy-3);
+}
+
+.runEmpty {
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.45;
 }
 
 .tool {
@@ -294,6 +363,18 @@
   height: fit-content;
 }
 
+.toolResult {
+  color: var(--text-2);
+}
+
+.toolResultFailed {
+  color: var(--you);
+}
+
+.toolRunning .toolResult {
+  color: var(--accent);
+}
+
 .diff {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -309,6 +390,10 @@
   color: var(--text-2);
 }
 
+.earlier b {
+  font-weight: 600;
+}
+
 .guardrails {
   display: flex;
   flex-direction: column;
@@ -320,18 +405,29 @@
   color: var(--text-2);
 }
 
-.model {
-  font-size: 11px;
-  color: var(--text-3);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.stateChanges {
+  color: var(--ink);
 }
 
-.modelDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ruleAuto {
+  color: var(--done);
+  font-weight: 600;
+}
+
+.ruleAsks {
+  color: var(--you);
+  font-weight: 600;
+}
+
+.ruleNever {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 @media (max-width: 760px) {

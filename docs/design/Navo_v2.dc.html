@@ -278,7 +278,7 @@ button{font-family:inherit}
 <div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #EEF1F5"><span style="width:16px;height:16px;border-radius:50%;background:#13795B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center">✓</span><span style="font-size:14px">Product induction</span><span style="font-size:11px;color:#5B6474">Tue</span></div>
 <div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #EEF1F5"><span style="width:16px;height:16px;border-radius:50%;background:#13795B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center">✓</span><span style="font-size:14px">Mandatory training</span><span style="font-size:11px;color:#5B6474">Tue</span></div>
 <div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #EEF1F5"><span style="width:16px;height:16px;border-radius:50%;background:#13795B;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center">✓</span><span style="font-size:14px">Team introductions</span><span style="font-size:11px;color:#5B6474">Wed</span></div>
-<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:10px 10px;margin:0 -10px;border-radius:12px;background:#EEF5FF;box-shadow:inset 0 0 0 1px rgba(56,189,248,.45)"><dc-import name="NavoFace" state="acting" size="18" hint-size="18px,18px"></dc-import><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">First project setup</span><span style="font-size:12px;color:#2F5BEA">Requesting Jira and Figma access</span></span><span style="font-size:11px;color:#2F5BEA">Thu</span></div>
+<div style="display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:10px 10px;margin:0 -10px;border-radius:12px;background:#EEF5FF;box-shadow:inset 0 0 0 1px rgba(56,189,248,.45)"><dc-import name="NavoFace" state="acting" size="18" hint-size="18px,18px"></dc-import><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600">First project setup</span><span style="font-size:12px;color:#2F5BEA">Requesting project tool access</span></span><span style="font-size:11px;color:#2F5BEA">Thu</span></div>
 </div>
 <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:18px;background:#F6F8FC">
 <div style="display:flex;align-items:center;gap:8px"><dc-import name="NavoFace" state="thinking" size="22" hint-size="22px,22px"></dc-import><span style="font-size:12px;font-weight:600;color:#2F5BEA">Navo suggests</span></div>
@@ -492,7 +492,7 @@ button{font-family:inherit}
 </div>
 <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:16px;background:#F6F8FC">
 <span style="font-size:12px;font-weight:600;color:#2F5BEA">Tomorrow</span>
-<span style="font-size:14px;line-height:1.45">Product induction at 10:00. I've set up your Jira and Figma requests.</span>
+<span style="font-size:14px;line-height:1.45">Product induction at 10:00. I've set up your project tool requests.</span>
 </div>
 </div>
 </div>
@@ -893,7 +893,7 @@ class Component extends DCLogic {
       ].map(([name, role, start, open, status, ink]) => ({ name, role, start, open, status, ink })),
       formRows: [
         ['Full name', 'Anand Mehta', 'From PAN'], ['Date of birth', '14 Mar 1991', 'From Aadhaar'], ['Address', 'Andheri West, Mumbai 400058', 'From Aadhaar'],
-        ['Bank account', 'HDFC •••• 4821', 'From cheque'], ['Nominee', 'Kavya Mehta, spouse', 'From offer form'], ['Emergency contact', 'Not provided', 'Needs you']
+        ['Bank account', 'Meridian Bank •••• 4821', 'From cheque'], ['Nominee', 'Kavya Mehta, spouse', 'From offer form'], ['Emergency contact', 'Not provided', 'Needs you']
       ].map(([label, value, src]) => { const need = src === 'Needs you'; return { label, value, src, w: need ? 400 : 500, ink: need ? '#8A93A3' : '#0B1530', srcInk: need ? '#C8372D' : '#2F5BEA', srcBg: need ? '#FDECEC' : '#E8F1FF' }; }),
       workText: w.text, workFace: w.face, workDots: dots,
       states: [

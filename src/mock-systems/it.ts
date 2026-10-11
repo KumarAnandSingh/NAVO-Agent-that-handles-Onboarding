@@ -1,6 +1,6 @@
 /**
  * Mock IT service desk. Tickets get an expected completion from the IT provisioning
- * policy (§5.1–5.4) and a scheduled "ready" event. The demo can inject a delay.
+ * policy (Sections 5.1–5.4) and a scheduled "ready" event. The demo can inject a delay.
  */
 import { and, eq } from "drizzle-orm";
 import { addMinutes, addWorkingDays, atIst, dateKeyOf, leadTimeFinishDay } from "@/domain/time";
@@ -21,7 +21,7 @@ export function expectedReadyAt(type: ItTicketType, requestedAt: Date, day1Start
     case "vpn":
       return addMinutes(requestedAt, 5);
     case "access":
-      // Accounts are switched on at 09:00 on Day 1 (§5.2), or right away after Day 1 starts.
+      // Accounts are switched on at 09:00 on Day 1 (Section 5.2), or right away after Day 1 starts.
       return requestedAt.getTime() > day1Start.getTime() ? addMinutes(requestedAt, 5) : day1Start;
     case "loaner":
       // Loaners come from stock: ready at 16:00 on the first working day the request counts for.

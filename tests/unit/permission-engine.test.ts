@@ -30,7 +30,7 @@ describe("permission engine", () => {
   it("allows escalation only after 24 hours without a reply", () => {
     expect(checkPermission("escalate_owner", { hoursSinceReminder: 3 })).toMatchObject({ decision: "deny" });
     expect(checkPermission("escalate_owner")).toMatchObject({ decision: "deny" });
-    expect(checkPermission("escalate_owner", { hoursSinceReminder: 24 })).toMatchObject({ decision: "allow", policyRef: "§4.2" });
+    expect(checkPermission("escalate_owner", { hoursSinceReminder: 24 })).toMatchObject({ decision: "allow", policyRef: "Section 4.2" });
   });
 
   it("describes decisions for the runtime panel", () => {

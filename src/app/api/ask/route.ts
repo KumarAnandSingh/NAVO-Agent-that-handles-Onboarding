@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { askNavo } from "@/services/ask";
-import { claudeCreate } from "@/services/llm/claude";
+import { gateway } from "@/services/llm/gateway";
+import { aiAccess } from "@/server/deps";
 import { buildViewModel, errorResponse } from "@/server/respond";
 import { currentWorkspace } from "@/server/session";
 
@@ -15,8 +16,9 @@ export async function POST(request: Request) {
   try {
     const { question } = body.parse(await request.json());
     const { db, workspace } = await currentWorkspace();
-    const answer = await askNavo(db, workspace.id, question, { create: claudeCreate() });
-    return NextResponse.json({ answer, vm: await buildViewModel(db, workspace.id) });
+    const access = aiAccess(request);
+    const answer = await askNavo(db, workspace.id, question, { llm: gateway(access) });
+    return NextResponse.json({ answer, vm: await buildViewModel(db, workspace.id, access) });
   } catch (error) {
     return errorResponse(error);
   }

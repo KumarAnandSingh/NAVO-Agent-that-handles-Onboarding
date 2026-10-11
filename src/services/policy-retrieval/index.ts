@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull, or } from "drizzle-orm";
 import { dateKeyOf } from "@/domain/time";
 import type { Queryable } from "@/lib/db/client";
 import { policyDocuments, policySections } from "@/lib/db/schema";
@@ -13,6 +13,10 @@ export interface PolicySection {
   documentTitle: string;
   version: string;
   effectiveDate: string;
+  /** The policy this is a version of: an upload that replaces a library policy shares its family. */
+  family?: string;
+  /** "hr" for a policy HR uploaded in this workspace. */
+  source?: "library" | "hr";
 }
 
 export interface PolicyHit extends PolicySection {
@@ -28,13 +32,17 @@ export const MIN_RELEVANCE = 1.2;
  */
 export function currentSections(sections: readonly PolicySection[], asOf: Date): PolicySection[] {
   const today = dateKeyOf(asOf);
-  const inForce = new Map<string, string>();
+  const familyOf = (s: PolicySection) => s.family ?? s.documentId;
+  const inForce = new Map<string, { documentId: string; version: string }>();
   for (const section of sections) {
     if (section.effectiveDate > today) continue;
-    const current = inForce.get(section.documentId);
-    if (!current || compareVersions(section.version, current) > 0) inForce.set(section.documentId, section.version);
+    const current = inForce.get(familyOf(section));
+    if (!current || compareVersions(section.version, current.version) > 0) inForce.set(familyOf(section), { documentId: section.documentId, version: section.version });
   }
-  return sections.filter((s) => inForce.get(s.documentId) === s.version);
+  return sections.filter((s) => {
+    const current = inForce.get(familyOf(s));
+    return current?.documentId === s.documentId && current.version === s.version;
+  });
 }
 
 export function compareVersions(a: string, b: string): number {
@@ -61,8 +69,9 @@ export function rankSections(sections: readonly PolicySection[], query: string, 
     });
 }
 
-export async function loadSections(db: Queryable): Promise<PolicySection[]> {
-  return db
+/** The shared library plus, with a workspace, the policies HR uploaded there. */
+export async function loadSections(db: Queryable, workspaceId?: string): Promise<PolicySection[]> {
+  const rows = await db
     .select({
       id: policySections.id,
       ref: policySections.ref,
@@ -72,24 +81,29 @@ export async function loadSections(db: Queryable): Promise<PolicySection[]> {
       version: policySections.version,
       documentTitle: policyDocuments.title,
       effectiveDate: policyDocuments.effectiveDate,
+      replaces: policyDocuments.replaces,
+      workspaceId: policyDocuments.workspaceId,
     })
     .from(policySections)
-    .innerJoin(
-      policyDocuments,
-      and(eq(policySections.documentId, policyDocuments.id), eq(policySections.version, policyDocuments.version)),
-    );
+    .innerJoin(policyDocuments, and(eq(policySections.documentId, policyDocuments.id), eq(policySections.version, policyDocuments.version)))
+    .where(workspaceId ? or(isNull(policyDocuments.workspaceId), eq(policyDocuments.workspaceId, workspaceId)) : isNull(policyDocuments.workspaceId));
+  return rows.map(({ replaces, workspaceId: owner, ...section }) => ({
+    ...section,
+    family: replaces ?? section.documentId,
+    source: owner ? ("hr" as const) : ("library" as const),
+  }));
 }
 
 export async function searchPolicies(
   db: Queryable,
   query: string,
-  options: { asOf: Date; limit?: number; minScore?: number },
+  options: { asOf: Date; workspaceId?: string; limit?: number; minScore?: number },
 ): Promise<PolicyHit[]> {
-  const sections = currentSections(await loadSections(db), options.asOf);
+  const sections = currentSections(await loadSections(db, options.workspaceId), options.asOf);
   return rankSections(sections, query, options.limit ?? 3, options.minScore ?? MIN_RELEVANCE);
 }
 
-export async function getSectionByRef(db: Queryable, ref: string, asOf: Date): Promise<PolicySection | null> {
-  const sections = currentSections(await loadSections(db), asOf);
+export async function getSectionByRef(db: Queryable, ref: string, asOf: Date, workspaceId?: string): Promise<PolicySection | null> {
+  const sections = currentSections(await loadSections(db, workspaceId), asOf);
   return sections.find((s) => s.ref === ref) ?? null;
 }

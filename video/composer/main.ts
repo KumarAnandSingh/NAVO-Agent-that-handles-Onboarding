@@ -5,6 +5,7 @@
 import { STORY } from "../story";
 import { TRANSITION, buildTimeline, sceneAt, type TimedCue, type Timeline } from "../timeline";
 import type { Manifest, TitleScene } from "../types";
+import { voiceStory, type VoiceTrack } from "../voice";
 import { AppRenderer } from "./app";
 import { buildCard } from "./cards";
 import { animate, clamp01, easeOut, h } from "./dom";
@@ -17,7 +18,8 @@ interface SceneView {
 declare global {
   interface Window {
     navoVideo: {
-      setup: (manifest: Manifest, base: string) => Promise<number>;
+      /** With a voice track, the story is retimed to the recorded narration. */
+      setup: (manifest: Manifest, base: string, voice?: VoiceTrack) => Promise<number>;
       renderAt: (t: number) => Promise<void>;
       /** Set before setup to render without burned-in subtitles. */
       noSubtitles?: boolean;
@@ -112,8 +114,8 @@ async function renderAt(t: number) {
   await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
 }
 
-async function setup(manifest: Manifest, base: string): Promise<number> {
-  timeline = buildTimeline(STORY, manifest);
+async function setup(manifest: Manifest, base: string, voice?: VoiceTrack): Promise<number> {
+  timeline = buildTimeline(voice ? voiceStory(STORY, voice, manifest.data).story : STORY, manifest);
   const stage = document.getElementById("stage")!;
   views = timeline.scenes.map(({ scene }) => {
     if (scene.kind === "title") return titleView(scene, manifest.faces);
@@ -126,9 +128,10 @@ async function setup(manifest: Manifest, base: string): Promise<number> {
   }
   chipText = h("span", { class: "chip-text" });
   chip = h("div", { class: "chip" }, h("span", { class: "chip-face", html: manifest.faces.Navo ?? "" }), chipText);
-  note = h("div", { class: "note", text: manifest.live ? "Recorded from the working prototype · Claude live · synthetic data" : "Recorded from the working prototype · synthetic data" });
+  note = h("div", { class: "note", text: manifest.live ? "Recorded from the working prototype, with live Claude and synthetic data" : "Recorded from the working prototype, with synthetic data" });
   subLine = h("div", { class: "sub-line" });
   subs = h("div", { class: "subs" }, subLine);
+  if (window.navoVideo.noSubtitles) subs.style.display = "none";
   bar = h("div", { class: "bar" });
   stage.append(chip, note, subs, h("div", { class: "bar-track" }, bar));
   await document.fonts.ready;

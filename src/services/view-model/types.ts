@@ -232,8 +232,32 @@ export interface RuntimeVM {
   runs: RunVM[];
   latestRunId: number | null;
   upcoming: { label: string; when: string }[];
-  liveAI: boolean;
-  model: string | null;
+  ai: AiStatusVM;
+}
+
+/** How Navo reaches Claude for this visitor, which model does what, and what it has cost. */
+export interface AiStatusVM {
+  /** Offline (Navo's rules), the deployment's key, or the visitor's own key. */
+  mode: "offline" | "server" | "visitor";
+  /** Whether this deployment lets visitors connect their own Claude key. */
+  byok: boolean;
+  routes: { feature: string; label: string; models: string[]; effort: string; why: string }[];
+  usage: {
+    feature: string;
+    label: string;
+    model: string;
+    calls: number;
+    /** Attempts that failed or were declined (a fallback model or Navo's rules took over). */
+    failed: number;
+    avgLatencyMs: number | null;
+    tokensIn: number;
+    tokensOut: number;
+    cachedTokens: number;
+    costUsd: number | null;
+  }[];
+  /** Personal numbers masked before text was sent to Claude. */
+  masked: number;
+  totalCostUsd: number;
 }
 
 export interface HrQueueItemVM {
@@ -254,6 +278,38 @@ export interface HrVM {
   queue: HrQueueItemVM[];
   joiners: { name: string; role: string; start: string; open: string; status: string; tone: Tone }[];
   featured: { status: string; note: string; tone: Tone; feed: { time: string; phase: string; text: string; tone: Tone }[] };
+  radar: RadarVM;
+  policies: {
+    items: PolicyItemVM[];
+    /** The simulated date, the default effective date for a new policy. */
+    today: string;
+    /** Policies in force that HR can publish a newer version of. */
+    replaceable: { family: string; title: string; version: string }[];
+  };
+}
+
+/** The cohort radar: every joiner's Day-1 risk, under today's facts and each what-if. */
+export interface RadarVM {
+  scenarios: {
+    id: string;
+    label: string;
+    summary: string;
+    levels: { level: string; label: string; count: number; tone: Tone }[];
+    bottlenecks: { team: string; joiners: number; worst: string; tone: Tone }[];
+    joiners: { id: string; name: string; role: string; start: string; level: string; label: string; tone: Tone; driver: string; changed: boolean }[];
+  }[];
+}
+
+export interface PolicyItemVM {
+  documentId: string;
+  family: string;
+  title: string;
+  version: string;
+  effectiveDate: string;
+  refs: string;
+  sections: number;
+  source: "library" | "hr";
+  status: "in force" | "scheduled" | "superseded";
 }
 
 export type Chapter = "launch" | "documents" | "pre_joining" | "ready" | "day1" | "week1";

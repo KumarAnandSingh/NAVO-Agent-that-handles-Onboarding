@@ -28,3 +28,7 @@ blob-report/
 # product video (regenerate with npm run video)
 video/.capture/
 video/out/
+video/voice/
+.venv-voice/
+evals/
+.claude/worktrees/

@@ -27,6 +27,18 @@ test("HR console has no serious accessibility violations", async ({ page }) => {
   await expect(page.getByRole("region", { name: "HR console" })).toBeVisible();
   await page.waitForLoadState("networkidle");
   expect(await seriousViolations(page)).toEqual([]);
+  for (const name of ["All joiners", "Policies and rules"]) {
+    await page.getByRole("navigation", { name: "HR navigation" }).getByRole("button", { name: new RegExp(name) }).click();
+    await expect(page.getByRole("heading", { name, level: 1 })).toBeVisible();
+    expect(await seriousViolations(page), name).toEqual([]);
+  }
+});
+
+test("the connect-your-key dialog has no serious accessibility violations", async ({ page }) => {
+  await openStage(page);
+  await page.getByRole("button", { name: "Try it with your own Claude key" }).click();
+  await expect(page.getByRole("dialog", { name: "Try Navo with live Claude" })).toBeVisible();
+  expect(await seriousViolations(page)).toEqual([]);
 });
 
 test("the stage is usable by keyboard: shortcuts and focusable controls", async ({ page }) => {

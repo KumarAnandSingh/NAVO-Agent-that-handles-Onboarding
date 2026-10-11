@@ -24,22 +24,24 @@ export async function createMemoryDb(): Promise<Db> {
   const client = new PGlite();
   const db = drizzlePglite(client, { schema });
   await migratePglite(db, { migrationsFolder: MIGRATIONS_FOLDER });
-  return db as unknown as Db;
+  return db;
 }
 
 async function createDb(): Promise<Db> {
-  const url = process.env.DATABASE_URL;
+  // Neon on Vercel sets DATABASE_URL; its Vercel Postgres template names it POSTGRES_URL.
+  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
   if (url) {
-    const pool = new Pool({ connectionString: url, max: 5 });
+    // Enough connections for a burst of visitors; Neon's pooled endpoint takes many more.
+    const pool = new Pool({ connectionString: url, max: Number(process.env.NAVO_DB_POOL_MAX) || 10 });
     const db = drizzleNodePg(pool, { schema });
     // Applied on first connection (a no-op once up to date); `npm run db:migrate` can run it ahead of time.
     await migrateNodePg(db, { migrationsFolder: MIGRATIONS_FOLDER });
-    return db as unknown as Db;
+    return db;
   }
   const client = new PGlite(localDataDir());
   const db = drizzlePglite(client, { schema });
   await migratePglite(db, { migrationsFolder: MIGRATIONS_FOLDER });
-  return db as unknown as Db;
+  return db;
 }
 
 /**

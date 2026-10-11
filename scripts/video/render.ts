@@ -8,6 +8,9 @@
  *   npm run video:render -- --stills 12,48.5   stills at given times
  *   npm run video:render -- --from 60 --to 90  render a slice
  *   npm run video:render -- --no-subs          without burned-in subtitles
+ *   npm run video:render -- --voice video/voice/timings.json
+ *                                              retime to a recorded voice-over and mix it in
+ *                                              (timings from scripts/video/align-voice.py)
  *
  * Needs ffmpeg on the PATH.
  */
@@ -20,6 +23,7 @@ import { build } from "esbuild";
 import { STORY } from "../../video/story";
 import { FPS, buildTimeline, formatTimecode, type Timeline } from "../../video/timeline";
 import type { Manifest } from "../../video/types";
+import { voiceStory, type VoiceClip, type VoiceTrack } from "../../video/voice";
 import { RATE, mixSfx, toWav } from "./sfx";
 
 const ROOT = process.cwd();
@@ -33,7 +37,7 @@ function arg(name: string): string | undefined {
 }
 const flag = (name: string) => process.argv.includes(`--${name}`);
 
-async function composerPage(manifest: Manifest, noSubs: boolean) {
+async function composerPage(manifest: Manifest, noSubs: boolean, voice?: VoiceTrack) {
   const bundle = await build({ entryPoints: [path.join(ROOT, "video", "composer", "main.ts")], bundle: true, write: false, format: "iife", target: "chrome120", logLevel: "warning" });
   const js = bundle.outputFiles[0]!.text;
   const css = await readFile(path.join(ROOT, "video", "composer", "style.css"), "utf8");
@@ -57,7 +61,7 @@ async function composerPage(manifest: Manifest, noSubs: boolean) {
   });
   await page.goto(`${HOST}/`);
   if (noSubs) await page.evaluate(() => (window.navoVideo.noSubtitles = true));
-  const duration = await page.evaluate(([m, base]) => window.navoVideo.setup(m, base), [manifest, `${HOST}/capture/`] as const);
+  const duration = await page.evaluate(([m, base, v]) => window.navoVideo.setup(m, base, v), [manifest, `${HOST}/capture/`, voice] as const);
   const cdp = await page.context().newCDPSession(page);
   const grab = async (format: "jpeg" | "png") => {
     const shot = await cdp.send("Page.captureScreenshot", { format, quality: format === "jpeg" ? 93 : undefined, optimizeForSpeed: true });
@@ -78,11 +82,13 @@ function pacingReport(timeline: Timeline) {
   console.warn(`${timeline.cues.length} subtitle lines, ${tight} tight, video ${timeline.duration.toFixed(1)}s`);
 }
 
-async function writeSubtitles(timeline: Timeline) {
+async function writeSubtitles(timeline: Timeline, name: string, voiced: boolean) {
   const srt = timeline.cues.map((c, i) => `${i + 1}\n${formatTimecode(c.start)} --> ${formatTimecode(c.end)}\n${c.text}\n`).join("\n");
   const vtt = `WEBVTT\n\n${timeline.cues.map((c) => `${formatTimecode(c.start, ".")} --> ${formatTimecode(c.end, ".")}\n${c.text}\n`).join("\n")}`;
-  await writeFile(path.join(OUT, "navo-demo.srt"), srt);
-  await writeFile(path.join(OUT, "navo-demo.vtt"), vtt);
+  await writeFile(path.join(OUT, `${name}.srt`), srt);
+  await writeFile(path.join(OUT, `${name}.vtt`), vtt);
+  // The voice-over script is the reading guide for the unvoiced cut; a voiced render doesn't change it.
+  if (voiced) return;
 
   const rows = timeline.cues.map((c) => {
     const scene = timeline.scenes.find((s) => s.scene.id === c.scene)!.scene;
@@ -105,15 +111,48 @@ async function writeSubtitles(timeline: Timeline) {
   await writeFile(path.join(ROOT, "video", "VOICEOVER.md"), md);
 }
 
+/** The recording as mono samples at the video's audio rate. */
+async function decode(file: string): Promise<Float32Array> {
+  const ff = spawn("ffmpeg", ["-loglevel", "error", "-i", file, "-ac", "1", "-ar", String(RATE), "-f", "f32le", "-"], { stdio: ["ignore", "pipe", "inherit"] });
+  const chunks: Buffer[] = [];
+  ff.stdout.on("data", (c: Buffer) => chunks.push(c));
+  const [code] = (await once(ff, "close")) as [number];
+  if (code !== 0) throw new Error(`ffmpeg could not read ${file}`);
+  const bytes = Buffer.concat(chunks);
+  return new Float32Array(bytes.buffer, bytes.byteOffset, Math.floor(bytes.length / 4));
+}
+
+/** Lays each clip of the recording at its place in the video, with tiny fades so no edge clicks. */
+function placeVoice(samples: Float32Array, clips: VoiceClip[], from: number, duration: number): Float32Array {
+  const track = new Float32Array(Math.ceil(duration * RATE));
+  const fade = Math.round(0.008 * RATE);
+  for (const clip of clips) {
+    const src0 = Math.round(clip.from * RATE);
+    const n = Math.round((clip.to - clip.from) * RATE);
+    const dst0 = Math.round((clip.at - from) * RATE);
+    for (let i = 0; i < n; i++) {
+      const d = dst0 + i;
+      if (d < 0 || d >= track.length) continue;
+      const env = Math.min(1, i / fade, (n - i) / fade);
+      track[d] = (track[d] ?? 0) + (samples[src0 + i] ?? 0) * env;
+    }
+  }
+  return track;
+}
+
 async function main() {
   const manifest = JSON.parse(await readFile(path.join(CAPTURE, "manifest.json"), "utf8")) as Manifest;
-  const timeline = buildTimeline(STORY, manifest);
+  const voiceFile = arg("voice");
+  const voice = voiceFile ? (JSON.parse(await readFile(voiceFile, "utf8")) as VoiceTrack) : undefined;
+  const voiced = voice ? voiceStory(STORY, voice, manifest.data) : undefined;
+  const timeline = buildTimeline(voiced?.story ?? STORY, manifest);
   await mkdir(OUT, { recursive: true });
-  pacingReport(timeline);
+  if (!voice) pacingReport(timeline);
+  else console.warn(`voice-over: ${voice.lines.length} lines, video ${timeline.duration.toFixed(1)}s`);
 
   const stills = arg("stills")?.split(",").map(Number);
   const every = arg("every");
-  const { browser, page, duration, grab } = await composerPage(manifest, flag("no-subs"));
+  const { browser, page, duration, grab } = await composerPage(manifest, flag("no-subs"), voice);
   try {
     if (stills || every) {
       const dir = path.join(OUT, "stills");
@@ -131,7 +170,8 @@ async function main() {
     const from = Number(arg("from") ?? 0);
     const to = Math.min(duration, Number(arg("to") ?? duration));
     const slice = from > 0 || to < duration;
-    const name = slice ? `navo-demo-${from}-${to}` : "navo-demo";
+    const base = voice ? "navo-demo-voiced" : "navo-demo";
+    const name = slice ? `${base}-${from}-${to}` : base;
     const silent = path.join(OUT, `${name}-silent.mp4`);
     const ffmpeg = spawn("ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(FPS), "-c:v", "mjpeg", "-i", "-", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-pix_fmt", "yuv420p", "-movflags", "+faststart", silent], { stdio: ["pipe", "inherit", "inherit"] });
     const total = Math.round((to - from) * FPS);
@@ -153,11 +193,18 @@ async function main() {
     const sfxFile = path.join(OUT, `${name}-sfx.wav`);
     await writeFile(sfxFile, toWav(sfx));
     const final = path.join(OUT, `${name}.mp4`);
-    const mux = spawn("ffmpeg", ["-y", "-loglevel", "error", "-i", silent, "-i", sfxFile, "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", String(RATE), "-shortest", "-movflags", "+faststart", `${final}.tmp.mp4`], { stdio: "inherit" });
+    let audio = ["-i", sfxFile];
+    if (voice && voiceFile && voiced) {
+      const voiceTrack = path.join(OUT, `${name}-voice.wav`);
+      await writeFile(voiceTrack, toWav(placeVoice(await decode(path.resolve(path.dirname(voiceFile), voice.audio)), voiced.clips, from, to - from)));
+      // The voice is levelled for streaming (-16 LUFS); the sound effects sit well under it.
+      audio = ["-i", voiceTrack, "-i", sfxFile, "-filter_complex", "[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[v];[2:a]volume=0.35[s];[v][s]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[a]", "-map", "0:v", "-map", "[a]"];
+    }
+    const mux = spawn("ffmpeg", ["-y", "-loglevel", "error", "-i", silent, ...audio, "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", String(RATE), "-shortest", "-movflags", "+faststart", `${final}.tmp.mp4`], { stdio: "inherit" });
     const [muxCode] = (await once(mux, "close")) as [number];
     if (muxCode !== 0) throw new Error(`ffmpeg mux exited with ${muxCode}`);
     await rename(`${final}.tmp.mp4`, final);
-    if (!slice) await writeSubtitles(timeline);
+    if (!slice) await writeSubtitles(timeline, name, Boolean(voice));
     console.warn(`wrote ${path.relative(ROOT, final)} (${(to - from).toFixed(1)}s) in ${Math.round((Date.now() - started) / 1000)}s`);
   } finally {
     await browser.close();

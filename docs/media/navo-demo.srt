@@ -1,0 +1,175 @@
+1
+00:00:00,133 --> 00:00:01,430
+It's Day 1 at a new job.
+
+2
+00:00:01,710 --> 00:00:05,723
+The laptop isn't ready. Email doesn't work. The ID card isn't printed.
+
+3
+00:00:05,908 --> 00:00:07,991
+Nobody knows why, not even the joiner.
+
+4
+00:00:08,455 --> 00:00:11,650
+Five teams run onboarding. Nobody owns the whole chain.
+
+5
+00:00:11,813 --> 00:00:14,789
+So one late item quietly breaks everything after it.
+
+6
+00:00:14,986 --> 00:00:17,367
+The joiner finds out last: on Day 1.
+
+7
+00:00:17,933 --> 00:00:21,169
+Meet Navo: an AI agent that owns onboarding end to end.
+
+8
+00:00:21,235 --> 00:00:26,864
+It tracks every dependency, acts before Day 1 breaks, and asks before anything sensitive.
+
+9
+00:00:27,164 --> 00:00:30,679
+Anand joins Halden on Monday. Navo has read his documents; one is missing.
+
+10
+00:00:30,923 --> 00:00:33,621
+He uploads a bill; Navo reads it and checks it against his ID.
+
+11
+00:00:34,022 --> 00:00:36,577
+One unreadable date? It asks about that field only.
+
+12
+00:00:37,185 --> 00:00:41,477
+Four days before Day 1, Navo's daily check runs. Every tool call shows live.
+
+13
+00:00:42,131 --> 00:00:44,955
+The Employee ID is two days late. The laptop depends on it.
+
+14
+00:00:45,260 --> 00:00:47,374
+Risk: high. Zero days of slack.
+
+15
+00:00:47,863 --> 00:00:50,665
+It checks its permissions, then reminds HR on its own.
+
+16
+00:00:51,123 --> 00:00:53,857
+Anand gets one calm update. He chases no one.
+
+17
+00:00:54,065 --> 00:00:56,247
+And every action shows its reason and policy.
+
+18
+00:00:56,547 --> 00:00:59,723
+Priya in HR sees only exceptions, and what Navo already did.
+
+19
+00:00:59,923 --> 00:01:03,138
+She issues the ID. Within a minute, Navo raises IT requests.
+
+20
+00:01:03,261 --> 00:01:05,176
+On Anand's phone, the blocker is cleared.
+
+21
+00:01:05,571 --> 00:01:09,809
+If HR never replies, Navo offers a loaner laptop at the last safe moment.
+
+22
+00:01:09,876 --> 00:01:12,423
+That's an asset change, so Anand decides.
+
+23
+00:01:12,759 --> 00:01:16,549
+Approved. Day 1 is covered, and HR Ops is escalated.
+
+24
+00:01:16,849 --> 00:01:21,875
+Anand can ask anything. Navo answers from his live state and Halden's policies.
+
+25
+00:01:22,116 --> 00:01:24,173
+It cites only the sections it retrieved.
+
+26
+00:01:24,486 --> 00:01:27,106
+Ask in Hindi, and Navo answers in Hindi.
+
+27
+00:01:27,733 --> 00:01:31,623
+HR adds a policy, and Navo splits it into sections it can cite.
+
+28
+00:01:31,932 --> 00:01:36,192
+Once published, Ask Navo answers from it at once, citing the section.
+
+29
+00:01:36,404 --> 00:01:37,986
+No retraining. No deploy.
+
+30
+00:01:38,402 --> 00:01:42,013
+Priya also sees every joiner's Day 1, from the same rules Navo uses.
+
+31
+00:01:42,215 --> 00:01:43,815
+What if IT takes a week longer?
+
+32
+00:01:44,043 --> 00:01:47,403
+3 joiners at risk of a broken Day 1; IT drives all of them.
+
+33
+00:01:48,029 --> 00:01:51,369
+Friday: everything's ready in one pickup. Day 1 runs to plan.
+
+34
+00:01:51,515 --> 00:01:54,588
+Week 1 and Day 30 arrive with what he needs, on time.
+
+35
+00:01:55,025 --> 00:01:58,871
+20 of 26 tasks closed in his first month. Only 6 needed Anand.
+
+36
+00:01:59,039 --> 00:02:01,476
+Every one of its 148 tool calls is logged.
+
+37
+00:02:01,801 --> 00:02:06,178
+Under the hood: Claude understands, and code decides: dates, risk and permissions.
+
+38
+00:02:06,505 --> 00:02:10,197
+Each task gets the right-sized Claude model, and personal data is masked.
+
+39
+00:02:10,509 --> 00:02:12,633
+The public demo runs offline, so it's free to try.
+
+40
+00:02:12,986 --> 00:02:16,109
+Bring your own Claude key to watch it live. Navo never stores it.
+
+41
+00:02:16,409 --> 00:02:20,887
+264 tests, a load test and an AI benchmark run on every push.
+
+42
+00:02:21,323 --> 00:02:23,100
+About seven cents of Claude per joiner.
+
+43
+00:02:23,600 --> 00:02:28,777
+Next: replace the simulated HR and IT systems with real ones. Navo stays the same.
+
+44
+00:02:28,963 --> 00:02:31,307
+Navo. AI that handles onboarding.

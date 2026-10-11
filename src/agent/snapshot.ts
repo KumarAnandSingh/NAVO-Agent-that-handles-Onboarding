@@ -31,6 +31,41 @@ export interface OnboardingSnapshot {
   notes: Set<string>;
 }
 
+export type CheckRow = typeof vendorChecks.$inferSelect;
+
+/**
+ * Completion dates the owning systems committed to: open IT tickets and an in-progress
+ * vendor check. They override lead-time projections in the risk engine.
+ */
+export function committedEtas(byKey: ReadonlyMap<string, { id: string; status: string }>, ticketRows: readonly TicketRow[], checkRows: readonly CheckRow[], now: Date): Map<string, Date> {
+  const etas = new Map<string, Date>();
+  const openTicket = (type: TicketRow["type"]) => ticketRows.find((t) => t.type === type && t.status === "in_progress");
+  const ticketTasks: [TicketRow["type"], TaskKey][] = [
+    ["email", "email"],
+    ["vpn", "vpn"],
+    ["access", "access_activation"],
+    ["tool_access", "tool_access"],
+  ];
+  for (const [type, key] of ticketTasks) {
+    const ticket = openTicket(type);
+    const task = byKey.get(key);
+    if (ticket && task) etas.set(task.id, ticket.expectedAt);
+  }
+  // The laptop is covered by whichever arrives first: the joiner's own laptop or an approved loaner.
+  const laptopCandidates = [openTicket("laptop"), openTicket("loaner")].filter((t): t is TicketRow => Boolean(t));
+  const laptopTask = byKey.get("laptop");
+  const vpnTask = byKey.get("vpn");
+  if (laptopTask && laptopCandidates.length > 0) {
+    const earliest = laptopCandidates.reduce((a, b) => (a.expectedAt.getTime() <= b.expectedAt.getTime() ? a : b));
+    etas.set(laptopTask.id, earliest.expectedAt);
+    if (vpnTask && !openTicket("vpn") && vpnTask.status !== "completed") etas.set(vpnTask.id, addMinutes(earliest.expectedAt, 5));
+  }
+  const bgvTask = byKey.get("background_check");
+  const check = checkRows.find((c) => c.status === "in_progress");
+  if (bgvTask && check && check.expectedAt.getTime() > now.getTime()) etas.set(bgvTask.id, check.expectedAt);
+  return etas;
+}
+
 export async function loadSnapshot(db: Queryable, workspaceId: string, employeeId: string, now: Date): Promise<OnboardingSnapshot> {
   const employee = await getEmployee(db, workspaceId, employeeId);
   const { rows, graph } = await loadGraph(db, workspaceId, employeeId);
@@ -57,31 +92,7 @@ export async function loadSnapshot(db: Queryable, workspaceId: string, employeeI
     .where(and(eq(activities.workspaceId, workspaceId), eq(activities.employeeId, employeeId)));
 
   const day1Start = atIst(employee.joiningDate, "09:00");
-  const etas = new Map<string, Date>();
-  const openTicket = (type: TicketRow["type"]) => ticketRows.find((t) => t.type === type && t.status === "in_progress");
-  const ticketTasks: [TicketRow["type"], TaskKey][] = [
-    ["email", "email"],
-    ["vpn", "vpn"],
-    ["access", "access_activation"],
-    ["tool_access", "tool_access"],
-  ];
-  for (const [type, key] of ticketTasks) {
-    const ticket = openTicket(type);
-    const task = byKey.get(key);
-    if (ticket && task) etas.set(task.id, ticket.expectedAt);
-  }
-  // The laptop is covered by whichever arrives first: the joiner's own laptop or an approved loaner.
-  const laptopCandidates = [openTicket("laptop"), openTicket("loaner")].filter((t): t is TicketRow => Boolean(t));
-  const laptopTask = byKey.get("laptop");
-  const vpnTask = byKey.get("vpn");
-  if (laptopTask && laptopCandidates.length > 0) {
-    const earliest = laptopCandidates.reduce((a, b) => (a.expectedAt.getTime() <= b.expectedAt.getTime() ? a : b));
-    etas.set(laptopTask.id, earliest.expectedAt);
-    if (vpnTask && !openTicket("vpn") && vpnTask.status !== "completed") etas.set(vpnTask.id, addMinutes(earliest.expectedAt, 5));
-  }
-  const bgvTask = byKey.get("background_check");
-  const check = checkRows.find((c) => c.status === "in_progress");
-  if (bgvTask && check && check.expectedAt.getTime() > now.getTime()) etas.set(bgvTask.id, check.expectedAt);
+  const etas = committedEtas(byKey, ticketRows, checkRows, now);
 
   // Day-1 risk is about getting ready for Day 1. Once Day 1 has started it is closed:
   // anything still open is simply overdue, and the playbooks chase it as such.

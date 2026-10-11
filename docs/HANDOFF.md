@@ -1,13 +1,22 @@
 # Handoff: where Navo stands and how to resume
 
 Read this first when picking the work up in a new session or on a new machine.
-Last updated: 8 Oct 2026 (competition deadline: **12 Oct 2026**).
+Last updated: 10 Oct 2026 (competition deadline: **12 Oct 2026**).
 
 ## Where the code is
 
-- Repo: `KumarAnandSingh/new`, branch **`claude/sweet-fermi-dhassn`** (all work is here).
-- Pull request into `main`: https://github.com/KumarAnandSingh/new/pull/1 (open; merge when ready).
-- CI (GitHub Actions): lint, typecheck, unit + integration tests with coverage floors, build, and a Playwright end-to-end job.
+- **Repository:** `KumarAnandSingh/new`.
+- **`main`:** has the first full Navo build, merged via https://github.com/KumarAnandSingh/new/pull/1.
+- **Working branch `claude/sweet-fermi-dhassn`:** has everything since: the AI gateway, the benchmark, policy upload, the cohort radar, Hindi, the code-quality work, the new tests and the new docs. Merge it into `main` with a new pull request when ready.
+- **CI (GitHub Actions)** runs:
+  - lint and typecheck;
+  - tests with coverage floors;
+  - the offline AI benchmark;
+  - build;
+  - a dependency audit;
+  - end-to-end on PGlite;
+  - Postgres 16 (migrations, end-to-end, 50-visitor load test);
+  - a nightly live benchmark, only when a key secret exists.
 
 ## Resume locally
 
@@ -15,59 +24,39 @@ Last updated: 8 Oct 2026 (competition deadline: **12 Oct 2026**).
 git clone https://github.com/KumarAnandSingh/new.git navo && cd navo
 git checkout claude/sweet-fermi-dhassn
 npm ci
-cp .env.example .env.local      # add ANTHROPIC_API_KEY here for live Claude features (optional)
 npm run dev                     # http://localhost:3000 (stage), /phone, /hr
 ```
 
-Checks: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, then `npm run test:e2e` (needs the build).
+Checks: `npm run lint`, `npm run typecheck`, `npm test`, `npm run eval`, `npm run build`, then `npm run test:e2e` (needs the build).
 
-For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/BUILD_PLAN.md`.
+For a coding agent: read `CLAUDE.md` (working rules), this file, then `docs/adr/README.md`.
 
 ## Status
 
-| Phase | Status |
+| Area | Status |
 |---|---|
-| 1. Foundation: Next.js, Postgres schema, synthetic Halden seed, NavoFace, CI | Done |
-| 2. Deterministic engines: state machine, dependencies, working days, risk, permissions, SLA | Done |
-| 3. Agent: orchestrator, tool registry, playbooks, mock HR/IT/vendor/facilities, events, simulated clock | Done |
-| 4. Demo stage UI: presenter, phone (20 screens), runtime panel, HR console | Done |
-| 5. Claude: Ask Navo with verified citations, document reading, narration, budget, fallbacks | Done |
-| 6. Guided demo (25 beats), intro brief, impact screen, keyboard shortcuts | Done |
-| 7. Playwright end-to-end, accessibility (axe), coverage floors | Done |
-| 8. Technical design document, README, screenshots, demo video script, submission checklist | Done |
-| 8. Deploy to Vercel, record the video, submit | **Next** (needs the owner) |
+| Agent, deterministic engines, simulated systems, 20-screen joiner app, HR console, guided demo | Done |
+| AI gateway: per-task routing (Haiku, Sonnet, Opus) with a fallback chain, prompt caching, personal-data guard, budget, usage and cost panel | Done |
+| Bring your own key: connect and test in the runtime panel; never stored or logged | Done |
+| AI quality benchmark (offline in CI, live nightly with a key) | Done |
+| HR policy upload (split, version, cite at once); cohort risk radar with what-ifs; Hindi for Ask Navo | Done |
+| Code quality: large modules split, no casts through `unknown`, static styles in CSS modules, 8 decision records, dependency audit | Done |
+| Tests: 264 unit, integration, property and component tests; 13 end-to-end on PGlite and Postgres; load test | Done |
+| Docs: technical design, enterprise architecture, security and privacy (DPDP), cost model, API reference, AI quality, load test | Done |
+| Product video with voice-over, retimed to the narration and played at 1.5× (2 min 31 s, `docs/media/navo-demo.mp4`, embedded in the README) | Done |
+| Deploy, make the repository public, upload the video, submit | **Needs the owner** |
 
-Numbers at handoff: 133 unit/integration tests and 9 end-to-end tests passing; ~92% line coverage.
+## What's left (needs you)
 
-## What's left
-
-1. **Make the hosted link public** (needs you, about 5 minutes). The repo is already connected
-   to your Vercel project **v0-studyify** (team "kumaranandsingh's projects"), which builds every
-   push to this branch. The preview for the latest commit built successfully:
-   https://v0-studyify-git-claude-sweet-f-d1833c-kumaranandsinghs-projects.vercel.app
-   (previews may ask for a Vercel login; production URLs are public). To finish:
-   1. Vercel → v0-studyify → Settings → General: rename the project (e.g. `navo-halden`) so the
-      public URL doesn't say "studyify".
-   2. Settings → Environment Variables: add `ANTHROPIC_API_KEY` (Production and Preview).
-   3. Either merge PR #1 into `main`, or Settings → Git → set the production branch to
-      `claude/sweet-fermi-dhassn`; then redeploy. The production URL is the hosted link.
-   4. Recommended: Storage → Create → Neon Postgres → connect to the project (sets
-      `DATABASE_URL`), then redeploy. Without it the demo still works, but each serverless
-      instance keeps its own temporary database (a cold start gives a fresh demo).
-   The coding session's Vercel connection can't manage this project (403), so these steps are
-   done in the dashboard.
-2. **Merge PR #1 into `main`** and **make the repository public** (Settings → General →
-   Change visibility). Reviewers must not need to request access.
-3. **Upload the video**: `npm run video` renders `video/out/navo-demo.mp4` from the real app
-   (see `video/README.md`); upload it as Public or Unlisted. A voice-over can be added on top
-   with `video/VOICEOVER.md`.
-4. Put the hosted link and the video link in the README table, then submit.
-   `docs/SUBMISSION.md` maps every requirement in the brief to where it is met.
-
-Done in this phase: `docs/TECHNICAL_DESIGN.md` (overview and track, Mermaid architecture and
-flow diagrams, setup, deployment, code walkthrough, assumptions), the README with screenshots
-(`docs/images/`, regenerate with `npm run screenshots` against a running build),
-`docs/DEMO_VIDEO_SCRIPT.md` and `docs/SUBMISSION.md`.
+1. **Hosted link.** In Vercel, open the project connected to this repository:
+   1. Rename the project to `navo` (Settings → General).
+   2. Set the production branch to `main` (Settings → Git). Merge the working branch into `main` first.
+   3. Add **Neon Postgres** from Storage, which sets `DATABASE_URL`.
+   4. **Don't** add `ANTHROPIC_API_KEY`: the demo runs offline, and visitors can bring their own key.
+   5. Redeploy, then open the production URL in a private window.
+2. **Make the repository public** (Settings → General → Change visibility).
+3. **Upload the video** (`docs/media/navo-demo.mp4`) to YouTube as Public or Unlisted, with its captions (`docs/media/navo-demo.srt`). To re-record the voice, see `video/README.md` → Add a voice-over.
+4. Put the hosted link and the video link in the README table, then submit. `docs/SUBMISSION.md` maps every requirement to where it is met.
 
 ## Decisions to keep
 
@@ -75,9 +64,14 @@ flow diagrams, setup, deployment, code walkthrough, assumptions), the README wit
   No real company, employer or brand names anywhere: code, data, docs, images.
 - Track: **Business Case #2, Employee Onboarding Companion**.
 - Primary design: `docs/design/Navo_Prototype.dc.html` (+ `NavoFace.dc.html`). Specs in `docs/specs/`.
-- AI model: Claude (`claude-opus-5-5` default, `NAVO_MODEL` to change). Every Claude
-  feature has a deterministic fallback; the app and all tests run without a key.
-- Hosting: Vercel (the repo owner's account); database Neon when `DATABASE_URL` is set, embedded PGlite otherwise.
+- AI routing: Haiku 5.5 for status updates, Sonnet 5.5 for Ask Navo, Opus 5.5 for documents,
+  each with a fallback model; env overrides per task (`NAVO_MODEL_*`) or for all (`NAVO_MODEL`).
+  Every Claude feature has a deterministic fallback; the app and all tests run without a key.
+- No money is spent on the API. The hosted demo has no server key; visitors bring their own
+  (kept in the browser tab, never stored or logged). No live AI numbers are published.
+- The personal-data guard covers chat and narration only; document reading keeps the image
+  (consent, named fields, masked storage).
+- Hosting: Vercel (the repo owner's account); database Neon when `DATABASE_URL` is set, embedded PGlite otherwise. Use Postgres for concurrent visitors (see `docs/LOAD_TEST.md`).
 - Synthetic data only. Never paste API keys into chat; set them as environment variables.
 - Don't commit the business-cases document, the email screenshots or any branded images.
 
@@ -86,7 +80,7 @@ flow diagrams, setup, deployment, code walkthrough, assumptions), the README wit
 Anand Mehta joins Halden on Mon 19 Oct 2026. He uploads a missing address proof, clarifies
 one unreadable date, and confirms pre-filled forms. On Thu 15 Oct Navo's daily check finds
 the Employee ID 2 days late with zero working days of slack for the laptop, reminds HR on its
-own (§4.1), and plans an escalation (§4.2) and a loaner fallback. Either HR issues the ID
+own (Section 4.1), and plans an escalation (Section 4.2) and a loaner fallback. Either HR issues the ID
 (scenario "HR responds") or, if HR stays silent, Navo asks Anand to approve a loaner and
 escalates to HR Ops after 24 hours. One pickup is booked for Day 1; week 1 brings a benefits
 deadline and a booked walkthrough; Day 30 ends on figures computed from the run.

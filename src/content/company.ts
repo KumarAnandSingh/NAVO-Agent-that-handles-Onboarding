@@ -11,11 +11,11 @@ export const COMPANY = {
   office: "Tower B, BKC, Mumbai",
   pickupSite: "Twin Tower · Building B",
   emailDomain: "halden.example",
-  disclaimer: "Halden is a fictional company. All data is synthetic.",
+  disclaimer: "Halden is a made-up company with sample data. Navo's agent engine and workflows are real.",
 } as const;
 
 /** The featured joiner whose phone the demo shows. */
 export const FEATURED_EMPLOYEE_ID = "anand.mehta";
 
 /** Seed data version. Bump when seed content changes so stale workspaces are rebuilt. */
-export const SEED_VERSION = 3;
+export const SEED_VERSION = 4;

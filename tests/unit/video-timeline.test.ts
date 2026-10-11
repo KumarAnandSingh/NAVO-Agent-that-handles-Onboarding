@@ -109,9 +109,9 @@ describe("the storyboard", () => {
   });
 
   it("plays a click where the cursor lands and a whoosh between scenes", () => {
-    const launch = timeline.scenes.find((s) => s.scene.id === "launch")!;
-    const click = timeline.sfx.find((e) => e.sfx === "click" && e.at > launch.start && e.at < launch.end);
-    expect(click?.at).toBeCloseTo(launch.start + 2.6 + 0.8);
+    const documents = timeline.scenes.find((s) => s.scene.id === "documents")!;
+    const click = timeline.sfx.find((e) => e.sfx === "click" && e.at > documents.start && e.at < documents.end);
+    expect(click?.at).toBeCloseTo(documents.start + 4.9 + 0.7);
     const whooshes = timeline.sfx.filter((e) => e.sfx === "whoosh");
     expect(whooshes).toHaveLength(STORY.length - 1);
     timeline.sfx.slice(1).forEach((e, i) => expect(e.at).toBeGreaterThanOrEqual(timeline.sfx[i]!.at));

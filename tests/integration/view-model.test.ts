@@ -2,6 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { advance } from "@/agent/runtime";
 import { createMemoryDb, type Db } from "@/lib/db/client";
 import { jumpToChapter, jumpToDay30 } from "@/services/demo-director";
+import { OFFLINE } from "@/services/llm/gateway";
+import { aiStatus } from "@/services/llm/usage";
 import { loadState } from "@/services/view-model/load";
 import { present } from "@/services/view-model/present";
 import { createWorkspace } from "@/services/workspace";
@@ -9,7 +11,7 @@ import { deps, failedEvents } from "./helpers";
 
 let db: Db;
 let ws: string;
-const view = async () => present(await loadState(db, ws), { liveAI: false, model: null });
+const view = async () => present(await loadState(db, ws), { ai: await aiStatus(db, ws, OFFLINE, true) });
 
 beforeAll(async () => {
   db = await createMemoryDb();
@@ -48,6 +50,20 @@ describe("view model", () => {
     expect(vm.runtime.runs[0]?.diff).toEqual(expect.arrayContaining(["day1_risk: medium → high", "reminder R-1: created", "laptop: blocked → at_risk"]));
     expect(vm.hr.queue[0]).toMatchObject({ title: "Employee ID not generated", action: "generate_id" });
     expect(vm.idTracker.kicker).toBe("POTENTIAL DELAY DETECTED");
+    const [today, itSlow, hrSlow] = vm.hr.radar.scenarios;
+    expect(today).toMatchObject({ label: "As things stand", summary: "1 joiner at risk of a broken Day 1; IT drives 1." });
+    expect(today!.joiners[0]).toMatchObject({ name: "Anand Mehta", label: "At risk", driver: "Laptop · IT · 0 working days of slack", changed: false });
+    expect(itSlow!.joiners[0]).toMatchObject({ name: "Anand Mehta", label: "Will miss Day 1", changed: true });
+    expect(hrSlow!.bottlenecks).toEqual([{ team: "HR", joiners: 1, worst: "Will miss Day 1", tone: "you" }]);
+  });
+
+  it("shows the cohort radar: Day 1 holds today, and IT a week slower would break it for three joiners", async () => {
+    await jumpToChapter(db, ws, 3);
+    const [today, itSlow] = (await view()).hr.radar.scenarios;
+    expect(today!.summary).toBe("No Day 1 at risk.");
+    expect(today!.levels.map((l) => l.count)).toEqual([0, 0, 0, 14]);
+    expect(itSlow!.summary).toBe("3 joiners at risk of a broken Day 1; IT drives all of them.");
+    expect(itSlow!.joiners.filter((j) => j.changed).map((j) => `${j.name}: ${j.label}`)).toEqual(["Anand Mehta: Will miss Day 1", "Aditi Rao: Will miss Day 1", "Priya Sharma: Will miss Day 1"]);
   });
 
   it("replays every chapter through the real engine without failures", async () => {

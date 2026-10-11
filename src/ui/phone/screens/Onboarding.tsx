@@ -19,7 +19,7 @@ export function LaunchScreen() {
   return (
     <button className={s.launch} onClick={() => go("signin")} aria-label={`Open ${COMPANY.product}`}>
       <NavoFace state="brand" size={128} />
-      <span className={p.titleBlock} style={{ alignItems: "center", gap: 6 }}>
+      <span className={`${p.titleBlock} ${s.launchTitle}`}>
         <span className={s.launchName}>{COMPANY.product}</span>
         <span className={s.launchTag}>{COMPANY.tagline}</span>
       </span>
@@ -37,14 +37,14 @@ export function SignInScreen() {
         <h1 className={p.headlineLg}>Welcome to {COMPANY.name}.</h1>
         <p className={p.subLg}>Sign in with the mobile number from your application. I&apos;ll set up your {COMPANY.name} account before Day 1.</p>
       </div>
-      <div className={p.stack2} style={{ gap: 6 }}>
+      <div className={s.fieldGroup}>
         <span className={s.fieldLabel}>Mobile number</span>
         <div className={s.field}>
-          <span style={{ color: "var(--text-3)" }}>+91</span>
+          <span className={s.countryCode}>+91</span>
           <span>••••• •1276</span>
         </div>
       </div>
-      <div className={p.stack2} style={{ gap: 6 }}>
+      <div className={s.fieldGroup}>
         <span className={s.fieldLabel}>Code sent by SMS</span>
         <div className={s.otp}>
           {"481207".split("").map((digit, i) => (
@@ -112,7 +112,7 @@ export function PrivacyScreen({ vm }: { vm: ViewModel }) {
     ["Every access is logged", "You can see who viewed what, and when"],
   ];
   return (
-    <div className={p.screen} style={{ gap: 18 }}>
+    <div className={`${p.screen} ${s.detailScreen}`}>
       <button className={p.back} onClick={() => go("docs")}>
         ‹ Documents
       </button>
@@ -123,17 +123,15 @@ export function PrivacyScreen({ vm }: { vm: ViewModel }) {
       </div>
       <div className={p.list}>
         {rows.map(([title, text], i) => (
-          <div key={title} className={`${s.ruleRow} ${i === rows.length - 1 ? p.rowLast : ""}`} style={{ gridTemplateColumns: "1fr" }}>
-            <span className={p.stack2} style={{ gap: 3 }}>
+          <div key={title} className={`${s.ruleRow} ${s.privacyRow} ${i === rows.length - 1 ? p.rowLast : ""}`}>
+            <span className={s.privacyText}>
               <span className={s.ruleTitle}>{title}</span>
               <span className={s.ruleText}>{text}</span>
             </span>
           </div>
         ))}
       </div>
-      <span className={p.bottom} style={{ fontSize: 11, color: "var(--text-4)" }}>
-        {COMPANY.disclaimer}
-      </span>
+      <span className={`${p.bottom} ${s.disclaimer}`}>{COMPANY.disclaimer}</span>
     </div>
   );
 }

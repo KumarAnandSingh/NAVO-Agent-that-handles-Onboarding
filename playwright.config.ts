@@ -27,6 +27,7 @@ export default defineConfig({
     url: `http://localhost:${PORT}/api/state`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    env: { NAVO_LIVE_AI: "off" },
+    // Embedded PGlite by default; set DATABASE_URL to run the same suite on real Postgres.
+    env: { NAVO_LIVE_AI: "off", ...(process.env.DATABASE_URL ? { DATABASE_URL: process.env.DATABASE_URL } : {}) },
   },
 });

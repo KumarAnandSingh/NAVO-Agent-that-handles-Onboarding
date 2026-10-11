@@ -1,0 +1,140 @@
+.lede {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-2);
+  max-width: 640px;
+}
+
+.whatIf {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.option,
+.optionOn {
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 13px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.optionOn {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  font-weight: 600;
+}
+
+.summary {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.levels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.level {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.levelN {
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bars {
+  list-style: none;
+  margin: 0;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr) 170px;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.barTeam {
+  font-weight: 600;
+}
+
+.barTrack {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s var(--ease-sheet);
+}
+
+.barValue {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.radarRow {
+  grid-template-columns: minmax(0, 1.3fr) 0.8fr 1fr minmax(0, 1.7fr);
+}
+
+.changed {
+  background: var(--risk-soft);
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.changedTag {
+  margin-left: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--risk-ink);
+}
+
+@media (max-width: 760px) {
+  .levels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bar {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+
+  .barValue {
+    grid-column: 2;
+  }
+}

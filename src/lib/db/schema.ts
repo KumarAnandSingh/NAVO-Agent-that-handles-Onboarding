@@ -363,7 +363,7 @@ export const notifications = pgTable("notifications", {
   composedBy: text("composed_by").$type<"claude" | "template">().notNull().default("template"),
 });
 
-/* ---------- Knowledge base (global, not workspace-scoped) ---------- */
+/* ---------- Knowledge base (a shared library, plus policies HR uploads per workspace) ---------- */
 
 export const policyDocuments = pgTable(
   "policy_documents",
@@ -375,8 +375,12 @@ export const policyDocuments = pgTable(
     effectiveDate: text("effective_date").notNull(),
     supersededBy: text("superseded_by"),
     metadata: jsonb("metadata").$type<Record<string, string>>().notNull().default({}),
+    /** Null for the shared library; set for a policy HR uploaded in one demo workspace. */
+    workspaceId: text("workspace_id").references(() => workspaces.id, { onDelete: "cascade" }),
+    /** The library policy an upload is a newer version of, if any. */
+    replaces: text("replaces"),
   },
-  (t) => [primaryKey({ columns: [t.id, t.version] })],
+  (t) => [primaryKey({ columns: [t.id, t.version] }), index("policy_documents_workspace_idx").on(t.workspaceId)],
 );
 
 export const policySections = pgTable(
@@ -541,9 +545,18 @@ export const llmUsage = pgTable(
     day: text("day").notNull(),
     workspaceId: text("workspace_id"),
     feature: text("feature").$type<"ask" | "read_document" | "narrate">().notNull(),
-    status: text("status").$type<"reserved" | "ok" | "failed">().notNull().default("reserved"),
+    /** Whose key paid: the deployment's own, or a visitor's (bring your own key). */
+    keySource: text("key_source").$type<"server" | "visitor">().notNull().default("server"),
+    model: text("model"),
+    /** `refused` is a model declining; the gateway then tries the next model in the route. */
+    status: text("status").$type<"reserved" | "ok" | "refused" | "failed">().notNull().default("reserved"),
     inputTokens: integer("input_tokens").notNull().default(0),
     outputTokens: integer("output_tokens").notNull().default(0),
+    cacheReadTokens: integer("cache_read_tokens").notNull().default(0),
+    cacheWriteTokens: integer("cache_write_tokens").notNull().default(0),
+    latencyMs: integer("latency_ms"),
+    /** Personal numbers masked before sending, counted by kind (never the values). */
+    masked: jsonb("masked").$type<Record<string, number>>(),
     at: ts("at").notNull().defaultNow(),
   },
   (t) => [index("llm_usage_day_idx").on(t.day, t.workspaceId)],

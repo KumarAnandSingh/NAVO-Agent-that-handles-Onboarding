@@ -26,7 +26,7 @@ export const FEATURED_DOCUMENTS: readonly DocumentSeed[] = [
     ],
   },
   { type: "address_proof", name: "Address proof", status: "needed", note: "Not uploaded" },
-  { type: "cancelled_cheque", name: "Cancelled cheque", status: "verified", note: "Pre-filled payroll", maskedValue: "HDFC Bank •••• 4821" },
+  { type: "cancelled_cheque", name: "Cancelled cheque", status: "verified", note: "Pre-filled payroll", maskedValue: "Meridian Bank •••• 4821" },
 ];
 
 export interface FormFieldSeed {
@@ -41,7 +41,7 @@ export const FEATURED_FORM_FIELDS: readonly FormFieldSeed[] = [
   { form: "personal", label: "Full name", value: "Anand Mehta", source: "From PAN", status: "prefilled" },
   { form: "personal", label: "Date of birth", value: "14 Mar 1991", source: "From Aadhaar", status: "prefilled" },
   { form: "personal", label: "Address", value: null, source: "From address proof", status: "prefilled" },
-  { form: "personal", label: "Bank account", value: "HDFC •••• 4821", source: "From cheque", status: "prefilled" },
+  { form: "personal", label: "Bank account", value: "Meridian Bank •••• 4821", source: "From cheque", status: "prefilled" },
   { form: "nominee", label: "Nominee", value: "Kavya Mehta, spouse", source: "From offer form", status: "prefilled" },
   { form: "emergency", label: "Emergency contact", value: null, source: "Needs you", status: "needs_employee" },
 ];

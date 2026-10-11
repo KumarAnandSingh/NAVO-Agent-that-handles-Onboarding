@@ -9,9 +9,9 @@ test("Ask Navo answers from live state and cites the policy it retrieved", async
   await app.getByRole("button", { name: "What if HR doesn't respond?" }).first().click();
   const sheet = app.getByRole("dialog", { name: "Ask Navo" });
   await expect(sheet.getByText(/I reminded Priya Nair at 09:17 today/)).toBeVisible();
-  await expect(sheet.getByText(/\(§4\.2\)/)).toBeVisible();
-  await expect(sheet.getByText(/Checked Onboarding standards and escalation §4\.2/)).toBeVisible();
-  await expect(sheet.getByText("Offline answer from Navo's rules")).toBeVisible();
+  await expect(sheet.getByText(/\(Section 4\.2\)/)).toBeVisible();
+  await expect(sheet.getByText(/Checked Onboarding standards and escalation, Section 4\.2/)).toBeVisible();
+  await expect(sheet.getByText("Answered from Navo's rules (no AI key connected)")).toBeVisible();
   await settled(page);
   await expect(page.getByRole("complementary", { name: "Agent runtime" }).getByText("search_policies")).toBeVisible();
 
@@ -19,4 +19,8 @@ test("Ask Navo answers from live state and cites the policy it retrieved", async
   await sheet.getByRole("textbox", { name: "Question for Navo" }).fill("What is the airport shuttle schedule?");
   await sheet.getByRole("button", { name: "Ask", exact: true }).click();
   await expect(sheet.getByText(/I don't see that there/)).toBeVisible();
+
+  // The same facts in Hindi.
+  await sheet.getByRole("button", { name: "अगर HR जवाब न दे तो क्या होगा?" }).click();
+  await expect(sheet.getByText(/Priya Nair को याद दिलाया है/)).toBeVisible();
 });

@@ -34,16 +34,16 @@ describe("fact-preserving narration", () => {
 
   it("uses Claude's wording when it keeps the facts, and charges the budget", async () => {
     const claude = fakeClaude([[text("Your Employee ID came through, so I've sent the laptop request (IT-55231) to IT. Nothing needed from you.")]]);
-    const narration = await claudeNarrator(claude.create).employeeUpdate(cleared, { db, workspaceId: ws });
+    const narration = await claudeNarrator(claude.llm).employeeUpdate(cleared, { db, workspaceId: ws });
     expect(narration).toEqual({ text: "Your Employee ID came through, so I've sent the laptop request (IT-55231) to IT. Nothing needed from you.", composedBy: "claude" });
     const rows = await db.select().from(llmUsage).where(eq(llmUsage.workspaceId, ws));
     expect(rows.map((r) => [r.feature, r.status])).toEqual([["narrate", "ok"]]);
   });
 
   it("falls back to the template when Claude drops a fact or fails", async () => {
-    const dropped = await claudeNarrator(fakeClaude([[text("Good news, your ID is here.")]]).create).employeeUpdate(cleared, { db, workspaceId: ws });
+    const dropped = await claudeNarrator(fakeClaude([[text("Good news, your ID is here.")]]).llm).employeeUpdate(cleared, { db, workspaceId: ws });
     expect(dropped).toEqual({ text: templateUpdate(cleared), composedBy: "template" });
-    const failed = await claudeNarrator(fakeClaude([new Error("timeout")]).create).employeeUpdate(cleared, { db, workspaceId: ws });
+    const failed = await claudeNarrator(fakeClaude([new Error("timeout")]).llm).employeeUpdate(cleared, { db, workspaceId: ws });
     expect(failed.composedBy).toBe("template");
   });
 });
@@ -67,7 +67,7 @@ describe("Claude document reading", () => {
         ),
       ],
     ]);
-    const reading = await claudeReader(claude.create).read(bill, { db, workspaceId: ws });
+    const reading = await claudeReader(claude.llm).read(bill, { db, workspaceId: ws });
     expect(reading.readBy).toBe("claude");
     const content = claude.calls[0]!.messages[0]!.content as { type: string; source?: { media_type: string } }[];
     expect(content[0]).toMatchObject({ type: "image", source: { media_type: "image/png" } });
@@ -90,13 +90,13 @@ describe("Claude document reading", () => {
         ),
       ],
     ]);
-    const reading = await claudeReader(claude.create).read(letter, { db, workspaceId: ws });
+    const reading = await claudeReader(claude.llm).read(letter, { db, workspaceId: ws });
     const verdict = verifyRelievingLetter(reading.fields, { notBefore: "2026-10-06", before: "2026-10-19" });
     expect(verdict).toMatchObject({ status: "clarify", raw: "1? Oct 2026", suggestion: "2026-10-16" });
   });
 
   it("falls back to the recorded reading when Claude's output can't be parsed", async () => {
-    const reading = await claudeReader(fakeClaude([[text("I think it says Kavya.")]]).create).read(bill, { db, workspaceId: ws });
+    const reading = await claudeReader(fakeClaude([[text("I think it says Kavya.")]]).llm).read(bill, { db, workspaceId: ws });
     expect(reading.readBy).toBe("fixture");
     expect(reading.fields).toEqual(bill.expected);
   });
