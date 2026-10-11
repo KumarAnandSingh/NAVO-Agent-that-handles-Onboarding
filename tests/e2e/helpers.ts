@@ -5,7 +5,7 @@ export const phone = (page: Page) => page.getByRole("region", { name: "Anand's p
 /** Open the stage and close the intro brief. */
 export async function openStage(page: Page) {
   await page.goto("/");
-  await page.getByRole("dialog", { name: "About this demo" }).getByRole("button", { name: "Explore on my own" }).first().click();
+  await page.getByRole("dialog", { name: "About this demo" }).getByRole("button", { name: "Explore on my own" }).click();
   await expect(page.getByRole("dialog", { name: "About this demo" })).toHaveCount(0);
 }
 

@@ -135,12 +135,6 @@ export function IntroBrief() {
           <span className={st.disclaimer}>{COMPANY.disclaimer}</span>
           <span className={st.footerActions}>
             <span className={st.shortcuts}>Space to play · → next step · B brief</span>
-            <button className={st.ghostButton} onClick={explore}>
-              Explore on my own
-            </button>
-            <button className={st.primaryButton} onClick={play}>
-              ▶ Play guided demo
-            </button>
           </span>
         </div>
       </div>
