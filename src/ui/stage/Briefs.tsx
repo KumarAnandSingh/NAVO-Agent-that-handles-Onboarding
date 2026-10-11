@@ -239,7 +239,7 @@ export function ImpactOutro() {
           <span className={st.outroNote}>Figures computed from this simulated run.</span>
           <span className={st.outroActions}>
             <button className={st.darkGhost} onClick={() => setOverlay("intro")}>
-              ⌂ Back to Home
+              ← Back to Home
             </button>
             <button className={st.darkGhost} onClick={() => setOverlay(null)}>
               Back to the demo

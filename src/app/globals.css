@@ -3,6 +3,9 @@
  * the cyan agent signal is reserved for agent-active states only.
  */
 :root {
+  /* The Back to Home bar pinned to the top of every screen except the intro. */
+  --home-bar: 56px;
+
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "SF Mono", Menlo, Consolas, monospace;
 

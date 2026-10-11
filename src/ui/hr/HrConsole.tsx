@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { COMPANY } from "@/content/company";
 import type { HrVM, ViewModel } from "@/services/view-model/types";
-import { HomeLink } from "@/ui/components/HomeLink";
 import { NavoFace } from "@/ui/components/NavoFace";
 import { useNavo } from "@/ui/state/NavoStore";
 import { TONE } from "@/ui/tones";
@@ -42,8 +41,6 @@ export function HrConsole({ fullscreen = false }: { fullscreen?: boolean }) {
             <span className={s.onNavy}>{COMPANY.tagline}</span>
           </span>
         </div>
-        {/* On its own page; on the demo stage the presenter panel has Home. */}
-        {fullscreen && <HomeLink className={s.home} />}
         <div className={s.navItems}>
           {pages.map((p) => (
             <button key={p.id} className={page === p.id ? s.navOn : s.navItem} aria-current={page === p.id ? "page" : undefined} onClick={() => setPage(p.id)}>

@@ -101,15 +101,6 @@ describe("phone interactions", () => {
     expect(find.getByRole("dialog", { name: "What Navo did" }).textContent!.length).toBeGreaterThan(40);
   });
 
-  it("links back to Home on its own page, where there's no presenter panel", () => {
-    use(vms.documents!, "docs");
-    const { unmount } = render(<Phone fullscreen />);
-    expect(find.getByRole("link", { name: "← Back to Home" }).getAttribute("href")).toBe("/");
-    unmount();
-    render(<Phone />);
-    expect(find.queryByRole("link", { name: "← Back to Home" })).toBeNull();
-  });
-
   it("shows a toast and an error", () => {
     use(vms.documents!, "docs", { toast: "Address proof verified", error: "Something went wrong" });
     render(<Phone />);

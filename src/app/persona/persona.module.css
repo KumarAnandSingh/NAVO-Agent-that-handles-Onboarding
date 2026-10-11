@@ -1,16 +1,10 @@
 .page {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 64px 48px 96px;
+  padding: 24px 48px 96px;
   display: flex;
   flex-direction: column;
   gap: 40px;
-}
-
-.home {
-  align-self: flex-start;
-  color: var(--accent);
-  margin-bottom: -16px;
 }
 
 .hero {

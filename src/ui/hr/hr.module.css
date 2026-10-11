@@ -14,7 +14,7 @@
 
 .fullscreen {
   width: 100%;
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--home-bar));
   border-radius: 0;
   border: none;
 }
@@ -32,15 +32,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.home {
-  color: var(--text-on-navy-2);
-  margin-top: -8px;
-}
-
-.home:hover {
-  color: #fff;
 }
 
 .navItems {

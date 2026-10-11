@@ -1,6 +1,6 @@
 .stage {
-  min-height: 100vh;
-  padding: 32px 28px;
+  min-height: calc(100vh - var(--home-bar));
+  padding: 8px 28px 32px;
   display: flex;
   flex-wrap: wrap;
   gap: 28px;

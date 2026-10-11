@@ -220,7 +220,7 @@ export function useGuide(): GuideState {
 
 /** The caption bar along the bottom while the guided demo is running. */
 export function CaptionBar() {
-  const { shownBeat: beat, total, caption, auto, running, overlay, error, toggle, next, prev, goHome } = useGuide();
+  const { shownBeat: beat, total, caption, auto, running, overlay, error, toggle, next, prev } = useGuide();
   if (beat === null || overlay || (!caption && !error)) return null;
   return (
     <div className={st.caption} role="region" aria-label="Guided demo">
@@ -235,9 +235,6 @@ export function CaptionBar() {
           {error ?? caption}
         </span>
         <span className={st.captionButtons}>
-          <button className={st.captionHome} onClick={goHome} title="Back to Home (B)">
-            ⌂ Home
-          </button>
           <button className={st.captionNav} onClick={prev} disabled={running || beat === 0} aria-label="Previous step">
             ←
           </button>

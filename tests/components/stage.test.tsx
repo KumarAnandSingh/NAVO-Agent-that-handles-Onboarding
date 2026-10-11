@@ -10,6 +10,8 @@ const { RuntimePanel } = await import("@/ui/stage/RuntimePanel");
 const { PresenterPanel } = await import("@/ui/stage/PresenterPanel");
 const { CaptionBar, GuideProvider, useGuide } = await import("@/ui/stage/Guide");
 const { IntroBrief, ImpactOutro } = await import("@/ui/stage/Briefs");
+const { Stage } = await import("@/ui/stage/Stage");
+const { HomeBar } = await import("@/ui/components/HomeBar");
 
 const vms = inject("viewModels");
 const BROKEN = /undefined|NaN|\[object Object\]|Invalid Date/;
@@ -20,6 +22,12 @@ function use(vm: ViewModel, extra: Partial<Record<string, unknown>> = {}) {
     screen: "home",
     view: "emp",
     sheet: null,
+    toast: null,
+    error: null,
+    why: false,
+    liveStatus: null,
+    toggleWhy: vi.fn(),
+    setWhy: vi.fn(),
     busy: false,
     replay: null,
     liveFace: "watching",
@@ -68,14 +76,6 @@ describe("HR console", () => {
     expect(find.getByRole("region", { name: "HR console" }).textContent).toBe("");
   });
 
-  it("links back to Home on its own page, where there's no presenter panel", () => {
-    use(vms.risk!);
-    const { unmount } = render(<HrConsole fullscreen />);
-    expect(find.getByRole("link", { name: "← Back to Home" }).getAttribute("href")).toBe("/");
-    unmount();
-    render(<HrConsole />);
-    expect(find.queryByRole("link", { name: "← Back to Home" })).toBeNull();
-  });
 });
 
 describe("runtime panel", () => {
@@ -207,37 +207,51 @@ describe("presenter controls and briefs", () => {
     expect(s.demo).not.toHaveBeenCalledWith(expect.objectContaining({ action: "reset" }));
   });
 
-  it("goes back to Home from the presenter panel, the guided demo's caption and the impact screen", async () => {
+  it("keeps Back to Home pinned above the stage in both views, and on the impact screen", async () => {
     const vm = vms.risk!;
-    use({ ...vm, workspace: { ...vm.workspace, scenario: "hr_responds" } });
+    const s = use({ ...vm, workspace: { ...vm.workspace, scenario: "hr_responds" } }) as ReturnType<typeof use> & { setView: ReturnType<typeof vi.fn> };
+    const { unmount } = render(<Stage />);
+    const intro = () => find.getByRole("dialog", { name: "About this demo" });
+    const home = () => within(find.getByRole("banner")).getByRole("button", { name: "← Back to Home" });
+    fireEvent.click(within(intro()).getByRole("button", { name: "Explore on my own" }));
+    fireEvent.click(home());
+    expect(within(intro()).getByRole("button", { name: "▶ Play guided demo" })).toBeTruthy();
+
+    // From Priya's card the HR console opens, still under the same bar.
+    fireEvent.click(within(intro()).getByRole("button", { name: new RegExp(vm.employee.hrName) }));
+    expect(s.setView).toHaveBeenCalledWith("hr");
+    fireEvent.click(home());
+    expect(intro()).toBeTruthy();
+
+    // Partway through the tour, Home pauses it and Play picks up where it stopped.
+    await act(async () => fireEvent.click(within(intro()).getByRole("button", { name: /Navo at work/ })));
+    expect(find.queryByRole("dialog", { name: "About this demo" })).toBeNull();
+    fireEvent.click(home());
+    expect(within(intro()).getByRole("button", { name: "▶ Resume guided demo" })).toBeTruthy();
+    expect(find.queryByRole("region", { name: "Guided demo" })).toBeNull();
+    unmount();
+
+    // The impact screen covers the bar, so it has its own.
     function OpenImpact() {
       const { setOverlay } = useGuide();
       return <button onClick={() => setOverlay("outro")}>Open impact</button>;
     }
     render(
       <GuideProvider>
-        <PresenterPanel />
-        <CaptionBar />
         <IntroBrief />
         <ImpactOutro />
         <OpenImpact />
       </GuideProvider>,
     );
-    const intro = () => find.getByRole("dialog", { name: "About this demo" });
-    fireEvent.click(within(intro()).getByRole("button", { name: "Explore on my own" }));
-    fireEvent.click(within(find.getByRole("complementary", { name: "Presenter controls" })).getByRole("button", { name: "⌂ Home" }));
-    expect(within(intro()).getByRole("button", { name: "▶ Play guided demo" })).toBeTruthy();
-
-    // Partway through the tour, Home pauses it and Play picks up where it stopped.
-    await act(async () => fireEvent.click(within(intro()).getByRole("button", { name: /Navo at work/ })));
-    fireEvent.click(within(find.getByRole("region", { name: "Guided demo" })).getByRole("button", { name: "⌂ Home" }));
-    expect(within(intro()).getByRole("button", { name: "▶ Resume guided demo" })).toBeTruthy();
-    expect(find.queryByRole("region", { name: "Guided demo" })).toBeNull();
-
     fireEvent.click(find.getByRole("button", { name: "Open impact" }));
-    fireEvent.click(within(find.getByRole("dialog", { name: "Impact" })).getByRole("button", { name: "⌂ Back to Home" }));
+    fireEvent.click(within(find.getByRole("dialog", { name: "Impact" })).getByRole("button", { name: "← Back to Home" }));
     expect(find.queryByRole("dialog", { name: "Impact" })).toBeNull();
     expect(intro()).toBeTruthy();
+  });
+
+  it("links the pages outside the stage back to Home", () => {
+    render(<HomeBar />);
+    expect(find.getByRole("link", { name: "← Back to Home" }).getAttribute("href")).toBe("/");
   });
 
   it("opens Anand's app or Priya's HR console from their cards", () => {

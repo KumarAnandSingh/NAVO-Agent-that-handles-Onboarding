@@ -1,5 +1,6 @@
 "use client";
 
+import { HomeBar } from "@/ui/components/HomeBar";
 import { HrConsole } from "@/ui/hr/HrConsole";
 import { Phone } from "@/ui/phone/Phone";
 import { useNavo } from "@/ui/state/NavoStore";
@@ -23,13 +24,16 @@ export function Stage() {
 
 function StageLayout() {
   const { view } = useNavo();
-  const { overlay } = useGuide();
+  const { overlay, goHome } = useGuide();
   // While the brief or the impact screen is open, the stage behind it is out of reach.
   return (
-    <main className={st.stage} inert={overlay !== null}>
-      <PresenterPanel />
-      {view === "hr" ? <HrConsole /> : <Phone />}
-      <RuntimePanel />
-    </main>
+    <>
+      <HomeBar onHome={goHome} inert={overlay !== null} />
+      <main className={st.stage} inert={overlay !== null}>
+        <PresenterPanel />
+        {view === "hr" ? <HrConsole /> : <Phone />}
+        <RuntimePanel />
+      </main>
+    </>
   );
 }
