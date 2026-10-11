@@ -6,66 +6,16 @@ import styles from "./persona.module.css";
 
 export const metadata: Metadata = { title: "Navo persona" };
 
-const STATES: {
-  id: NavoFaceState;
-  name: string;
-  when: string;
-  line: string;
-}[] = [
-  {
-    id: "brand",
-    name: "Identity",
-    when: "Logo, launch, sign-in",
-    line: "“Hi, I'm Navo.”",
-  },
-  {
-    id: "calm",
-    name: "Calm",
-    when: "Everything on track",
-    line: "“You're all set for Monday.”",
-  },
-  {
-    id: "watching",
-    name: "Watching",
-    when: "Monitoring quietly",
-    line: "“Watching 9 items for you.”",
-  },
-  {
-    id: "thinking",
-    name: "Thinking",
-    when: "Checking state and policy",
-    line: "“Let me check what your laptop depends on.”",
-  },
-  {
-    id: "acting",
-    name: "Acting",
-    when: "Taking a permitted action",
-    line: "“Raising your laptop request with IT.”",
-  },
-  {
-    id: "waiting",
-    name: "Waiting",
-    when: "On HR, IT or a vendor",
-    line: "“Waiting for IT to confirm.”",
-  },
-  {
-    id: "concerned",
-    name: "Concerned",
-    when: "A risk is forming",
-    line: "“Your Employee ID is late. I'm on it.”",
-  },
-  {
-    id: "needs",
-    name: "Needs you",
-    when: "Only you can do this",
-    line: "“I need your OK for a loaner laptop.”",
-  },
-  {
-    id: "celebrating",
-    name: "Celebrating",
-    when: "Milestone reached",
-    line: "“You're ready for Day 1.”",
-  },
+const STATES: { id: NavoFaceState; name: string; when: string; line: string }[] = [
+  { id: "brand", name: "Identity", when: "Logo, launch, sign-in", line: "“Hi, I'm Navo.”" },
+  { id: "calm", name: "Calm", when: "Everything on track", line: "“You're all set for Monday.”" },
+  { id: "watching", name: "Watching", when: "Monitoring quietly", line: "“Watching 9 items for you.”" },
+  { id: "thinking", name: "Thinking", when: "Checking state and policy", line: "“Let me check what your laptop depends on.”" },
+  { id: "acting", name: "Acting", when: "Taking a permitted action", line: "“Raising your laptop request with IT.”" },
+  { id: "waiting", name: "Waiting", when: "On HR, IT or a vendor", line: "“Waiting for IT to confirm.”" },
+  { id: "concerned", name: "Concerned", when: "A risk is forming", line: "“Your Employee ID is late. I'm on it.”" },
+  { id: "needs", name: "Needs you", when: "Only you can do this", line: "“I need your OK for a loaner laptop.”" },
+  { id: "celebrating", name: "Celebrating", when: "Milestone reached", line: "“You're ready for Day 1.”" },
 ];
 
 export default function PersonaPage() {
@@ -86,10 +36,7 @@ export default function PersonaPage() {
             </p>
           </div>
         </section>
-        <h2 className={styles.subtitle}>
-          One character, nine states. The face tells you what Navo is doing
-          before you read a word.
-        </h2>
+        <h2 className={styles.subtitle}>One character, nine states. The face tells you what Navo is doing before you read a word.</h2>
         <ul className={styles.grid}>
           {STATES.map((s) => (
             <li key={s.id} className={styles.card}>
