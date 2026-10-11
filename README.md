@@ -1,6 +1,6 @@
 # Navo · AI That Handles Onboarding
 
-[![CI](https://github.com/KumarAnandSingh/new/actions/workflows/ci.yml/badge.svg)](https://github.com/KumarAnandSingh/new/actions/workflows/ci.yml)
+[![CI](https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding/actions/workflows/ci.yml/badge.svg)](https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding/actions/workflows/ci.yml)
 
 > Navo understands what's next, coordinates the work and steps in when needed.
 
@@ -110,7 +110,7 @@ The full design, with sequence diagrams, the state machine, the data model and d
 Requires **Node.js 22+**. There is no database to set up: locally Navo uses an embedded Postgres (PGlite) stored in `.data/`.
 
 ```bash
-git clone https://github.com/KumarAnandSingh/new.git navo
+git clone https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding.git navo
 cd navo
 npm ci
 cp .env.example .env.local   # optional

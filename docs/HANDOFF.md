@@ -5,8 +5,8 @@ Last updated: 10 Oct 2026 (competition deadline: **12 Oct 2026**).
 
 ## Where the code is
 
-- **Repository:** `KumarAnandSingh/new`.
-- **`main`:** has the first full Navo build, merged via https://github.com/KumarAnandSingh/new/pull/1.
+- **Repository:** `KumarAnandSingh/NAVO-Agent-that-handles-Onboarding` (renamed from `KumarAnandSingh/new`; old links redirect).
+- **`main`:** has the first full Navo build, merged via https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding/pull/1.
 - **Working branch `claude/sweet-fermi-dhassn`:** has everything since: the AI gateway, the benchmark, policy upload, the cohort radar, Hindi, the code-quality work, the new tests and the new docs. Merge it into `main` with a new pull request when ready.
 - **CI (GitHub Actions)** runs:
   - lint and typecheck;
@@ -21,7 +21,7 @@ Last updated: 10 Oct 2026 (competition deadline: **12 Oct 2026**).
 ## Resume locally
 
 ```bash
-git clone https://github.com/KumarAnandSingh/new.git navo && cd navo
+git clone https://github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding.git navo && cd navo
 git checkout claude/sweet-fermi-dhassn
 npm ci
 npm run dev                     # http://localhost:3000 (stage), /phone, /hr
