@@ -43,6 +43,14 @@ export function IntroBrief() {
               {COMPANY.product}: {COMPANY.tagline}.
             </h1>
             <p className={st.lede}>{COMPANY.supportingLine} Everything you see runs on a real agent engine with a simulated clock; {COMPANY.name} is fictional and all data is synthetic.</p>
+            <div className={st.heroActions}>
+              <button className={st.primaryButton} onClick={play} autoFocus>
+                ▶ Play guided demo
+              </button>
+              <button className={st.ghostButton} onClick={explore}>
+                Explore on my own
+              </button>
+            </div>
           </div>
         </div>
 
@@ -130,7 +138,7 @@ export function IntroBrief() {
             <button className={st.ghostButton} onClick={explore}>
               Explore on my own
             </button>
-            <button className={st.primaryButton} onClick={play} autoFocus>
+            <button className={st.primaryButton} onClick={play}>
               ▶ Play guided demo
             </button>
           </span>

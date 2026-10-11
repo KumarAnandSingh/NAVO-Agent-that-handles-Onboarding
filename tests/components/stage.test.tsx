@@ -120,7 +120,7 @@ describe("presenter controls and briefs", () => {
     );
     const intro = find.getByRole("dialog", { name: "About this demo" });
     expect(intro.textContent).toContain("Navo");
-    fireEvent.click(within(intro).getByRole("button", { name: "Explore on my own" }));
+    fireEvent.click(within(intro).getAllByRole("button", { name: "Explore on my own" })[0]!);
     expect(find.queryByRole("dialog", { name: "About this demo" })).toBeNull();
   });
 });
