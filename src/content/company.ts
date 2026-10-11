@@ -11,7 +11,7 @@ export const COMPANY = {
   office: "Tower B, BKC, Mumbai",
   pickupSite: "Twin Tower · Building B",
   emailDomain: "halden.example",
-  disclaimer: "Halden is a fictional company. All data is synthetic.",
+  disclaimer: "Halden is a made-up company with sample data. Navo's agent engine and workflows are real.",
 } as const;
 
 /** The featured joiner whose phone the demo shows. */

@@ -42,7 +42,15 @@ export function IntroBrief() {
             <h1 className={st.title}>
               {COMPANY.product}: {COMPANY.tagline}.
             </h1>
-            <p className={st.lede}>{COMPANY.supportingLine} Everything you see runs on a real agent engine with a simulated clock; {COMPANY.name} is fictional and all data is synthetic.</p>
+            <p className={st.lede}>{COMPANY.supportingLine} {COMPANY.name} is a made-up company and its people and records are sample data. {COMPANY.product}&apos;s agent engine, rules and workflows are real and run live on a simulated clock.</p>
+            <div className={st.heroActions}>
+              <button className={st.primaryButton} onClick={play} autoFocus>
+                ▶ Play guided demo
+              </button>
+              <button className={st.ghostButton} onClick={explore}>
+                Explore on my own
+              </button>
+            </div>
           </div>
         </div>
 
@@ -127,12 +135,6 @@ export function IntroBrief() {
           <span className={st.disclaimer}>{COMPANY.disclaimer}</span>
           <span className={st.footerActions}>
             <span className={st.shortcuts}>Space to play · → next step · B brief</span>
-            <button className={st.ghostButton} onClick={explore}>
-              Explore on my own
-            </button>
-            <button className={st.primaryButton} onClick={play} autoFocus>
-              ▶ Play guided demo
-            </button>
           </span>
         </div>
       </div>

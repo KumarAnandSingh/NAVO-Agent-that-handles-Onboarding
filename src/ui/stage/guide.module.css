@@ -122,6 +122,13 @@
   gap: 10px;
 }
 
+.heroActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
 .heroKicker {
   color: var(--accent);
 }

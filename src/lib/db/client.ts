@@ -28,7 +28,8 @@ export async function createMemoryDb(): Promise<Db> {
 }
 
 async function createDb(): Promise<Db> {
-  const url = process.env.DATABASE_URL;
+  // Neon on Vercel sets DATABASE_URL; its Vercel Postgres template names it POSTGRES_URL.
+  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
   if (url) {
     // Enough connections for a burst of visitors; Neon's pooled endpoint takes many more.
     const pool = new Pool({ connectionString: url, max: Number(process.env.NAVO_DB_POOL_MAX) || 10 });

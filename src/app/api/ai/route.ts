@@ -3,6 +3,8 @@ import { byokEnabled, visitorKey } from "@/server/deps";
 import { checkKey } from "@/services/llm/key-check";
 
 export const dynamic = "force-dynamic";
+// A cold serverless instance without DATABASE_URL boots embedded Postgres first, which can outlast the 10 s default.
+export const maxDuration = 60;
 
 /** Test a visitor's own Claude key (sent in the key header, never in the body, never logged). */
 export async function POST(request: Request) {
