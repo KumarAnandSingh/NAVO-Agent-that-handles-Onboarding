@@ -617,7 +617,7 @@ npm run cost-model  # estimated Claude cost per onboarding
 ```mermaid
 flowchart LR
   GH[GitHub repo] -->|push| VC[Vercel build<br/>next build]
-  VC --> FN["Serverless functions (bom1, Mumbai)<br/>API routes + agent"]
+  VC --> FN["Serverless functions (sin1, Singapore)<br/>API routes + agent"]
   VC --> CDN[Static pages & samples]
   FN -->|DATABASE_URL| NEON[(Neon Postgres)]
   FN -.->|no DATABASE_URL| TMP[(PGlite in /tmp<br/>per instance)]
@@ -629,7 +629,7 @@ flowchart LR
 3. Recommended: add **Neon Postgres** from Vercel Storage and connect it to the project; it sets `DATABASE_URL`. Migrations in `drizzle/` are applied automatically on first connection (or ahead of time with `DATABASE_URL=… npm run db:migrate`).
 4. Deploy. Production URLs are public; preview URLs may require a Vercel login.
 
-Without `DATABASE_URL` the hosted demo still works: each serverless instance keeps an embedded database in its temp directory, and a visitor on a fresh instance simply gets a fresh workspace. `next.config.ts` traces the migrations, PGlite's WASM build and the sample images into the functions; `vercel.json` pins the functions to `bom1` (Mumbai).
+Without `DATABASE_URL` the hosted demo still works: each serverless instance keeps an embedded database in its temp directory, and a visitor on a fresh instance simply gets a fresh workspace. `next.config.ts` traces the migrations, PGlite's WASM build and the sample images into the functions; `vercel.json` pins the functions to `sin1` (Singapore), the region of the Neon database. Keep the two together: the engine makes many small queries per request (a chapter jump makes up to about 2,000), so each one has to be a round trip within the region. With the functions in Mumbai and the database in Singapore, a jump to the later chapters ran past the 60-second function limit.
 
 ---
 
