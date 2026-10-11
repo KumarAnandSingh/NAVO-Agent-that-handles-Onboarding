@@ -441,7 +441,7 @@ export const STORY: readonly Scene[] = [
       tagline: { at: 0.9, text: "AI That Handles Onboarding" },
       lines: [
         { at: 2.0, text: "Employee Onboarding Companion" },
-        { at: 2.6, text: "github.com/KumarAnandSingh/new" },
+        { at: 2.6, text: "github.com/KumarAnandSingh/NAVO-Agent-that-handles-Onboarding" },
       ],
     },
     sfx: [{ at: 0.3, sfx: "boom" }],
