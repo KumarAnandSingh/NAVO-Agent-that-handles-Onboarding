@@ -11,9 +11,9 @@ This page maps each submission requirement to where it is met in this repository
 | **2. Documentation (2).** System architecture diagrams (flow diagrams) | [Technical design Sections 2–7, Section 12](TECHNICAL_DESIGN.md#2-system-architecture): system, agent run sequence, task state machine, dependency chain, Ask Navo verification, event loop, data model, deployment | Done |
 | **2. Documentation (3).** Setup and deployment instructions | [Technical design Section 11 Setup](TECHNICAL_DESIGN.md#11-setup), [Section 12 Deployment](TECHNICAL_DESIGN.md#12-deployment), [README quick start](../README.md#quick-start) | Done |
 | **2. Documentation (4).** Code explanations and assumptions | [Technical design Section 13 Code walkthrough](TECHNICAL_DESIGN.md#13-code-walkthrough), [Section 14 Assumptions](TECHNICAL_DESIGN.md#14-assumptions), [Section 15 Limitations](TECHNICAL_DESIGN.md#15-limitations-and-future-work), [API reference](API.md), [decision records](adr/README.md), [security and privacy](SECURITY_PRIVACY.md), [cost model](COST_MODEL.md) | Done |
-| **3. Demo video.** YouTube link showing key features and the user experience | Rendered from the real app with `npm run video` ([video/README.md](../video/README.md)), then retimed to a recorded voice-over and played at 1.5× speed: 2 min 31 s, with narration, word-highlighted subtitles in sync with the voice, and sound effects. In the repository: [`docs/media/navo-demo.mp4`](media/navo-demo.mp4), shown at the top of the README. YouTube link: _to be added after upload_ | Video ready; upload to YouTube |
+| **3. Demo video.** YouTube link showing key features and the user experience | Rendered from the real app with `npm run video` ([video/README.md](../video/README.md)), then retimed to a recorded voice-over and played at 1.5× speed: 2 min 31 s, with narration, word-highlighted subtitles in sync with the voice, and sound effects. In the repository: [`docs/media/navo-demo.mp4`](media/navo-demo.mp4), shown at the top of the README. YouTube link: [youtu.be/V3RUkIaSTIc](https://youtu.be/V3RUkIaSTIc) | Done |
 | **4. Submission platform.** Code on personal GitHub, shared with the documents and the video | This repository. It must be **public** so reviewers need no access requests. | To make public |
-| **Hosted link** (if hosted) | Vercel. Link: _to be added_ | To deploy |
+| **Hosted link** (if hosted) | Vercel. Link: [navo-ai-agent.vercel.app](https://navo-ai-agent.vercel.app) | Done |
 | **Comprehensive unit tests** | The test folders:<ul><li>`tests/unit`: 15 files, including property-based tests</li><li>`tests/integration`: 18 files</li><li>`tests/components`: 6 files</li><li>`tests/e2e`: 8 specs</li></ul>264 + 13 tests. Coverage with the UI included is 90.8% of lines; server code reaches 85.1% of branches. Floors are enforced in CI, which also runs an AI quality benchmark, a dependency audit, Postgres end-to-end runs and a 50-visitor load test. See [Technical design Section 10](TECHNICAL_DESIGN.md#10-testing-strategy) | Done |
 
 ## How the evaluation criteria are addressed
@@ -29,9 +29,9 @@ This page maps each submission requirement to where it is met in this repository
 
 ## Before submitting
 
-- [ ] Merge the working branch into `main`, so the default branch shows Navo.
+- [x] Merge the working branch into `main`, so the default branch shows Navo.
 - [ ] Make the repository **public** (Settings → General → Danger zone → Change visibility).
-- [ ] Deploy to Vercel with Neon Postgres. No API key is needed: the demo runs offline, and visitors can connect their own. Open the production URL in a private window to confirm it loads without a login.
-- [ ] Upload `video/out/navo-demo.mp4` to YouTube (Public or Unlisted), optionally with `navo-demo.srt` as captions. To add a voice, see [video/README.md](../video/README.md).
-- [ ] Add the hosted link and the video link to the README table and to the submission email.
+- [x] Deploy to Vercel with Neon Postgres. No API key is needed: the demo runs offline, and visitors can connect their own. Open the production URL in a private window to confirm it loads without a login.
+- [x] Upload `docs/media/navo-demo.mp4` to YouTube (Public or Unlisted), optionally with `navo-demo.srt` as captions. To add a voice, see [video/README.md](../video/README.md).
+- [x] Add the hosted link and the video link to the README table and to the submission email.
 - [ ] Send the GitHub link, the hosted link and the video link before 12 October 2026.
