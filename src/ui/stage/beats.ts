@@ -1,5 +1,5 @@
 /**
- * The guided demo: 26 beats that tell Anand's story by driving the real engine through
+ * The guided demo: 29 beats that tell Anand's story by driving the real engine through
  * the same API the buttons use. Captions read the live view model, so every number on
  * screen is the one the engine produced.
  */
@@ -157,8 +157,37 @@ export const BEATS: readonly Beat[] = [
     },
   },
   {
+    chapter: 2,
+    caption: () => "Then a surprise: IT says his laptop will be two working days late. Navo re-checks Day 1 straight away.",
+    dwellMs: 4800,
+    run: async (api) => {
+      api.setView("emp");
+      api.go("home");
+      await must(api.demo({ action: "it_delay" }));
+    },
+  },
+  {
+    chapter: 2,
+    caption: (vm) =>
+      vm?.pendingApproval
+        ? `The laptop would now miss Day 1. A loaner is an asset change, so Navo's rules say ask ${name(vm)} first.`
+        : "Day 1 still holds, so Navo keeps watching the laptop.",
+    dwellMs: 5200,
+    run: stay("home"),
+  },
+  {
+    chapter: 2,
+    caption: (vm) => (vm?.day1.loaner ? "He approves in one tap. Navo reserves a loaner for his Day 1 pickup, and his own laptop follows." : "Day 1 is still on track."),
+    dwellMs: 4400,
+    run: async (api) => {
+      api.go("home");
+      const pending = api.latest()?.pendingApproval;
+      if (pending) await must(api.employee({ action: "decide_approval", approvalId: pending.id, decision: "approved" }, "Approved. I've reserved a loaner laptop."));
+    },
+  },
+  {
     chapter: 3,
-    caption: () => "By Friday: background check cleared, laptop imaged, ID card printed. Navo books one pickup for everything.",
+    caption: (vm) => `By Friday: background check cleared, ${vm?.day1.loaner ? "loaner laptop ready" : "laptop imaged"}, ID card printed. Navo books one pickup for everything.`,
     dwellMs: 5200,
     run: async (api) => {
       api.go("home");
@@ -167,7 +196,12 @@ export const BEATS: readonly Beat[] = [
       }
     },
   },
-  { chapter: 3, caption: () => "ID card, laptop and kit, all at Building B. HR, IT and Facilities, coordinated by Navo.", dwellMs: 4600, run: stay("pickup") },
+  {
+    chapter: 3,
+    caption: (vm) => `ID card, ${vm?.day1.loaner ? "loaner laptop" : "laptop"} and kit, all at Building B. HR, IT and Facilities, coordinated by Navo.`,
+    dwellMs: 4600,
+    run: stay("pickup"),
+  },
   {
     chapter: 4,
     caption: () => "Monday, Day 1. Navo has the plan and reminds him as each step comes up.",

@@ -56,7 +56,7 @@ Navo is an AI onboarding agent. Instead of handing a new joiner another checklis
 
 ### Watch the 3-minute guided demo
 
-Open the app and press **▶ Play guided demo**. It drives the real engine end to end, from first launch to Day 30, with a caption at each step.
+Open the app and press **▶ Play guided demo**. It drives the real engine end to end, from first launch to Day 30, with a caption at each step. To start partway through, click a chapter on the intro screen.
 
 - Keys: **→** next, **←** back, **Space** play or pause, **H** HR view, **B** brief, **Esc** close.
 - To explore on your own, use the chapters, the **HR responds / HR silent** switch, **Advance time ▸** and **Inject IT delay**.

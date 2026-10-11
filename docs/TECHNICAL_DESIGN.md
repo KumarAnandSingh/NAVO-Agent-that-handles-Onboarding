@@ -495,7 +495,7 @@ The design follows the HTML prototype in `docs/design/Navo_Prototype.dc.html`.
   - **All joiners:** the cohort radar. Every joiner's Day-1 risk from the real risk engine, the teams whose tasks break a Day 1, and what-ifs such as "IT takes a week longer" that mark the joiners who would change.
   - **Policies and rules:** the library with versions and status, and adding or updating a policy.
 - **AI panel** (in the runtime panel): which model handles each task and its fallback, live usage and estimated cost, personal numbers masked, and the "Try it with your own Claude key" dialog.
-- **Guided demo**: 25 beats that drive the real API end to end in about 3 minutes, with captions computed from the resulting state; keyboard: → next, ← back, Space play/pause, H HR view, B brief, Esc close.
+- **Guided demo**: 29 beats that drive the real API end to end in about 3 minutes (including a late laptop that Navo re-plans around, asking Anand before it reserves a loaner), with captions computed from the resulting state; keyboard: → next, ← back, Space play/pause, H HR view, B brief, Esc close.
 - **Impact screen**: figures computed from the run (tasks closed, days before Day 1 the risk was acted on, follow-ups sent, things that needed the joiner, audited tool calls).
 - **Hindi**: Ask Navo answers questions asked in Hindi, and offers a Hindi suggestion.
 - **Accessibility**: WCAG 2.1 AA colour contrast, labelled regions and dialogs, keyboard operation, focus rings, `prefers-reduced-motion` respected. Axe scans cover every HR page and the key dialog.

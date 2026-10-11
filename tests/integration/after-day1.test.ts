@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { beforeAll, describe, expect, it } from "vitest";
-import { runUntil } from "@/agent/runtime";
+import { advance, runUntil } from "@/agent/runtime";
 import { atIst } from "@/domain/time";
 import { createMemoryDb, type Db } from "@/lib/db/client";
 import { calendarEvents, employees, notifications } from "@/lib/db/schema";
@@ -21,8 +21,11 @@ let ws: string;
 beforeAll(async () => {
   db = await createMemoryDb();
   ws = (await createWorkspace(db, "hr_responds")).id;
-  // Ready for Day 1 (chapter 3) without doing the security training.
-  await jumpToChapter(db, ws, 3);
+  // Ready for Day 1 without doing the security training: the story up to the pickup, skipping it.
+  await jumpToChapter(db, ws, 2);
+  for (let i = 0; i < 40 && (await taskByKey(db, ws, "pickup")).status !== "completed"; i++) await advance(db, ws, deps);
+  expect((await taskByKey(db, ws, "pickup")).status).toBe("completed");
+  expect((await taskByKey(db, ws, "security_training")).status).not.toBe("completed");
 });
 
 describe("after Day 1 starts", () => {
